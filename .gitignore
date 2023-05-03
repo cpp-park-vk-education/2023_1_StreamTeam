@@ -117,3 +117,4 @@ fabric.properties
 
 */cmake-build-debug
 server/videos
+*/.idea

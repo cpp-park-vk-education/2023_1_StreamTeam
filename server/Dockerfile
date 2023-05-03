@@ -5,8 +5,9 @@ WORKDIR server
 # Установка необходимых пакетов
 RUN apt-get update && apt-get install -y \
     build-essential \
-    postgresql-client \
     libpq-dev \
+    postgresql-server-dev-all \
+    libgtest-dev \
     libavcodec-dev \
     libavformat-dev \
     libavutil-dev \
@@ -15,13 +16,9 @@ RUN apt-get update && apt-get install -y \
     libavfilter-dev \
     libcurl4-openssl-dev
 
-# Создание директории проекта и копирование файлов
-RUN mkdir -p /app
-COPY . /app
+COPY . .
 
-# Установка зависимостей проекта
-RUN cd /app && \
-    make install
+RUN cmake ./
+RUN make
 
-# Запуск приложения
-CMD ["./app"]
+CMD ["./server"]
