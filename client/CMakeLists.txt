@@ -4,9 +4,9 @@ project(HW1 VERSION 0.1.2)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-
-
-
+enable_testing()
+find_package(GTest REQUIRED)
+include(GoogleTest)
 
 add_subdirectory(lib)
 

@@ -15,6 +15,10 @@ void Message::SetId(int id)
 
 std::string Message::GetAuthorName()
 {
+    if (_author == nullptr)
+    {
+        return "null author";
+    }
     return "name";
 }
 

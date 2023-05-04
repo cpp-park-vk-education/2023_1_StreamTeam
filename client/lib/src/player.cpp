@@ -22,31 +22,53 @@ bool Player::PlayAudio()
 
 bool Player::ToggleVideo()
 {
+    if (!_video_is_active)
+    {
+        return false;
+    }
     return true;
 }
 
 bool Player::ToggleAudio()
 {
+    if (!_video_is_active)
+    {
+        return false;
+    }
     return true;
 }
 
 bool Player::RewindFor()
 {
+    if (!_video_is_active)
+    {
+        return false;
+    }
     return true;
 }
 
 bool Player::RewindBack()
 {
+    if (!_video_is_active)
+    {
+        return false;
+    }
     return true;
 }
 
-bool Player::ChooseVideo(std::string)
+bool Player::ChooseVideo(std::string video)
 {
+    if (video == "") 
+    {
+        return false;
+    }
+    _video_is_active = 1;
     return true;
 }
 
 bool Player::KillVideo()
 {
+    _video_is_active = 0;
     return true;
 }
 

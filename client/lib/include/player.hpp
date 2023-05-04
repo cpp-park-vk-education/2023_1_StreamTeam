@@ -29,4 +29,6 @@ public:
 
 private:
     int _leader_id;
+    bool _video_is_active;
+    bool _audio_is_active;
 };
