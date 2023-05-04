@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS votes;
 DROP TABLE IF EXISTS bids;
 DROP TABLE IF EXISTS viewers;
 DROP TABLE IF EXISTS rooms;
+DROP TABLE IF EXISTS films;
 DROP TABLE IF EXISTS users;
 
 DROP TYPE IF EXISTS viewer_role;
@@ -20,14 +21,23 @@ CREATE TABLE users (
     password varchar(64) NOT NULL
 );
 
-CREATE TABLE rooms (
+CREATE TABLE films (
     id serial PRIMARY KEY NOT NULL,
-    name varchar(64) NOT NULL,
-    creator integer NOT NULL,
-    FOREIGN KEY (creator) REFERENCES users (id)
+    name varchar(256) NOT NULL,
+    link text NOT NULL UNIQUE,
+    data jsonb
 );
 
-CREATE TYPE viewer_role AS ENUM ('admin', 'moderator', 'guest', 'banned');
+CREATE TABLE rooms (
+    id serial PRIMARY KEY NOT NULL,
+    name varchar(256) NOT NULL,
+    creator integer NOT NULL,
+    current_film integer,
+    FOREIGN KEY (creator) REFERENCES users (id),
+    FOREIGN KEY (current_film) REFERENCES films (id)
+);
+
+CREATE TYPE viewer_role AS ENUM ('admin', 'moderator', 'guest', 'left', 'banned');
 
 CREATE TABLE viewers (
     id serial PRIMARY KEY NOT NULL,

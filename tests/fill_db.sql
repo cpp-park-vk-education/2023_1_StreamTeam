@@ -8,6 +8,9 @@ CREATE UNLOGGED TABLE IF NOT EXISTS users_import(data jsonb);
 CREATE UNLOGGED TABLE IF NOT EXISTS rooms_import(data jsonb);
 \copy rooms_import FROM 'rooms_import.json'
 
+CREATE UNLOGGED TABLE IF NOT EXISTS films_import(data jsonb);
+\copy films_import FROM 'films_import.json'
+
 CREATE UNLOGGED TABLE IF NOT EXISTS viewers_import(data jsonb);
 \copy viewers_import FROM 'viewers_import.json'
 
@@ -21,8 +24,12 @@ INSERT INTO users (username, email, "password")
 SELECT data->>'username', data->>'email', data->>'password'
 FROM users_import;
 
-INSERT INTO rooms (name, creator)
-SELECT data->>'name', (data->>'creator')::int
+INSERT INTO films (name, link, "data")
+SELECT data->>'name', (data->>'link')::text, (data->>'data')::jsonb
+FROM films_import;
+
+INSERT INTO rooms (name, creator, current_film)
+SELECT data->>'name', (data->>'creator')::int, (data->>'current_film')::int
 FROM rooms_import;
 
 INSERT INTO viewers (id_user, id_room, points, "role")
@@ -38,12 +45,14 @@ SELECT (data->>'id_bid')::int, (data->>'id_user')::int, (data->>'vote')::boolean
 FROM votes_import;
 
 SELECT * FROM users;
+SELECT * FROM films;
 SELECT * FROM rooms;
 SELECT * FROM viewers;
 SELECT * FROM bids;
 SELECT * FROM votes;
 
 DROP TABLE users_import;
+DROP TABLE films_import;
 DROP TABLE rooms_import;
 DROP TABLE viewers_import;
 DROP TABLE bids_import;

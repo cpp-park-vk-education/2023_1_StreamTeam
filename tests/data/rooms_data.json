@@ -1,10 +1,12 @@
 [
     {
         "name": "Смотрим элиту 6 сезон",
-        "creator": 2
+        "creator": 2,
+        "current_film" : 1
     },
     {
         "name": "Криминальное чтиво",
-        "creator": "3"
+        "creator": 3,
+        "current_film" : 2
     }
 ]
