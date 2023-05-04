@@ -1,0 +1,44 @@
+[
+    {
+        "id_user": 2,
+        "id_room": 1,
+        "points": 1500,
+        "role": "admin"
+    },
+    {
+        "id_user": 2,
+        "id_room": 2,
+        "points": 2200,
+        "role": "moderator"
+    },
+    {
+        "id_user": 1,
+        "id_room": 1,
+        "points": 550,
+        "role": "guest"
+    },
+    {
+        "id_user": 3,
+        "id_room": 2,
+        "points": 1000,
+        "role": "admin"
+    },
+    {
+        "id_user": 3,
+        "id_room": 1,
+        "points": 400,
+        "role": "guest"
+    },
+    {
+        "id_user": 4,
+        "id_room": 1,
+        "points": 100,
+        "role": "guest"
+    },
+    {
+        "id_user": 4,
+        "id_room": 2,
+        "points": 0,
+        "role": "banned"
+    }
+]
