@@ -13,6 +13,7 @@ public:
     json updateRoom(const json &info) const;
     bool checkRoom(const size_t id) const;
     json getRoomInfo(const size_t id) const;
+    json getAllRooms() const;
 
 private:
     std::shared_ptr<IDatabase> client;

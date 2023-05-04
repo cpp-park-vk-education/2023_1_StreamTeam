@@ -38,3 +38,10 @@ json RoomsTable::getRoomInfo(const size_t id) const
     json response = client->select(request);
     return response;
 }
+
+json RoomsTable::getAllRooms() const
+{
+    json request = {{"id", "*"}};
+    json response = client->select(request);
+    return response;
+}
