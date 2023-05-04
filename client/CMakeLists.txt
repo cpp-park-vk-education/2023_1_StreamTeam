@@ -4,8 +4,12 @@ project(HW1 VERSION 0.1.2)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+
+
+
+
 add_subdirectory(lib)
 
 add_compile_options(-Wall -Werror -Wpedantic -Wextra)
 
-add_executable(SyncView src/main.cpp)
+add_executable(SyncView src/syncview.cpp)
