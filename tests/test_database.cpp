@@ -197,20 +197,56 @@ TEST_F(UsersTableTest, updateUserNotExist)
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST_F(UsersTableTest, checkUserExist)
+TEST_F(UsersTableTest, checkUserByIDExist)
 {
     UsersTable table = UsersTableTest::getUsersTable();
 
-    bool response = table.checkUser(0);
+    bool response = table.checkUserByID(0);
 
     EXPECT_EQ(response, true);
 }
 
-TEST_F(UsersTableTest, checkUserNotExist)
+TEST_F(UsersTableTest, checkUserByIDNotExist)
 {
     UsersTable table = UsersTableTest::getUsersTable();
 
-    bool response = table.checkUser(10);
+    bool response = table.checkUserByID(10);
+
+    EXPECT_EQ(response, false);
+}
+
+TEST_F(UsersTableTest, checkUserByEmailExist)
+{
+    UsersTable table = UsersTableTest::getUsersTable();
+
+    bool response = table.checkUserByEmail("lexus@mail.ru");
+
+    EXPECT_EQ(response, true);
+}
+
+TEST_F(UsersTableTest, checkUserByEmailNotExist)
+{
+    UsersTable table = UsersTableTest::getUsersTable();
+
+    bool response = table.checkUserByEmail("test@test.test");
+
+    EXPECT_EQ(response, false);
+}
+
+TEST_F(UsersTableTest, checkUserByUsernameExist)
+{
+    UsersTable table = UsersTableTest::getUsersTable();
+
+    bool response = table.checkUserByUsername("lexus");
+
+    EXPECT_EQ(response, true);
+}
+
+TEST_F(UsersTableTest, checkUserByUsernameNotExist)
+{
+    UsersTable table = UsersTableTest::getUsersTable();
+
+    bool response = table.checkUserByUsername("test");
 
     EXPECT_EQ(response, false);
 }
