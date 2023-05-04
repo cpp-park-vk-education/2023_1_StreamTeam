@@ -39,7 +39,12 @@ void User::SetAvatarUrl(std::string url)
     _avatar_url = url;
 }
 
-void User::SetActivePlayer(std::shared_ptr<Player> ptr) 
+bool User::SetActivePlayer(std::shared_ptr<Player> ptr) 
 {
+    if (ptr == nullptr) 
+    {
+        return false;
+    }
     _active_player = ptr;
+    return true;
 }

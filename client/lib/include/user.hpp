@@ -21,7 +21,7 @@ public:
 
     void SetAvatarUrl(std::string);
 
-    void SetActivePlayer(std::shared_ptr<Player>);
+    bool SetActivePlayer(std::shared_ptr<Player>);
 
 private:
     int _id;

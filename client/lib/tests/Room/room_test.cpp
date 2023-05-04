@@ -1,70 +1,65 @@
 #include "gtest/gtest.h"
 #include <memory>
-#include "serializer.hpp"
+#include "room.hpp"
 
-class SerializerTest : public ::testing::Test {
+class RoomTest : public ::testing::Test {
 protected:
-    JsonSerializer serializer;
+    Room room;
 };
 
-class DeSerializerTest : public ::testing::Test {
-protected:
-    JsonDeSerializer deserializer;
-};
+TEST_F(RoomTest, TestCreatePlayer) {
+    std::shared_ptr<Player> player (new Player);
+    bool flag = room.CreatePlayer(player);  
+    EXPECT_EQ(flag, true);
+}
 
-// Тут очень много нужно будет добавить, когда будут готовы сериалайзеры
-// Сериалайзеры
+TEST_F(RoomTest, TestCreatePlayerNull) {
+    bool flag = room.CreatePlayer(nullptr);  
+    EXPECT_EQ(flag, false);
+}
 
-TEST_F(SerializerTest, TestSerMess) {
+TEST_F(RoomTest, TestGetPlayer) {
+    std::shared_ptr<Player> player (new Player);
+    room.CreatePlayer(player); 
+    std::shared_ptr<Player> ptr = room.GetPlayerPtr();  
+    EXPECT_EQ(ptr, player);
+}
+
+TEST_F(RoomTest, TestGetPlayerNull) {
+    std::shared_ptr<Player> ptr = room.GetPlayerPtr();  
+    EXPECT_EQ(ptr, nullptr);
+}
+
+TEST_F(RoomTest, TestAddMember) {
+    User member;
+    bool flag = room.AddMember(member);
+    EXPECT_EQ(flag, true);
+}
+
+// Этот тест выдает ошибку из-за отсутствия локиги проверки в самом классе, как только она появится - тест будет работать как надо
+TEST_F(RoomTest, TestAddMemberIsExists) {
+    User member;
+    room.AddMember(member);
+    bool flag = room.AddMember(member);
+    EXPECT_EQ(flag, false);
+}
+
+TEST_F(RoomTest, TestDeleteMember) {
+    User member;
+    room.AddMember(member);
+    bool flag = room.DeleteMember(member.GetId());
+    EXPECT_EQ(flag, true);
+}
+
+TEST_F(RoomTest, TestAddMessage) {
     Message mes;
-    json json = serializer.SerializeMessage(mes);
-    EXPECT_EQ(json, "json");
+    bool flag = room.AddMessage(mes);
+    EXPECT_EQ(flag, true);
 }
 
-TEST_F(SerializerTest, TestSerRoom) {
-    Room room;
-    json json = serializer.SerializeRoom(room);
-    EXPECT_EQ(json, "json");
-}
-
-TEST_F(SerializerTest, TestSerUser) {
-    User user;
-    json json = serializer.SerializeUser(user);
-    EXPECT_EQ(json, "json");
-}
-
-TEST_F(SerializerTest, TestSerPlayer) {
-    Player player;
-    json json = serializer.SerializePlayer(player);
-    EXPECT_EQ(json, "json");
-}
-
-// Десериалайзеры
-
-TEST_F(DeSerializerTest, TestDeserMess) {
+TEST_F(RoomTest, TestDeleteMessage) {
     Message mes;
-    json json = "json text";
-    bool flag = deserializer.DeSerializeMessage(mes, json);
-    EXPECT_EQ(flag, true);
-}
-
-TEST_F(DeSerializerTest, TestDeserRoom) {
-    Room room;
-    json json = "json text";
-    bool flag = deserializer.DeSerializeRoom(room, json);
-    EXPECT_EQ(flag, true);
-}
-
-TEST_F(DeSerializerTest, TestDeserUser) {
-    User user;
-    json json = "json text";
-    bool flag = deserializer.DeSerializeUser(user, json);
-    EXPECT_EQ(flag, true);
-}
-
-TEST_F(DeSerializerTest, TestDeserPlayer) {
-    Player player;
-    json json = "json text";
-    bool flag = deserializer.DeSerializePlayer(player, json);
+    room.AddMessage(mes);
+    bool flag = room.DeleteMessage(mes.GetId());
     EXPECT_EQ(flag, true);
 }

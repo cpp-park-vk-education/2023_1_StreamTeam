@@ -37,8 +37,13 @@ std::shared_ptr<Player> Room::GetPlayerPtr ()
     return _player_ptr;
 }
 
-bool Room::CreatePlayer (std::shared_ptr<Player>)
+bool Room::CreatePlayer (std::shared_ptr<Player> player)
 {
+    if (player == nullptr)
+    {
+        return false;
+    }
+    _player_ptr = player;
     return true;
 }
 
