@@ -6,7 +6,7 @@ class VideoEncoder : IEncoder {
 public:
     VideoEncoder() = delete;
     VideoEncoder(int width, int height, int fps, int bitrate);
-    ~VideoEncoder();
+    ~VideoEncoder() override;
 
     std::vector<uint8_t> encode(const uint8_t* data) override;
 

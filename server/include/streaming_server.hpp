@@ -18,13 +18,17 @@ public:
     void start();
     void stop();
 private:
-
+    // инициация прослушивания входящих сообщений
     void startAccept();
+    // в ответ на установленное соединение - создание нового VideoStream для клиента
     void handleAccept(const boost::system::error_code& error);
 
+    // чтение данных с клиента
     void startRead();
+    // обработка полученных данных
     void handleRead(const boost::system::error_code& error, size_t bytes_transferred);
 
+    // запись данных на клиента
     void startWrite();
     void handleWrite(const boost::system::error_code& error);
 

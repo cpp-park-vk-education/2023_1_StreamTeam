@@ -3,7 +3,13 @@
 
 class AudioEncoderTest : public ::testing::Test {
 protected:
-    AudioEncoder audio_encoder;
+    int test_frequency = 40000000;
+    int test_canals = 4;
+    int test_bit_depth = 1000000;
+    std::string test_codec = "MP3";
+
+
+    AudioEncoder audio_encoder{test_frequency, test_canals, test_bit_depth, test_codec};
 };
 
 TEST_F(AudioEncoderTest, TestEncode) {
