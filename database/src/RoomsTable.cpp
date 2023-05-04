@@ -45,3 +45,17 @@ json RoomsTable::getAllRooms() const
     json response = client->select(request);
     return response;
 }
+
+json RoomsTable::getCurrentFilm(const size_t id) const
+{
+    json request = {{"id", id}};
+    json response = client->select(request);
+    return response;
+}
+
+bool RoomsTable::checkCurrentFilm(const size_t id) const
+{
+    json request = {{"id", id}};
+    json response = client->select(request);
+    return true;
+}

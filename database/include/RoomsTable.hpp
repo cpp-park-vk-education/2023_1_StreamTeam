@@ -14,6 +14,8 @@ public:
     bool checkRoom(const size_t id) const;
     json getRoomInfo(const size_t id) const;
     json getAllRooms() const;
+    json getCurrentFilm(const size_t id) const;
+    bool checkCurrentFilm(const size_t id) const;
 
 private:
     std::shared_ptr<IDatabase> client;
