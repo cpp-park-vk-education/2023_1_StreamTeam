@@ -13,6 +13,12 @@
 #include "FilmsTable.hpp"
 
 const std::string TEST_PATH = "test_config.cfg";
+const std::string USERS_DATA_PATH = "users_data.json";
+const std::string ROOMS_DATA_PATH = "rooms_data.json";
+const std::string VIEWERS_DATA_PATH = "viewers_data.json";
+const std::string BIDS_DATA_PATH = "bids_data.json";
+const std::string VOTES_DATA_PATH = "votes_data.json";
+const std::string FILMS_DATA_PATH = "films_data.json";
 
 class BaseTestConnection : public ::testing::Test
 {
@@ -58,7 +64,7 @@ public:
 
     static json getUsers()
     {
-        return getData("users_data.json");
+        return getData(USERS_DATA_PATH);
     }
 };
 
@@ -73,7 +79,7 @@ public:
 
     static json getRooms()
     {
-        return getData("rooms_data.json");
+        return getData(ROOMS_DATA_PATH);
     }
 };
 
@@ -88,7 +94,7 @@ public:
 
     static json getViewers()
     {
-        return getData("viewers_data.json");
+        return getData(VIEWERS_DATA_PATH);
     }
 };
 
@@ -103,12 +109,12 @@ public:
 
     static json getBids()
     {
-        return getData("bids_data.json");
+        return getData(BIDS_DATA_PATH);
     }
 
     static json getVotes()
     {
-        return getData("votes_data.json");
+        return getData(VOTES_DATA_PATH);
     }
 };
 
@@ -123,7 +129,7 @@ public:
 
     static json getVotes()
     {
-        return getData("votes_data.json");
+        return getData(VOTES_DATA_PATH);
     }
 };
 
@@ -138,7 +144,7 @@ public:
 
     static json getFilms()
     {
-        return getData("films_data.json");
+        return getData(FILMS_DATA_PATH);
     }
 };
 
