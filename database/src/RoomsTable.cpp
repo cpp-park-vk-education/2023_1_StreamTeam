@@ -53,9 +53,9 @@ json RoomsTable::getCurrentFilm(const size_t id) const
     return response;
 }
 
-bool RoomsTable::checkCurrentFilm(const size_t id) const
+json RoomsTable::checkCurrentFilm(const size_t id) const
 {
     json request = {{"id", id}};
     json response = client->select(request);
-    return true;
+    return response;
 }

@@ -446,7 +446,7 @@ TEST_F(RoomsTableTest, checkCurrentFilmExist)
     json response = table.checkCurrentFilm(id);
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response, true);
+    EXPECT_EQ(response["result"], true);
 }
 
 TEST_F(RoomsTableTest, checkCurrentFilmNotExist)
@@ -457,7 +457,7 @@ TEST_F(RoomsTableTest, checkCurrentFilmNotExist)
     json response = table.checkCurrentFilm(id);
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response, false);
+    EXPECT_EQ(response["result"], false);
 }
 
 TEST_F(ViewersTableTest, getUserRoomsExist)
