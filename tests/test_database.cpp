@@ -380,6 +380,18 @@ TEST_F(RoomsTableTest, getRoomInfoNotExist)
     EXPECT_EQ(response["status"], "error");
 }
 
+TEST_F(RoomsTableTest, getAllRooms)
+{
+    RoomsTable table = RoomsTableTest::getRoomsTable();
+
+    json response = table.getAllRooms();
+
+    json rooms = RoomsTableTest::getRooms();
+
+    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response["rooms"].size(), rooms.size());
+}
+
 TEST_F(ViewersTableTest, getUserRoomsExist)
 {
     ViewersTable table = ViewersTableTest::getViewersTable();
