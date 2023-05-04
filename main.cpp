@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 
     UsersTable usersTable(postgres);
 
-    std::cout << usersTable.checkUser(2);
+    std::cout << usersTable.checkUserByUsername("rozeqz");
 
     return 0;
 }

@@ -11,7 +11,9 @@ public:
     json addUser(const json &info) const;
     json deleteUser(const size_t id) const;
     json updateUser(const json &info) const;
-    bool checkUser(const size_t id) const;
+    bool checkUserByID(const size_t id) const;
+    bool checkUserByEmail(const std::string &email) const;
+    bool checkUserByUsername(const std::string &username) const;
     json getUserInfo(const size_t id) const;
 
 private:

@@ -23,9 +23,23 @@ json UsersTable::updateUser(const json &info) const
     return response;
 }
 
-bool UsersTable::checkUser(const size_t id) const
+bool UsersTable::checkUserByID(const size_t id) const
 {
     json request = {{"id", id}};
+    json response = client->select(request);
+    return true;
+}
+
+bool UsersTable::checkUserByEmail(const std::string &email) const
+{
+    json request = {{"email", email}};
+    json response = client->select(request);
+    return true;
+}
+
+bool UsersTable::checkUserByUsername(const std::string &username) const
+{
+    json request = {{"username", username}};
     json response = client->select(request);
     return true;
 }
