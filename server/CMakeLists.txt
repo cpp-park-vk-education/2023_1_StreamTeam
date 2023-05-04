@@ -19,7 +19,12 @@ find_library(AVUTIL_LIBRARY avutil)
 find_path(AVDEVICE_INCLUDE_DIR libavdevice/avdevice.h)
 find_library(AVDEVICE_LIBRARY avdevice)
 
+
+enable_testing()
 find_package(GTest REQUIRED)
+
+find_package(Threads REQUIRED)
+
 # Set include directories
 include_directories(${PostgreSQL_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -32,14 +37,14 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/VideoStream)
 # Add source files
 set(SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
-        )
+        include/streaming_server.hpp src/streaming_server.cpp)
 
 # Create executable
 add_executable(server ${SOURCES})
-
 # Link necessary libraries
 target_link_libraries(server
         VideoStream
         ${PostgreSQL_LIBRARIES}
         ${GTEST_BOTH_LIBRARIES}
+        Threads::Threads
         )

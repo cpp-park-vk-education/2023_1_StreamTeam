@@ -18,3 +18,5 @@ set(VIDEO_STREAM_INC_FILES
 
 add_library(VideoStream ${VIDEO_STREAM_SRC_FILES} ${VIDEO_STREAM_INC_FILES})
 target_include_directories(VideoStream PUBLIC include)
+
+add_subdirectory(tests)

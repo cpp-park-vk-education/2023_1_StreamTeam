@@ -117,4 +117,6 @@ fabric.properties
 
 */cmake-build-debug
 server/videos
-*/.idea
+**/.idea
+*/build/*
+!*/build/.keep
