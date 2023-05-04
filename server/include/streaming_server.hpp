@@ -19,14 +19,14 @@ public:
     void stop();
 private:
 
-    void start_accept();
-    void handle_accept(const boost::system::error_code& error);
+    void startAccept();
+    void handleAccept(const boost::system::error_code& error);
 
-    void start_read();
-    void handle_read(const boost::system::error_code& error, size_t bytes_transferred);
+    void startRead();
+    void handleRead(const boost::system::error_code& error, size_t bytes_transferred);
 
-    void start_write();
-    void handle_write(const boost::system::error_code& error);
+    void startWrite();
+    void handleWrite(const boost::system::error_code& error);
 
     boost::asio::io_context& io_context;
     tcp::acceptor acceptor;
