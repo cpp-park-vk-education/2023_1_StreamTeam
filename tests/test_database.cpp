@@ -10,6 +10,7 @@
 #include "ViewersTable.hpp"
 #include "BidsTable.hpp"
 #include "VotesTable.hpp"
+#include "FilmsTable.hpp"
 
 const std::string TEST_PATH = "test_config.cfg";
 
@@ -33,7 +34,7 @@ protected:
         json data;
         try
         {
-            input >> data;
+            data = json::parse(input);
         }
         catch (std::exception &e)
         {
@@ -123,6 +124,21 @@ public:
     static json getVotes()
     {
         return getData("votes_data.json");
+    }
+};
+
+class FilmsTableTest : public BaseTestConnection
+{
+public:
+    static FilmsTable getFilmsTable()
+    {
+        FilmsTable table(client);
+        return table;
+    }
+
+    static json getFilms()
+    {
+        return getData("films_data.json");
     }
 };
 
@@ -368,6 +384,7 @@ TEST_F(RoomsTableTest, getRoomInfoExist)
     EXPECT_EQ(response["room"]["id"], id);
     EXPECT_EQ(response["room"]["name"], rooms[id]["name"]);
     EXPECT_EQ(response["room"]["creator"], rooms[id]["creator"]);
+    EXPECT_EQ(response["room"]["current_film"], rooms[id]["current_film"]);
 }
 
 TEST_F(RoomsTableTest, getRoomInfoNotExist)
@@ -390,6 +407,51 @@ TEST_F(RoomsTableTest, getAllRooms)
 
     EXPECT_EQ(response["status"], "ok");
     EXPECT_EQ(response["rooms"].size(), rooms.size());
+}
+
+TEST_F(RoomsTableTest, getCurrentFilmExist)
+{
+    RoomsTable table = RoomsTableTest::getRoomsTable();
+    size_t id = 0;
+
+    json response = table.getCurrentFilm(id);
+
+    json rooms = RoomsTableTest::getRooms();
+
+    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response["room"]["current_film"], rooms[id]["current_film"]);
+}
+
+TEST_F(RoomsTableTest, getCurrentFilmNotExist)
+{
+    RoomsTable table = RoomsTableTest::getRoomsTable();
+    size_t id = 10;
+
+    json response = table.getCurrentFilm(id);
+
+    EXPECT_EQ(response["status"], "error");
+}
+
+TEST_F(RoomsTableTest, checkCurrentFilmExist)
+{
+    RoomsTable table = RoomsTableTest::getRoomsTable();
+    size_t id = 0;
+
+    json response = table.checkCurrentFilm(id);
+
+    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response, true);
+}
+
+TEST_F(RoomsTableTest, checkCurrentFilmNotExist)
+{
+    RoomsTable table = RoomsTableTest::getRoomsTable();
+    size_t id = 10;
+
+    json response = table.checkCurrentFilm(id);
+
+    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response, false);
 }
 
 TEST_F(ViewersTableTest, getUserRoomsExist)
@@ -1038,6 +1100,93 @@ TEST_F(VotesTableTest, updateVoteNotExist)
 
     json request = {{"id", id}, {"id_bid", 1}, {"id_user", 1}, {"vote", false}, {"points", 100}};
     json response = table.updateVote(request);
+
+    EXPECT_EQ(response["status"], "error");
+}
+
+TEST_F(FilmsTableTest, addFilm)
+{
+    FilmsTable table = FilmsTableTest::getFilmsTable();
+    json films = FilmsTableTest::getFilms();
+    size_t id = films.size();
+
+    json request = {{"name", "test"}, {"link", "https://www.test.ru/test"}, {"data", {{"description", "test"}}}};
+    json response = table.addFilm(request);
+
+    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response["film"]["id"], id);
+    EXPECT_EQ(response["film"]["name"], request["name"]);
+    EXPECT_EQ(response["film"]["link"], request["link"]);
+    EXPECT_EQ(response["film"]["data"]["description"], request["data"]["description"]);
+}
+
+TEST_F(FilmsTableTest, deleteFilmExist)
+{
+    FilmsTable table = FilmsTableTest::getFilmsTable();
+
+    json response = table.deleteFilm(0);
+
+    EXPECT_EQ(response["status"], "ok");
+}
+
+TEST_F(FilmsTableTest, deleteFilmNotExist)
+{
+    FilmsTable table = FilmsTableTest::getFilmsTable();
+
+    json response = table.deleteFilm(10);
+
+    EXPECT_EQ(response["status"], "error");
+}
+
+TEST_F(FilmsTableTest, updateFilmExist)
+{
+    FilmsTable table = FilmsTableTest::getFilmsTable();
+    json films = FilmsTableTest::getFilms();
+    size_t id = 0;
+
+    json request = {{"id", id}, {"name", "test"}, {"link", "https://www.test.ru/test"}, {"data", {{"description", "test"}}}};
+    json response = table.updateFilm(request);
+
+    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response["film"]["id"], id);
+    EXPECT_EQ(response["film"]["name"], request["name"]);
+    EXPECT_EQ(response["film"]["link"], request["link"]);
+    EXPECT_EQ(response["film"]["data"]["description"], request["data"]["description"]);
+}
+
+TEST_F(FilmsTableTest, updateFilmNotExist)
+{
+    FilmsTable table = FilmsTableTest::getFilmsTable();
+    size_t id = 10;
+
+    json request = {{"id", id}, {"name", "test"}, {"link", "https://www.test.ru/test"}, {"data", {{"description", "test"}}}};
+    json response = table.updateFilm(request);
+
+    EXPECT_EQ(response["status"], "error");
+}
+
+TEST_F(FilmsTableTest, getFilmInfoExist)
+{
+    FilmsTable table = FilmsTableTest::getFilmsTable();
+    size_t id = 0;
+
+    json response = table.getFilmInfo(id);
+
+    json films = FilmsTableTest::getFilms();
+
+    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response["film"]["id"], id);
+    EXPECT_EQ(response["film"]["name"], films[id]["name"]);
+    EXPECT_EQ(response["film"]["creator"], films[id]["creator"]);
+    EXPECT_EQ(response["film"]["current_film"], films[id]["current_film"]);
+}
+
+TEST_F(FilmsTableTest, getFilmInfoNotExist)
+{
+    FilmsTable table = FilmsTableTest::getFilmsTable();
+    size_t id = 10;
+
+    json response = table.getFilmInfo(id);
 
     EXPECT_EQ(response["status"], "error");
 }
