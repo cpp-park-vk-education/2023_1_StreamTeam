@@ -43,7 +43,7 @@ CREATE TABLE messages (
     id_room integer NOT NULL,
     id_user integer NOT NULL,
     message text NOT NULL,
-    created_at timestamp NOT NULL DEFAULT NOW(),
+    created_at timestamp(0) NOT NULL DEFAULT NOW(),
     FOREIGN KEY (id_room) REFERENCES rooms (id),
     FOREIGN KEY (id_user) REFERENCES users (id)
 );
@@ -67,7 +67,7 @@ CREATE TABLE bids (
     text text NOT NULL,
     min_points integer NOT NULL,
     lifetime time NOT NULL,
-    begin_time timestamp NOT NULL DEFAULT NOW(),
+    begin_time timestamp(0) NOT NULL DEFAULT NOW(),
     FOREIGN KEY (id_creator) REFERENCES users (id),
     FOREIGN KEY (id_room) REFERENCES rooms (id)
 );
