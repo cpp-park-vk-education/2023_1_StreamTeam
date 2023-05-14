@@ -8,6 +8,7 @@ COMMENT ON DATABASE "test-db" IS 'Test db for vk project';
 DROP TABLE IF EXISTS votes;
 DROP TABLE IF EXISTS bids;
 DROP TABLE IF EXISTS viewers;
+DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS rooms;
 DROP TABLE IF EXISTS films;
 DROP TABLE IF EXISTS users;
@@ -16,8 +17,8 @@ DROP TYPE IF EXISTS viewer_role;
 
 CREATE TABLE users (
     id serial PRIMARY KEY NOT NULL,
-    username varchar(32) NOT NULL,
-    email varchar(64) NOT NULL,
+    username varchar(32) NOT NULL UNIQUE,
+    email varchar(64) NOT NULL UNIQUE,
     password varchar(64) NOT NULL
 );
 
@@ -35,6 +36,16 @@ CREATE TABLE rooms (
     current_film integer,
     FOREIGN KEY (creator) REFERENCES users (id),
     FOREIGN KEY (current_film) REFERENCES films (id)
+);
+
+CREATE TABLE messages (
+    id serial PRIMARY KEY NOT NULL,
+    id_room integer NOT NULL,
+    id_user integer NOT NULL,
+    message text NOT NULL,
+    created_at timestamp NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (id_room) REFERENCES rooms (id),
+    FOREIGN KEY (id_user) REFERENCES users (id)
 );
 
 CREATE TYPE viewer_role AS ENUM ('admin', 'moderator', 'guest', 'left', 'banned');
@@ -55,8 +66,8 @@ CREATE TABLE bids (
     id_room integer NOT NULL,
     text text NOT NULL,
     min_points integer NOT NULL,
-    begin_time timestamp NOT NULL,       -- в insert now() ?
     lifetime time NOT NULL,
+    begin_time timestamp NOT NULL DEFAULT NOW(),
     FOREIGN KEY (id_creator) REFERENCES users (id),
     FOREIGN KEY (id_room) REFERENCES rooms (id)
 );

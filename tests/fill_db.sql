@@ -11,6 +11,9 @@ CREATE UNLOGGED TABLE IF NOT EXISTS rooms_import(data jsonb);
 CREATE UNLOGGED TABLE IF NOT EXISTS films_import(data jsonb);
 \copy films_import FROM 'films_import.json'
 
+CREATE UNLOGGED TABLE IF NOT EXISTS messages_import(data jsonb);
+\copy messages_import FROM 'messages_import.json'
+
 CREATE UNLOGGED TABLE IF NOT EXISTS viewers_import(data jsonb);
 \copy viewers_import FROM 'viewers_import.json'
 
@@ -32,6 +35,10 @@ INSERT INTO rooms (name, creator, current_film)
 SELECT data->>'name', (data->>'creator')::int, (data->>'current_film')::int
 FROM rooms_import;
 
+INSERT INTO messages (id_room, id_user, message)
+SELECT (data->>'id_room')::int, (data->>'id_user')::int, data->>'message'
+FROM messages_import;
+
 INSERT INTO viewers (id_user, id_room, points, "role")
 SELECT (data->>'id_user')::int, (data->>'id_room')::int, (data->>'points')::int, (data->>'role')::viewer_role
 FROM viewers_import;
@@ -47,6 +54,7 @@ FROM votes_import;
 SELECT * FROM users;
 SELECT * FROM films;
 SELECT * FROM rooms;
+SELECT * FROM messages;
 SELECT * FROM viewers;
 SELECT * FROM bids;
 SELECT * FROM votes;
@@ -54,6 +62,7 @@ SELECT * FROM votes;
 DROP TABLE users_import;
 DROP TABLE films_import;
 DROP TABLE rooms_import;
+DROP TABLE messages_import;
 DROP TABLE viewers_import;
 DROP TABLE bids_import;
 DROP TABLE votes_import;
