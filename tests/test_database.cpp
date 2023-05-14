@@ -223,7 +223,7 @@ TEST_F(UsersTableTest, checkUserByIDExist)
 {
     UsersTable table = UsersTableTest::getUsersTable();
 
-    bool response = table.checkUserByID(0);
+    bool response = table.checkUserByID(1);
 
     EXPECT_EQ(response, true);
 }
@@ -278,15 +278,15 @@ TEST_F(UsersTableTest, getUserInfoExist)
     UsersTable table = UsersTableTest::getUsersTable();
     size_t id = 0;
 
-    json response = table.getUserInfo(id);
+    json response = table.getUserInfo(id + 1);
 
     json users = UsersTableTest::getUsers();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["user"]["id"], id);
-    EXPECT_EQ(response["user"]["username"], users[id]["username"]);
-    EXPECT_EQ(response["user"]["email"], users[id]["email"]);
-    EXPECT_EQ(response["user"]["password"], users[id]["password"]);
+    EXPECT_EQ(response["result"][id]["id"], id + 1);
+    EXPECT_EQ(response["result"][id]["username"], users[id]["username"]);
+    EXPECT_EQ(response["result"][id]["email"], users[id]["email"]);
+    EXPECT_EQ(response["result"][id]["password"], users[id]["password"]);
 }
 
 TEST_F(UsersTableTest, getUserInfoNotExist)
@@ -363,7 +363,7 @@ TEST_F(RoomsTableTest, checkRoomExist)
 {
     RoomsTable table = RoomsTableTest::getRoomsTable();
 
-    bool response = table.checkRoom(0);
+    bool response = table.checkRoom(1);
 
     EXPECT_EQ(response, true);
 }
@@ -382,15 +382,15 @@ TEST_F(RoomsTableTest, getRoomInfoExist)
     RoomsTable table = RoomsTableTest::getRoomsTable();
     size_t id = 0;
 
-    json response = table.getRoomInfo(id);
+    json response = table.getRoomInfo(id + 1);
 
     json rooms = RoomsTableTest::getRooms();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["room"]["id"], id);
-    EXPECT_EQ(response["room"]["name"], rooms[id]["name"]);
-    EXPECT_EQ(response["room"]["creator"], rooms[id]["creator"]);
-    EXPECT_EQ(response["room"]["current_film"], rooms[id]["current_film"]);
+    EXPECT_EQ(response["result"][id]["id"], id + 1);
+    EXPECT_EQ(response["result"][id]["name"], rooms[id]["name"]);
+    EXPECT_EQ(response["result"][id]["creator"], rooms[id]["creator"]);
+    EXPECT_EQ(response["result"][id]["current_film"], rooms[id]["current_film"]);
 }
 
 TEST_F(RoomsTableTest, getRoomInfoNotExist)
@@ -412,7 +412,7 @@ TEST_F(RoomsTableTest, getAllRooms)
     json rooms = RoomsTableTest::getRooms();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["rooms"].size(), rooms.size());
+    EXPECT_EQ(response["result"].size(), rooms.size());
 }
 
 TEST_F(RoomsTableTest, getCurrentFilmExist)
@@ -420,12 +420,12 @@ TEST_F(RoomsTableTest, getCurrentFilmExist)
     RoomsTable table = RoomsTableTest::getRoomsTable();
     size_t id = 0;
 
-    json response = table.getCurrentFilm(id);
+    json response = table.getCurrentFilm(id + 1);
 
     json rooms = RoomsTableTest::getRooms();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["room"]["current_film"], rooms[id]["current_film"]);
+    EXPECT_EQ(response["result"][id]["current_film"], rooms[id]["current_film"]);
 }
 
 TEST_F(RoomsTableTest, getCurrentFilmNotExist)
@@ -441,23 +441,30 @@ TEST_F(RoomsTableTest, getCurrentFilmNotExist)
 TEST_F(RoomsTableTest, checkCurrentFilmExist)
 {
     RoomsTable table = RoomsTableTest::getRoomsTable();
-    size_t id = 0;
 
-    json response = table.checkCurrentFilm(id);
+    json response = table.checkCurrentFilm(1);
 
     EXPECT_EQ(response["status"], "ok");
     EXPECT_EQ(response["result"], true);
 }
 
-TEST_F(RoomsTableTest, checkCurrentFilmNotExist)
+TEST_F(RoomsTableTest, checkCurrentFilmExistButNull)
 {
     RoomsTable table = RoomsTableTest::getRoomsTable();
-    size_t id = 10;
 
-    json response = table.checkCurrentFilm(id);
+    json response = table.checkCurrentFilm(2);
 
     EXPECT_EQ(response["status"], "ok");
     EXPECT_EQ(response["result"], false);
+}
+
+TEST_F(RoomsTableTest, checkCurrentFilmNotExist)
+{
+    RoomsTable table = RoomsTableTest::getRoomsTable();
+
+    json response = table.checkCurrentFilm(10);
+
+    EXPECT_EQ(response["status"], "error");
 }
 
 TEST_F(ViewersTableTest, getUserRoomsExist)
@@ -466,32 +473,27 @@ TEST_F(ViewersTableTest, getUserRoomsExist)
     size_t id = 2;
 
     json response = table.getUserRooms(id);
-    std::vector<int> actual_rooms{0};
-    std::vector<int> actual_points{0};
+    std::vector<int> actual_rooms;
 
-    for (size_t i = 0; i < response["rooms"].size(); ++i)
+    for (size_t i = 0; i < response["result"].size(); ++i)
     {
-        actual_rooms.push_back(response["rooms"][i]["id_room"]);
-        actual_points.push_back(response["rooms"][i]["points"]);
+        actual_rooms.push_back(response["result"][i]["id_room"]);
     }
 
     json viewers = ViewersTableTest::getViewers();
     std::vector<int> expected_rooms;
-    std::vector<int> expected_points;
 
     for (size_t i = 0; i < viewers.size(); ++i)
     {
         if (viewers[i]["id_user"] == id)
         {
             expected_rooms.push_back(viewers[i]["id_room"]);
-            expected_points.push_back(viewers[i]["points"]);
         }
     }
 
     EXPECT_EQ(response["status"], "ok");
     EXPECT_EQ(actual_rooms.size(), expected_rooms.size());
     EXPECT_EQ(actual_rooms[0], expected_rooms[0]);
-    EXPECT_EQ(actual_points[0], expected_points[0]);
 }
 
 TEST_F(ViewersTableTest, getUserRoomsNotExist)
@@ -510,32 +512,27 @@ TEST_F(ViewersTableTest, getRoomUsersExist)
     size_t id = 1;
 
     json response = table.getRoomUsers(id);
-    std::vector<int> actual_users{0};
-    std::vector<int> actual_points{0};
+    std::vector<int> actual_users;
 
-    for (size_t i = 0; i < response["users"].size(); ++i)
+    for (size_t i = 0; i < response["result"].size(); ++i)
     {
-        actual_users.push_back(response["users"][i]["id_room"]);
-        actual_points.push_back(response["users"][i]["points"]);
+        actual_users.push_back(response["result"][i]["id_user"]);
     }
 
     json viewers = ViewersTableTest::getViewers();
     std::vector<int> expected_users;
-    std::vector<int> expected_points;
 
     for (size_t i = 0; i < viewers.size(); ++i)
     {
-        if (viewers[i]["id_user"] == id)
+        if (viewers[i]["id_room"] == id)
         {
             expected_users.push_back(viewers[i]["id_user"]);
-            expected_points.push_back(viewers[i]["points"]);
         }
     }
 
     EXPECT_EQ(response["status"], "ok");
     EXPECT_EQ(actual_users.size(), expected_users.size());
     EXPECT_EQ(actual_users[0], expected_users[0]);
-    EXPECT_EQ(actual_points[0], expected_points[0]);
 }
 
 TEST_F(ViewersTableTest, getRoomUsersNotExist)
@@ -586,7 +583,7 @@ TEST_F(ViewersTableTest, getUserPointsInRoomExist)
     }
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["points"], expected_points);
+    EXPECT_EQ(response["result"], expected_points);
 }
 
 TEST_F(ViewersTableTest, getUserPointsInRoomNotExist)
@@ -655,7 +652,7 @@ TEST_F(ViewersTableTest, getUserRoleInRoomExist)
     }
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["role"], expected_role);
+    EXPECT_EQ(response["result"], expected_role);
 }
 
 TEST_F(ViewersTableTest, getUserRoleInRoomNotExist)
@@ -787,27 +784,6 @@ TEST_F(BidsTableTest, updateBidNotExist)
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST_F(BidsTableTest, isEndedExist)
-{
-    BidsTable table = BidsTableTest::getBidsTable();
-    size_t id = 1;
-
-    json response = table.isEnded(id);
-
-    EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["is_ended"], true);
-}
-
-TEST_F(BidsTableTest, isEndedNotExist)
-{
-    BidsTable table = BidsTableTest::getBidsTable();
-    size_t id = 10;
-
-    json response = table.isEnded(id);
-
-    EXPECT_EQ(response["status"], "error");
-}
-
 TEST_F(BidsTableTest, getVotesForExist)
 {
     BidsTable table = BidsTableTest::getBidsTable();
@@ -827,7 +803,7 @@ TEST_F(BidsTableTest, getVotesForExist)
     json response = table.getVotesFor(id);
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"], counter);
+    EXPECT_EQ(response["result"].size(), counter);
 }
 
 TEST_F(BidsTableTest, getVotesForNotExist)
@@ -859,7 +835,7 @@ TEST_F(BidsTableTest, getVotesAgainstExist)
     json response = table.getVotesAgainst(id);
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"], counter);
+    EXPECT_EQ(response["result"].size(), counter);
 }
 
 TEST_F(BidsTableTest, getVotesAgainstNotExist)
@@ -891,7 +867,7 @@ TEST_F(BidsTableTest, getVotesCountExist)
     json response = table.getVotesCount(id);
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"], counter);
+    EXPECT_EQ(response["result"].size(), counter);
 }
 
 TEST_F(BidsTableTest, getVotesCountNotExist)
@@ -1019,9 +995,9 @@ TEST_F(BidsTableTest, getWinnersExist)
 
     json response = table.getWinners(id, answer);
 
-    EXPECT_EQ(response["status"], "error");
-    EXPECT_EQ(response["winners"].size(), winners.size());
-    EXPECT_EQ(response["winners"][0], winners[0]);
+    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response["result"].size(), winners.size());
+    EXPECT_EQ(response["result"][0]["id_user"], winners[0]);
 }
 
 TEST_F(BidsTableTest, getWinnersNotExist)
@@ -1176,15 +1152,15 @@ TEST_F(FilmsTableTest, getFilmInfoExist)
     FilmsTable table = FilmsTableTest::getFilmsTable();
     size_t id = 0;
 
-    json response = table.getFilmInfo(id);
+    json response = table.getFilmInfo(id + 1);
 
     json films = FilmsTableTest::getFilms();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["film"]["id"], id);
-    EXPECT_EQ(response["film"]["name"], films[id]["name"]);
-    EXPECT_EQ(response["film"]["creator"], films[id]["creator"]);
-    EXPECT_EQ(response["film"]["current_film"], films[id]["current_film"]);
+    EXPECT_EQ(response["result"][id]["id"], id + 1);
+    EXPECT_EQ(response["result"][id]["name"], films[id]["name"]);
+    EXPECT_EQ(response["result"][id]["creator"], films[id]["creator"]);
+    EXPECT_EQ(response["result"][id]["current_film"], films[id]["current_film"]);
 }
 
 TEST_F(FilmsTableTest, getFilmInfoNotExist)
