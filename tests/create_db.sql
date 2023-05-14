@@ -15,11 +15,15 @@ DROP TABLE IF EXISTS users;
 
 DROP TYPE IF EXISTS viewer_role;
 
+DROP INDEX IF EXISTS votes_user_bid_index;
+DROP INDEX IF EXISTS films_name_index;
+DROP INDEX IF EXISTS bids_room_index;
+
 CREATE TABLE users (
     id serial PRIMARY KEY NOT NULL,
     username varchar(32) NOT NULL UNIQUE,
     email varchar(64) NOT NULL UNIQUE,
-    password varchar(64) NOT NULL
+    password varchar(64) NOT NULL   -- тип изменится на BYTEA при хэшировании
 );
 
 CREATE TABLE films (
@@ -54,8 +58,9 @@ CREATE TABLE viewers (
     id serial PRIMARY KEY NOT NULL,
     id_user integer NOT NULL,
     id_room integer NOT NULL,
-    points integer,
+    points integer NOT NULL,
     role viewer_role NOT NULL,
+    UNIQUE (id_user, id_room),
     FOREIGN KEY (id_user) REFERENCES users (id),
     FOREIGN KEY (id_room) REFERENCES rooms (id)
 );
@@ -78,8 +83,13 @@ CREATE TABLE votes (
     id_user integer NOT NULL,
     vote boolean NOT NULL,
     points integer NOT NULL,
+    UNIQUE (id_bid, id_user),
     FOREIGN KEY (id_bid) REFERENCES bids (id),
     FOREIGN KEY (id_user) REFERENCES users (id)
 );
+
+CREATE INDEX bids_room_index ON bids (id_room);
+CREATE INDEX votes_user_bid_index ON votes (id_user, id_bid);
+CREATE INDEX films_name_index ON films USING gin(to_tsvector('russian', name));
 
 \c postgres
