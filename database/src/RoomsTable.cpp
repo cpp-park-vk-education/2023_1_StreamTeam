@@ -6,8 +6,19 @@ RoomsTable::RoomsTable(std::shared_ptr<IDatabase> _client) { client = _client; }
 
 json RoomsTable::addRoom(const json &info) const
 {
-    json request = info;
+    json request = {{"INTO", roomsTableName},
+                    {"columns", roomsTableColumns},
+                    {"VALUES", {info["name"], info["creator"], info["current_film"]}}};
+
+    std::cout << request << std::endl;
+
     json response = client->insert(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS)
+    {
+        return getRoomInfo(response["result"]);
+    }
+
     return response;
 }
 

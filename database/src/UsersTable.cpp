@@ -4,8 +4,19 @@ UsersTable::UsersTable(std::shared_ptr<IDatabase> _client) { client = _client; }
 
 json UsersTable::addUser(const json &info) const
 {
-    json request = info;
+    json request = {{"INTO", usersTableName},
+                    {"columns", usersTableColumns},
+                    {"VALUES", {info["username"], info["email"], info["password"]}}};
+
+    std::cout << request << std::endl;
+
     json response = client->insert(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS)
+    {
+        return getUserInfo(response["result"]);
+    }
+
     return response;
 }
 

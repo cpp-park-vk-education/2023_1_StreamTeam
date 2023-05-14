@@ -4,8 +4,22 @@ MessagesTable::MessagesTable(std::shared_ptr<IDatabase> _client) { client = _cli
 
 json MessagesTable::addMessage(const json &info) const
 {
-    json request = info;
+    std::vector<std::string> columnsWithoutDefault(messagesTableColumns);
+    columnsWithoutDefault.erase(columnsWithoutDefault.begin() + 3);
+
+    json request = {{"INTO", messagesTableName},
+                    {"columns", columnsWithoutDefault},
+                    {"VALUES", {info["id_room"], info["id_user"], info["message"]}}};
+
+    std::cout << request << std::endl;
+
     json response = client->insert(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS)
+    {
+        return getMessageInfo(response["result"]);
+    }
+
     return response;
 }
 

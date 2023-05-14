@@ -4,8 +4,33 @@ BidsTable::BidsTable(std::shared_ptr<IDatabase> _client) { client = _client; }
 
 json BidsTable::addBid(const json &info) const
 {
-    json request = info;
+    std::vector<std::string> columns(bidsTableColumns);
+    json values = {info["id_creator"], info["id_room"], info["text"], info["min_points"], info["lifetime"]};
+
+    std::cout << values << std::endl;
+
+    if (info.contains("begin_time"))
+    {
+        values.push_back(info["begin_time"]);
+    }
+    else
+    {
+        columns.erase(columns.begin() + 5);
+    }
+
+    json request = {{"INTO", bidsTableName},
+                    {"columns", columns},
+                    {"VALUES", values}};
+
+    std::cout << request << std::endl;
+
     json response = client->insert(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS)
+    {
+        return getBidInfo(response["result"]);
+    }
+
     return response;
 }
 

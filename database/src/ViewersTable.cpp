@@ -26,9 +26,29 @@ json ViewersTable::getRoomUsers(const size_t id_room) const
 
 json ViewersTable::addUserToRoom(const size_t id_user, const size_t id_room) const
 {
-    json request = {{{"id_user", id_user},
-                     {"id_room", id_room}}};
+    json request = {{"INTO", viewersTableName},
+                    {"columns", viewersTableColumns},
+                    {"VALUES", {id_user, id_room, 0, GUEST_ROLE}}};
+
+    std::cout << request << std::endl;
+
     json response = client->insert(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS)
+    {
+        return getViewersInfo(response["result"]);
+    }
+
+    return response;
+}
+
+json ViewersTable::getViewersInfo(const size_t id) const
+{
+    json request = {{"SELECT", {"*"}},
+                    {"FROM", {viewersTableName}},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
+    json response = client->select(request);
     return response;
 }
 
