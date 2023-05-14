@@ -151,17 +151,18 @@ public:
 TEST_F(UsersTableTest, addUserNotExist)
 {
     UsersTable table = UsersTableTest::getUsersTable();
-    json users = UsersTableTest::getUsers();
-    size_t id = users.size();
 
     json request = {{"username", "test1"}, {"email", "test1@mail.ru"}, {"password", "test1"}};
     json response = table.addUser(request);
 
+    json users = UsersTableTest::getUsers();
+    size_t id = users.size();
+
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["user"]["id"], id);
-    EXPECT_EQ(response["user"]["username"], request["username"]);
-    EXPECT_EQ(response["user"]["email"], request["email"]);
-    EXPECT_EQ(response["user"]["password"], request["password"]);
+    EXPECT_EQ(response["result"][0]["id"], id + 1);
+    EXPECT_EQ(response["result"][0]["username"], request["username"]);
+    EXPECT_EQ(response["result"][0]["email"], request["email"]);
+    EXPECT_EQ(response["result"][0]["password"], request["password"]);
 }
 
 TEST_F(UsersTableTest, addUserExist)
@@ -302,17 +303,18 @@ TEST_F(UsersTableTest, getUserInfoNotExist)
 TEST_F(RoomsTableTest, addRoom)
 {
     RoomsTable table = RoomsTableTest::getRoomsTable();
-    json rooms = RoomsTableTest::getRooms();
 
-    json request = {{"name", "test"}, {"creator", 0}};
+    json request = {{"name", "test"}, {"creator", 4}, {"current_film", nullptr}};
     json response = table.addRoom(request);
 
+    json rooms = RoomsTableTest::getRooms();
     size_t id = rooms.size();
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["room"]["id"], id);
-    EXPECT_EQ(response["room"]["name"], request["name"]);
-    EXPECT_EQ(response["room"]["creator"], request["creator"]);
+    EXPECT_EQ(response["result"][0]["id"], id + 1);
+    EXPECT_EQ(response["result"][0]["name"], request["name"]);
+    EXPECT_EQ(response["result"][0]["creator"], request["creator"]);
+    EXPECT_EQ(response["result"][0]["current_film"], request["current_film"]);
 }
 
 TEST_F(RoomsTableTest, deleteRoomExist)
@@ -548,11 +550,20 @@ TEST_F(ViewersTableTest, getRoomUsersNotExist)
 TEST_F(ViewersTableTest, addUserToRoomExist)
 {
     ViewersTable table = ViewersTableTest::getViewersTable();
-    size_t id = 1;
+    size_t id_user = 1;
+    size_t id_room = 2;
 
-    json response = table.addUserToRoom(id, id);
+    json response = table.addUserToRoom(id_user, id_room);
+
+    json viewers = ViewersTableTest::getViewers();
+    size_t id = viewers.size();
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response["result"][0]["id"], id + 1);
+    EXPECT_EQ(response["result"][0]["id_user"], id_user);
+    EXPECT_EQ(response["result"][0]["id_room"], id_room);
+    EXPECT_EQ(response["result"][0]["points"], 0);
+    EXPECT_EQ(response["result"][0]["role"], GUEST_ROLE);
 }
 
 TEST_F(ViewersTableTest, addUserToRoomNotExist)
@@ -718,20 +729,21 @@ TEST_F(ViewersTableTest, setUserRoleInRoomNotExist)
 TEST_F(BidsTableTest, addBid)
 {
     BidsTable table = BidsTableTest::getBidsTable();
-    json bids = BidsTableTest::getBids();
-    size_t id = bids.size();
 
     json request = {{"id_creator", 2}, {"id_room", 1}, {"text", "test"}, {"min_points", 10}, {"begin_time", "2023-03-12 10:10:10"}, {"lifetime", "04:30:00"}};
     json response = table.addBid(request);
 
+    json bids = BidsTableTest::getBids();
+    size_t id = bids.size();
+
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["bid"]["id"], id);
-    EXPECT_EQ(response["bid"]["id_creator"], request["id_creator"]);
-    EXPECT_EQ(response["bid"]["id_room"], request["id_room"]);
-    EXPECT_EQ(response["bid"]["text"], request["text"]);
-    EXPECT_EQ(response["bid"]["min_points"], request["min_points"]);
-    EXPECT_EQ(response["bid"]["begin_time"], request["begin_time"]);
-    EXPECT_EQ(response["bid"]["lifetime"], request["lifetime"]);
+    EXPECT_EQ(response["result"][0]["id"], id + 1);
+    EXPECT_EQ(response["result"][0]["id_creator"], request["id_creator"]);
+    EXPECT_EQ(response["result"][0]["id_room"], request["id_room"]);
+    EXPECT_EQ(response["result"][0]["text"], request["text"]);
+    EXPECT_EQ(response["result"][0]["min_points"], request["min_points"]);
+    EXPECT_EQ(response["result"][0]["begin_time"], request["begin_time"]);
+    EXPECT_EQ(response["result"][0]["lifetime"], request["lifetime"]);
 }
 
 TEST_F(BidsTableTest, deleteBidExist)
@@ -1013,26 +1025,26 @@ TEST_F(BidsTableTest, getWinnersNotExist)
 TEST_F(VotesTableTest, addVoteNotExist)
 {
     VotesTable table = VotesTableTest::getVotesTable();
-    json votes = VotesTableTest::getVotes();
-    size_t id = votes.size();
 
     json request = {{"id_bid", 2}, {"id_user", 2}, {"vote", false}, {"points", 100}};
     json response = table.addVote(request);
 
+    json votes = VotesTableTest::getVotes();
+    size_t id = votes.size();
+
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["vote"]["id"], id);
-    EXPECT_EQ(response["vote"]["id_bid"], request["id_bid"]);
-    EXPECT_EQ(response["vote"]["id_user"], request["id_user"]);
-    EXPECT_EQ(response["vote"]["vote"], request["vote"]);
-    EXPECT_EQ(response["vote"]["points"], request["points"]);
+    EXPECT_EQ(response["result"][0]["id"], id + 1);
+    EXPECT_EQ(response["result"][0]["id_bid"], request["id_bid"]);
+    EXPECT_EQ(response["result"][0]["id_user"], request["id_user"]);
+    EXPECT_EQ(response["result"][0]["vote"], request["vote"]);
+    EXPECT_EQ(response["result"][0]["points"], request["points"]);
 }
 
 TEST_F(VotesTableTest, addVoteExist)
 {
     VotesTable table = VotesTableTest::getVotesTable();
-    size_t id = 10;
 
-    json request = {{"id_bid", id}, {"id_user", id}, {"vote", false}, {"points", 100}};
+    json request = {{"id_bid", 1}, {"id_user", 1}, {"vote", false}, {"points", 100}};
     json response = table.addVote(request);
 
     EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
@@ -1089,17 +1101,18 @@ TEST_F(VotesTableTest, updateVoteNotExist)
 TEST_F(FilmsTableTest, addFilm)
 {
     FilmsTable table = FilmsTableTest::getFilmsTable();
-    json films = FilmsTableTest::getFilms();
-    size_t id = films.size();
 
     json request = {{"name", "test"}, {"link", "https://www.test.ru/test"}, {"data", {{"description", "test"}}}};
     json response = table.addFilm(request);
 
+    json films = FilmsTableTest::getFilms();
+    size_t id = films.size();
+
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["film"]["id"], id);
-    EXPECT_EQ(response["film"]["name"], request["name"]);
-    EXPECT_EQ(response["film"]["link"], request["link"]);
-    EXPECT_EQ(response["film"]["data"]["description"], request["data"]["description"]);
+    EXPECT_EQ(response["result"][0]["id"], id + 1);
+    EXPECT_EQ(response["result"][0]["name"], request["name"]);
+    EXPECT_EQ(response["result"][0]["link"], request["link"]);
+    EXPECT_EQ(response["result"][0]["data"]["description"], request["data"]["description"]);
 }
 
 TEST_F(FilmsTableTest, deleteFilmExist)
