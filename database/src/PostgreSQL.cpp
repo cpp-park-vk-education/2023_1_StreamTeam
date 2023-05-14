@@ -47,6 +47,90 @@ json PostgreSQL::dropTable(std::string)
 json PostgreSQL::select(json request)
 {
     json response = {{STATUS_FIELD, SUCCESS_STATUS}};
+
+    std::string query = "SELECT ";
+
+    for (size_t i = 0; i < request["SELECT"].size(); ++i)
+    {
+        query += request["SELECT"][i].get<std::string>();
+
+        if (i != request["SELECT"].size() - 1)
+        {
+            query += ", ";
+        }
+    }
+
+    query += " FROM ";
+
+    for (size_t i = 0; i < request["FROM"].size(); ++i)
+    {
+        query += request["FROM"][i].get<std::string>();
+
+        if (i != request["FROM"].size() - 1)
+        {
+            query += ", ";
+        }
+    }
+
+    if (request["WHERE"].size() > 0)
+    {
+        query += " WHERE ";
+    }
+
+    for (size_t i = 0; i < request["WHERE"].size(); ++i)
+    {
+        query += request["WHERE"][i].get<std::string>();
+
+        if (i != request["WHERE"].size() - 1)
+        {
+            query += " AND ";
+        }
+    }
+
+    try
+    {
+        pqxx::work worker(*connection);
+        pqxx::result result = worker.exec(query);
+        worker.commit();
+        response["result"] = {};
+
+        for (auto row = result.begin(); row != result.end(); ++row)
+        {
+            json item;
+
+            for (auto field = row->begin(); field != row->end(); ++field)
+            {
+                switch (field->type())
+                {
+                case pqxx::oid{INT}:
+                    item[field.name()] = field.as<int>();
+                    break;
+                case pqxx::oid{BOOLEAN}:
+                    item[field.name()] = field.as<bool>();
+                    break;
+                case pqxx::oid{JSONB}:
+                    item[field.name()] = json::parse(field.as<std::string>().c_str());
+                    break;
+                default:
+                    item[field.name()] = field.as<std::string>().c_str();
+                    break;
+                }
+            }
+            response["result"].push_back(item);
+        }
+
+        if (response["result"].empty())
+        {
+            response[STATUS_FIELD] = ERROR_STATUS;
+            response["msg"] = "No records with such search terms.";
+        }
+    }
+    catch (std::exception const &e)
+    {
+        response[STATUS_FIELD] = ERROR_STATUS;
+        response["msg"] = "PostgreSQL::select: " + std::string(e.what());
+    }
+
     return response;
 }
 
