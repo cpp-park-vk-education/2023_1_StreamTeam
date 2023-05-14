@@ -50,3 +50,24 @@ json UsersTable::getUserInfo(const size_t id) const
     json response = client->select(request);
     return response;
 }
+
+json UsersTable::getUserIdByEmail(const std::string &email) const
+{
+    json request = {{"email", email}};
+    json response = client->select(request);
+    return response;
+}
+
+json UsersTable::getUserIdByUsername(const std::string &username) const
+{
+    json request = {{"username", username}};
+    json response = client->select(request);
+    return response;
+}
+
+json UsersTable::getUserPassword(const size_t id) const
+{
+    json request = {{"id", id}};
+    json response = client->select(request);
+    return response;
+}

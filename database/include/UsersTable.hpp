@@ -15,6 +15,9 @@ public:
     bool checkUserByEmail(const std::string &email) const;
     bool checkUserByUsername(const std::string &username) const;
     json getUserInfo(const size_t id) const;
+    json getUserIdByEmail(const std::string &email) const;
+    json getUserIdByUsername(const std::string &username) const;
+    json getUserPassword(const size_t id) const;
 
 private:
     std::shared_ptr<IDatabase> client;
