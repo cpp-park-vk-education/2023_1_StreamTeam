@@ -100,8 +100,16 @@ json PostgreSQL::select(json request)
 
             for (auto field = row->begin(); field != row->end(); ++field)
             {
+                if (field.is_null())
+                {
+                    item[field.name()] = nullptr;
+                    continue;
+                }
+
                 switch (field->type())
                 {
+                case pqxx::oid{BIGINT}:
+                case pqxx::oid{SMALLINT}:
                 case pqxx::oid{INT}:
                     item[field.name()] = field.as<int>();
                     break;
@@ -119,7 +127,7 @@ json PostgreSQL::select(json request)
             response["result"].push_back(item);
         }
 
-        if (response["result"].empty())
+        if (response["result"].empty() || (response["result"][0].contains("sum") && response["result"][0]["sum"].empty()))
         {
             response[STATUS_FIELD] = ERROR_STATUS;
             response["msg"] = "No records with such search terms.";
