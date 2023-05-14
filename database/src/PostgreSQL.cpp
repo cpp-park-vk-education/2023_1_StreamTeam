@@ -145,6 +145,80 @@ json PostgreSQL::select(json request)
 json PostgreSQL::insert(json request)
 {
     json response = {{STATUS_FIELD, SUCCESS_STATUS}};
+
+    std::string query = "INSERT INTO " + request["INTO"].get<std::string>();
+
+    query += "(";
+    for (size_t i = 0; i < request["columns"].size(); ++i)
+    {
+        query += request["columns"][i].get<std::string>();
+
+        if (i != request["columns"].size() - 1)
+        {
+            query += ", ";
+        }
+    }
+    query += ") ";
+
+    query += "VALUES (";
+    for (size_t i = 0; i < request["VALUES"].size(); ++i)
+    {
+        auto cur = request["VALUES"][i];
+        std::string value;
+
+        if (cur.is_null())
+        {
+            value = "NULL";
+        }
+        else if (cur.is_string())
+        {
+            value = "'" + cur.get<std::string>() + "'";
+        }
+        else if (cur.is_boolean())
+        {
+            if (cur.get<bool>())
+            {
+                value = "true";
+            }
+            else
+            {
+                value = "false";
+            }
+        }
+        else if (cur.is_object())
+        {
+            value = "'" + cur.dump() + "'";
+        }
+        else
+        {
+            value = std::to_string(cur.get<int>());
+        }
+
+        query += value;
+
+        if (i != request["VALUES"].size() - 1)
+        {
+            query += ", ";
+        }
+    }
+    query += ")";
+
+    try
+    {
+        std::cout << query << std::endl;
+
+        pqxx::work worker(*connection);
+        pqxx::result result = worker.exec(query + " RETURNING id");
+        worker.commit();
+
+        response["result"] = result[0][0].as<int>();
+    }
+    catch (std::exception &e)
+    {
+        response[STATUS_FIELD] = ERROR_STATUS;
+        response["msg"] = "PostgreSQL::insert: " + std::string(e.what());
+    }
+
     return response;
 }
 
