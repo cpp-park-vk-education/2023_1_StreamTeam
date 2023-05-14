@@ -28,7 +28,7 @@ json RoomsTable::updateRoom(const json &info) const
 bool RoomsTable::checkRoom(const size_t id) const
 {
     json request = {{"SELECT", {"id"}},
-                    {"FROM", {"rooms"}},
+                    {"FROM", {roomsTableName}},
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
@@ -43,7 +43,7 @@ bool RoomsTable::checkRoom(const size_t id) const
 json RoomsTable::getRoomInfo(const size_t id) const
 {
     json request = {{"SELECT", {"*"}},
-                    {"FROM", {"rooms"}},
+                    {"FROM", {roomsTableName}},
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
@@ -53,7 +53,7 @@ json RoomsTable::getRoomInfo(const size_t id) const
 json RoomsTable::getAllRooms() const
 {
     json request = {{"SELECT", {"*"}},
-                    {"FROM", {"rooms"}}};
+                    {"FROM", {roomsTableName}}};
 
     json response = client->select(request);
     return response;
@@ -62,7 +62,7 @@ json RoomsTable::getAllRooms() const
 json RoomsTable::getCurrentFilm(const size_t id) const
 {
     json request = {{"SELECT", {"current_film"}},
-                    {"FROM", {"rooms"}},
+                    {"FROM", {roomsTableName}},
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
@@ -72,14 +72,14 @@ json RoomsTable::getCurrentFilm(const size_t id) const
 json RoomsTable::checkCurrentFilm(const size_t id) const
 {
     json request = {{"SELECT", {"current_film"}},
-                    {"FROM", {"rooms"}},
+                    {"FROM", {roomsTableName}},
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS)
     {
-        response["result"] = !response["result"][0]["current_film"].is_null();
+        response[RESULT_FIELD] = !response[RESULT_FIELD][0]["current_film"].is_null();
     }
 
     return response;

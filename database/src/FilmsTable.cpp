@@ -26,7 +26,7 @@ json FilmsTable::updateFilm(const json &info) const
 json FilmsTable::getFilmInfo(const size_t id) const
 {
     json request = {{"SELECT", {"*"}},
-                    {"FROM", {"films"}},
+                    {"FROM", {filmsTableName}},
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);

@@ -92,7 +92,7 @@ json PostgreSQL::select(json request)
         pqxx::work worker(*connection);
         pqxx::result result = worker.exec(query);
         worker.commit();
-        response["result"] = {};
+        response[RESULT_FIELD] = {};
 
         for (auto row = result.begin(); row != result.end(); ++row)
         {
@@ -124,10 +124,10 @@ json PostgreSQL::select(json request)
                     break;
                 }
             }
-            response["result"].push_back(item);
+            response[RESULT_FIELD].push_back(item);
         }
 
-        if (response["result"].empty() || (response["result"][0].contains("sum") && response["result"][0]["sum"].empty()))
+        if (response[RESULT_FIELD].empty() || (response[RESULT_FIELD][0].contains("sum") && response[RESULT_FIELD][0]["sum"].empty()))
         {
             response[STATUS_FIELD] = ERROR_STATUS;
             response["msg"] = "No records with such search terms.";

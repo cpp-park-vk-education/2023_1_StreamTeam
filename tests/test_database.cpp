@@ -157,7 +157,7 @@ TEST_F(UsersTableTest, addUserNotExist)
     json request = {{"username", "test1"}, {"email", "test1@mail.ru"}, {"password", "test1"}};
     json response = table.addUser(request);
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
     EXPECT_EQ(response["user"]["id"], id);
     EXPECT_EQ(response["user"]["username"], request["username"]);
     EXPECT_EQ(response["user"]["email"], request["email"]);
@@ -171,7 +171,7 @@ TEST_F(UsersTableTest, addUserExist)
     json request = {{"username", "lexus"}, {"email", "lexus@mail.ru"}, {"password", "lexus"}};
     json response = table.addUser(request);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(UsersTableTest, deleteUserExist)
@@ -180,7 +180,7 @@ TEST_F(UsersTableTest, deleteUserExist)
 
     json response = table.deleteUser(0);
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
 }
 
 TEST_F(UsersTableTest, deleteUserNotExist)
@@ -189,7 +189,7 @@ TEST_F(UsersTableTest, deleteUserNotExist)
 
     json response = table.deleteUser(10);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(UsersTableTest, updateUserExist)
@@ -201,7 +201,7 @@ TEST_F(UsersTableTest, updateUserExist)
     json request = {{"id", id}, {"username", "test1"}, {"email", "test1@mail.ru"}, {"password", "test1"}};
     json response = table.updateUser(request);
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
     EXPECT_EQ(response["user"]["id"], id);
     EXPECT_EQ(response["user"]["username"], request["username"]);
     EXPECT_EQ(response["user"]["email"], request["email"]);
@@ -216,7 +216,7 @@ TEST_F(UsersTableTest, updateUserNotExist)
     json request = {{"id", id}, {"username", "test1"}, {"email", "test1@mail.ru"}, {"password", "test1"}};
     json response = table.updateUser(request);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(UsersTableTest, checkUserByIDExist)
@@ -282,11 +282,11 @@ TEST_F(UsersTableTest, getUserInfoExist)
 
     json users = UsersTableTest::getUsers();
 
-    EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"][id]["id"], id + 1);
-    EXPECT_EQ(response["result"][id]["username"], users[id]["username"]);
-    EXPECT_EQ(response["result"][id]["email"], users[id]["email"]);
-    EXPECT_EQ(response["result"][id]["password"], users[id]["password"]);
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD][id]["id"], id + 1);
+    EXPECT_EQ(response[RESULT_FIELD][id]["username"], users[id]["username"]);
+    EXPECT_EQ(response[RESULT_FIELD][id]["email"], users[id]["email"]);
+    EXPECT_EQ(response[RESULT_FIELD][id]["password"], users[id]["password"]);
 }
 
 TEST_F(UsersTableTest, getUserInfoNotExist)
@@ -296,7 +296,7 @@ TEST_F(UsersTableTest, getUserInfoNotExist)
 
     json response = table.getUserInfo(id);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(RoomsTableTest, addRoom)
@@ -309,7 +309,7 @@ TEST_F(RoomsTableTest, addRoom)
 
     size_t id = rooms.size();
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
     EXPECT_EQ(response["room"]["id"], id);
     EXPECT_EQ(response["room"]["name"], request["name"]);
     EXPECT_EQ(response["room"]["creator"], request["creator"]);
@@ -321,7 +321,7 @@ TEST_F(RoomsTableTest, deleteRoomExist)
 
     json response = table.deleteRoom(0);
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
 }
 
 TEST_F(RoomsTableTest, deleteRoomNotExist)
@@ -330,7 +330,7 @@ TEST_F(RoomsTableTest, deleteRoomNotExist)
 
     json response = table.deleteRoom(10);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(RoomsTableTest, updateRoomExist)
@@ -342,7 +342,7 @@ TEST_F(RoomsTableTest, updateRoomExist)
     json request = {{"id", id}, {"name", "test"}, {"creator", "2"}};
     json response = table.updateRoom(request);
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
     EXPECT_EQ(response["room"]["id"], id);
     EXPECT_EQ(response["room"]["name"], request["name"]);
     EXPECT_EQ(response["room"]["creator"], request["creator"]);
@@ -356,7 +356,7 @@ TEST_F(RoomsTableTest, updateRoomNotExist)
     json request = {{"id", id}, {"name", "test"}, {"creator", "2"}};
     json response = table.updateRoom(request);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(RoomsTableTest, checkRoomExist)
@@ -386,11 +386,11 @@ TEST_F(RoomsTableTest, getRoomInfoExist)
 
     json rooms = RoomsTableTest::getRooms();
 
-    EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"][id]["id"], id + 1);
-    EXPECT_EQ(response["result"][id]["name"], rooms[id]["name"]);
-    EXPECT_EQ(response["result"][id]["creator"], rooms[id]["creator"]);
-    EXPECT_EQ(response["result"][id]["current_film"], rooms[id]["current_film"]);
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD][id]["id"], id + 1);
+    EXPECT_EQ(response[RESULT_FIELD][id]["name"], rooms[id]["name"]);
+    EXPECT_EQ(response[RESULT_FIELD][id]["creator"], rooms[id]["creator"]);
+    EXPECT_EQ(response[RESULT_FIELD][id]["current_film"], rooms[id]["current_film"]);
 }
 
 TEST_F(RoomsTableTest, getRoomInfoNotExist)
@@ -400,7 +400,7 @@ TEST_F(RoomsTableTest, getRoomInfoNotExist)
 
     json response = table.getRoomInfo(id);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(RoomsTableTest, getAllRooms)
@@ -411,8 +411,8 @@ TEST_F(RoomsTableTest, getAllRooms)
 
     json rooms = RoomsTableTest::getRooms();
 
-    EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"].size(), rooms.size());
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD].size(), rooms.size());
 }
 
 TEST_F(RoomsTableTest, getCurrentFilmExist)
@@ -424,8 +424,8 @@ TEST_F(RoomsTableTest, getCurrentFilmExist)
 
     json rooms = RoomsTableTest::getRooms();
 
-    EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"][id]["current_film"], rooms[id]["current_film"]);
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD][id]["current_film"], rooms[id]["current_film"]);
 }
 
 TEST_F(RoomsTableTest, getCurrentFilmNotExist)
@@ -435,7 +435,7 @@ TEST_F(RoomsTableTest, getCurrentFilmNotExist)
 
     json response = table.getCurrentFilm(id);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(RoomsTableTest, checkCurrentFilmExist)
@@ -444,8 +444,8 @@ TEST_F(RoomsTableTest, checkCurrentFilmExist)
 
     json response = table.checkCurrentFilm(1);
 
-    EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"], true);
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD], true);
 }
 
 TEST_F(RoomsTableTest, checkCurrentFilmExistButNull)
@@ -454,8 +454,8 @@ TEST_F(RoomsTableTest, checkCurrentFilmExistButNull)
 
     json response = table.checkCurrentFilm(2);
 
-    EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"], false);
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD], false);
 }
 
 TEST_F(RoomsTableTest, checkCurrentFilmNotExist)
@@ -464,7 +464,7 @@ TEST_F(RoomsTableTest, checkCurrentFilmNotExist)
 
     json response = table.checkCurrentFilm(10);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(ViewersTableTest, getUserRoomsExist)
@@ -475,9 +475,9 @@ TEST_F(ViewersTableTest, getUserRoomsExist)
     json response = table.getUserRooms(id);
     std::vector<int> actual_rooms;
 
-    for (size_t i = 0; i < response["result"].size(); ++i)
+    for (size_t i = 0; i < response[RESULT_FIELD].size(); ++i)
     {
-        actual_rooms.push_back(response["result"][i]["id_room"]);
+        actual_rooms.push_back(response[RESULT_FIELD][i]["id_room"]);
     }
 
     json viewers = ViewersTableTest::getViewers();
@@ -491,7 +491,7 @@ TEST_F(ViewersTableTest, getUserRoomsExist)
         }
     }
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
     EXPECT_EQ(actual_rooms.size(), expected_rooms.size());
     EXPECT_EQ(actual_rooms[0], expected_rooms[0]);
 }
@@ -503,7 +503,7 @@ TEST_F(ViewersTableTest, getUserRoomsNotExist)
 
     json response = table.getUserRooms(id);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(ViewersTableTest, getRoomUsersExist)
@@ -514,9 +514,9 @@ TEST_F(ViewersTableTest, getRoomUsersExist)
     json response = table.getRoomUsers(id);
     std::vector<int> actual_users;
 
-    for (size_t i = 0; i < response["result"].size(); ++i)
+    for (size_t i = 0; i < response[RESULT_FIELD].size(); ++i)
     {
-        actual_users.push_back(response["result"][i]["id_user"]);
+        actual_users.push_back(response[RESULT_FIELD][i]["id_user"]);
     }
 
     json viewers = ViewersTableTest::getViewers();
@@ -530,7 +530,7 @@ TEST_F(ViewersTableTest, getRoomUsersExist)
         }
     }
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
     EXPECT_EQ(actual_users.size(), expected_users.size());
     EXPECT_EQ(actual_users[0], expected_users[0]);
 }
@@ -542,7 +542,7 @@ TEST_F(ViewersTableTest, getRoomUsersNotExist)
 
     json response = table.getRoomUsers(id);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(ViewersTableTest, addUserToRoomExist)
@@ -552,7 +552,7 @@ TEST_F(ViewersTableTest, addUserToRoomExist)
 
     json response = table.addUserToRoom(id, id);
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
 }
 
 TEST_F(ViewersTableTest, addUserToRoomNotExist)
@@ -562,7 +562,7 @@ TEST_F(ViewersTableTest, addUserToRoomNotExist)
 
     json response = table.addUserToRoom(id, id);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(ViewersTableTest, getUserPointsInRoomExist)
@@ -582,8 +582,8 @@ TEST_F(ViewersTableTest, getUserPointsInRoomExist)
         }
     }
 
-    EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"], expected_points);
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD], expected_points);
 }
 
 TEST_F(ViewersTableTest, getUserPointsInRoomNotExist)
@@ -594,7 +594,7 @@ TEST_F(ViewersTableTest, getUserPointsInRoomNotExist)
 
     json response = table.getUserPointsInRoom(id, id);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(ViewersTableTest, setUserPointsInRoomExist)
@@ -615,7 +615,7 @@ TEST_F(ViewersTableTest, setUserPointsInRoomExist)
 
     json response = table.setUserPointsInRoom(id, id, new_points);
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
     EXPECT_EQ(response["id_user"], id);
     EXPECT_EQ(response["id_room"], id);
     EXPECT_EQ(response["old_points"], old_points);
@@ -631,7 +631,7 @@ TEST_F(ViewersTableTest, setUserPointsInRoomNotExist)
 
     json response = table.setUserPointsInRoom(id, id, new_points);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(ViewersTableTest, getUserRoleInRoomExist)
@@ -651,8 +651,8 @@ TEST_F(ViewersTableTest, getUserRoleInRoomExist)
         }
     }
 
-    EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"], expected_role);
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD], expected_role);
 }
 
 TEST_F(ViewersTableTest, getUserRoleInRoomNotExist)
@@ -663,7 +663,7 @@ TEST_F(ViewersTableTest, getUserRoleInRoomNotExist)
 
     json response = table.getUserRoleInRoom(id, id);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(ViewersTableTest, setUserRoleInRoomExist)
@@ -684,7 +684,7 @@ TEST_F(ViewersTableTest, setUserRoleInRoomExist)
 
     json response = table.setUserRoleInRoom(id, id, new_role);
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
     EXPECT_EQ(response["id_user"], id);
     EXPECT_EQ(response["id_room"], id);
     EXPECT_EQ(response["old_role"], old_role);
@@ -700,7 +700,7 @@ TEST_F(ViewersTableTest, setUserRoleInRoomExist_INVALID)
 
     json response = table.setUserRoleInRoom(id, id, new_role);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(ViewersTableTest, setUserRoleInRoomNotExist)
@@ -712,7 +712,7 @@ TEST_F(ViewersTableTest, setUserRoleInRoomNotExist)
 
     json response = table.setUserRoleInRoom(id, id, new_role);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(BidsTableTest, addBid)
@@ -724,7 +724,7 @@ TEST_F(BidsTableTest, addBid)
     json request = {{"id_creator", 2}, {"id_room", 1}, {"text", "test"}, {"min_points", 10}, {"begin_time", "2023-03-12 10:10:10"}, {"lifetime", "04:30:00"}};
     json response = table.addBid(request);
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
     EXPECT_EQ(response["bid"]["id"], id);
     EXPECT_EQ(response["bid"]["id_creator"], request["id_creator"]);
     EXPECT_EQ(response["bid"]["id_room"], request["id_room"]);
@@ -741,7 +741,7 @@ TEST_F(BidsTableTest, deleteBidExist)
 
     json response = table.deleteBid(0);
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
 }
 
 TEST_F(BidsTableTest, deleteBidNotExist)
@@ -751,7 +751,7 @@ TEST_F(BidsTableTest, deleteBidNotExist)
 
     json response = table.deleteBid(10);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(BidsTableTest, updateBidExist)
@@ -763,7 +763,7 @@ TEST_F(BidsTableTest, updateBidExist)
     json request = {{"id", id}, {"id_creator", 2}, {"id_room", 1}, {"text", "test"}, {"min_points", 10}, {"begin_time", "2023-03-12 10:10:10"}, {"lifetime", "04:30:00"}};
     json response = table.updateBid(request);
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
     EXPECT_EQ(response["bid"]["id"], id);
     EXPECT_EQ(response["bid"]["id_creator"], request["id_creator"]);
     EXPECT_EQ(response["bid"]["id_room"], request["id_room"]);
@@ -781,7 +781,7 @@ TEST_F(BidsTableTest, updateBidNotExist)
     json request = {{"id", id}, {"id_creator", 2}, {"id_room", 1}, {"text", "test"}, {"min_points", 10}, {"begin_time", "2023-03-12 10:10:10"}, {"lifetime", "04:30:00"}};
     json response = table.updateBid(request);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(BidsTableTest, getVotesForExist)
@@ -802,8 +802,8 @@ TEST_F(BidsTableTest, getVotesForExist)
 
     json response = table.getVotesFor(id);
 
-    EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"].size(), counter);
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD].size(), counter);
 }
 
 TEST_F(BidsTableTest, getVotesForNotExist)
@@ -813,7 +813,7 @@ TEST_F(BidsTableTest, getVotesForNotExist)
 
     json response = table.getVotesFor(id);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(BidsTableTest, getVotesAgainstExist)
@@ -834,8 +834,8 @@ TEST_F(BidsTableTest, getVotesAgainstExist)
 
     json response = table.getVotesAgainst(id);
 
-    EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"].size(), counter);
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD].size(), counter);
 }
 
 TEST_F(BidsTableTest, getVotesAgainstNotExist)
@@ -845,7 +845,7 @@ TEST_F(BidsTableTest, getVotesAgainstNotExist)
 
     json response = table.getVotesAgainst(id);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(BidsTableTest, getVotesCountExist)
@@ -866,8 +866,8 @@ TEST_F(BidsTableTest, getVotesCountExist)
 
     json response = table.getVotesCount(id);
 
-    EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"].size(), counter);
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD].size(), counter);
 }
 
 TEST_F(BidsTableTest, getVotesCountNotExist)
@@ -877,7 +877,7 @@ TEST_F(BidsTableTest, getVotesCountNotExist)
 
     json response = table.getVotesCount(id);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(BidsTableTest, getPointsForExist)
@@ -898,8 +898,8 @@ TEST_F(BidsTableTest, getPointsForExist)
 
     json response = table.getPointsFor(id);
 
-    EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"], sum);
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD], sum);
 }
 
 TEST_F(BidsTableTest, getPointsForNotExist)
@@ -909,7 +909,7 @@ TEST_F(BidsTableTest, getPointsForNotExist)
 
     json response = table.getPointsFor(id);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(BidsTableTest, getPointsAgainstExist)
@@ -930,8 +930,8 @@ TEST_F(BidsTableTest, getPointsAgainstExist)
 
     json response = table.getPointsAgainst(id);
 
-    EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"], sum);
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD], sum);
 }
 
 TEST_F(BidsTableTest, getPointsAgainstNotExist)
@@ -941,7 +941,7 @@ TEST_F(BidsTableTest, getPointsAgainstNotExist)
 
     json response = table.getPointsAgainst(id);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(BidsTableTest, getPointsSumExist)
@@ -962,8 +962,8 @@ TEST_F(BidsTableTest, getPointsSumExist)
 
     json response = table.getPointsSum(id);
 
-    EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"], sum);
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD], sum);
 }
 
 TEST_F(BidsTableTest, getPointsCountNotExist)
@@ -973,7 +973,7 @@ TEST_F(BidsTableTest, getPointsCountNotExist)
 
     json response = table.getPointsSum(id);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(BidsTableTest, getWinnersExist)
@@ -995,9 +995,9 @@ TEST_F(BidsTableTest, getWinnersExist)
 
     json response = table.getWinners(id, answer);
 
-    EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"].size(), winners.size());
-    EXPECT_EQ(response["result"][0]["id_user"], winners[0]);
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD].size(), winners.size());
+    EXPECT_EQ(response[RESULT_FIELD][0]["id_user"], winners[0]);
 }
 
 TEST_F(BidsTableTest, getWinnersNotExist)
@@ -1007,7 +1007,7 @@ TEST_F(BidsTableTest, getWinnersNotExist)
 
     json response = table.getWinners(id, true);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(VotesTableTest, addVoteNotExist)
@@ -1019,7 +1019,7 @@ TEST_F(VotesTableTest, addVoteNotExist)
     json request = {{"id_bid", 2}, {"id_user", 2}, {"vote", false}, {"points", 100}};
     json response = table.addVote(request);
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
     EXPECT_EQ(response["vote"]["id"], id);
     EXPECT_EQ(response["vote"]["id_bid"], request["id_bid"]);
     EXPECT_EQ(response["vote"]["id_user"], request["id_user"]);
@@ -1035,7 +1035,7 @@ TEST_F(VotesTableTest, addVoteExist)
     json request = {{"id_bid", id}, {"id_user", id}, {"vote", false}, {"points", 100}};
     json response = table.addVote(request);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(VotesTableTest, deleteVoteExist)
@@ -1045,7 +1045,7 @@ TEST_F(VotesTableTest, deleteVoteExist)
 
     json response = table.deleteVote(0);
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
 }
 
 TEST_F(VotesTableTest, deleteVoteNotExist)
@@ -1055,7 +1055,7 @@ TEST_F(VotesTableTest, deleteVoteNotExist)
 
     json response = table.deleteVote(10);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(VotesTableTest, updateVoteExist)
@@ -1067,7 +1067,7 @@ TEST_F(VotesTableTest, updateVoteExist)
     json request = {{"id", id}, {"id_bid", 1}, {"id_user", 1}, {"vote", false}, {"points", 100}};
     json response = table.updateVote(request);
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
     EXPECT_EQ(response["vote"]["id"], id);
     EXPECT_EQ(response["vote"]["id_bid"], request["id_bid"]);
     EXPECT_EQ(response["vote"]["id_user"], request["id_user"]);
@@ -1083,7 +1083,7 @@ TEST_F(VotesTableTest, updateVoteNotExist)
     json request = {{"id", id}, {"id_bid", 1}, {"id_user", 1}, {"vote", false}, {"points", 100}};
     json response = table.updateVote(request);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(FilmsTableTest, addFilm)
@@ -1095,7 +1095,7 @@ TEST_F(FilmsTableTest, addFilm)
     json request = {{"name", "test"}, {"link", "https://www.test.ru/test"}, {"data", {{"description", "test"}}}};
     json response = table.addFilm(request);
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
     EXPECT_EQ(response["film"]["id"], id);
     EXPECT_EQ(response["film"]["name"], request["name"]);
     EXPECT_EQ(response["film"]["link"], request["link"]);
@@ -1108,7 +1108,7 @@ TEST_F(FilmsTableTest, deleteFilmExist)
 
     json response = table.deleteFilm(0);
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
 }
 
 TEST_F(FilmsTableTest, deleteFilmNotExist)
@@ -1117,7 +1117,7 @@ TEST_F(FilmsTableTest, deleteFilmNotExist)
 
     json response = table.deleteFilm(10);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(FilmsTableTest, updateFilmExist)
@@ -1129,7 +1129,7 @@ TEST_F(FilmsTableTest, updateFilmExist)
     json request = {{"id", id}, {"name", "test"}, {"link", "https://www.test.ru/test"}, {"data", {{"description", "test"}}}};
     json response = table.updateFilm(request);
 
-    EXPECT_EQ(response["status"], "ok");
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
     EXPECT_EQ(response["film"]["id"], id);
     EXPECT_EQ(response["film"]["name"], request["name"]);
     EXPECT_EQ(response["film"]["link"], request["link"]);
@@ -1144,7 +1144,7 @@ TEST_F(FilmsTableTest, updateFilmNotExist)
     json request = {{"id", id}, {"name", "test"}, {"link", "https://www.test.ru/test"}, {"data", {{"description", "test"}}}};
     json response = table.updateFilm(request);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
 
 TEST_F(FilmsTableTest, getFilmInfoExist)
@@ -1156,11 +1156,11 @@ TEST_F(FilmsTableTest, getFilmInfoExist)
 
     json films = FilmsTableTest::getFilms();
 
-    EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["result"][id]["id"], id + 1);
-    EXPECT_EQ(response["result"][id]["name"], films[id]["name"]);
-    EXPECT_EQ(response["result"][id]["creator"], films[id]["creator"]);
-    EXPECT_EQ(response["result"][id]["current_film"], films[id]["current_film"]);
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD][id]["id"], id + 1);
+    EXPECT_EQ(response[RESULT_FIELD][id]["name"], films[id]["name"]);
+    EXPECT_EQ(response[RESULT_FIELD][id]["creator"], films[id]["creator"]);
+    EXPECT_EQ(response[RESULT_FIELD][id]["current_film"], films[id]["current_film"]);
 }
 
 TEST_F(FilmsTableTest, getFilmInfoNotExist)
@@ -1170,5 +1170,5 @@ TEST_F(FilmsTableTest, getFilmInfoNotExist)
 
     json response = table.getFilmInfo(id);
 
-    EXPECT_EQ(response["status"], "error");
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }

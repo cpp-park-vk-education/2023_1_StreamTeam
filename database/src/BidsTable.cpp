@@ -26,7 +26,7 @@ json BidsTable::updateBid(const json &info) const
 json BidsTable::getBidInfo(const size_t id) const
 {
     json request = {{"SELECT", {"*"}},
-                    {"FROM", {"bids"}},
+                    {"FROM", {bidsTableName}},
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
@@ -35,9 +35,9 @@ json BidsTable::getBidInfo(const size_t id) const
 
 json BidsTable::getVotesFor(const size_t id) const
 {
-    json request = {{"SELECT", {"votes.id"}},
-                    {"FROM", {"bids, votes"}},
-                    {"WHERE", {"bids.id=" + std::to_string(id), "bids.id = votes.id_bid", "votes.vote = TRUE"}}};
+    json request = {{"SELECT", {votesTableName + ".id"}},
+                    {"FROM", {bidsTableName, votesTableName}},
+                    {"WHERE", {bidsTableName + ".id=" + std::to_string(id), bidsTableName + ".id=" + votesTableName + ".id_bid", votesTableName + ".vote=TRUE"}}};
 
     json response = client->select(request);
     return response;
@@ -45,9 +45,9 @@ json BidsTable::getVotesFor(const size_t id) const
 
 json BidsTable::getVotesAgainst(const size_t id) const
 {
-    json request = {{"SELECT", {"votes.id"}},
-                    {"FROM", {"bids, votes"}},
-                    {"WHERE", {"bids.id=" + std::to_string(id), "bids.id = votes.id_bid", "votes.vote = FALSE"}}};
+    json request = {{"SELECT", {votesTableName + ".id"}},
+                    {"FROM", {bidsTableName, votesTableName}},
+                    {"WHERE", {bidsTableName + ".id=" + std::to_string(id), bidsTableName + ".id=" + votesTableName + ".id_bid", votesTableName + ".vote=FALSE"}}};
 
     json response = client->select(request);
 
@@ -56,9 +56,9 @@ json BidsTable::getVotesAgainst(const size_t id) const
 
 json BidsTable::getVotesCount(const size_t id) const
 {
-    json request = {{"SELECT", {"votes.id"}},
-                    {"FROM", {"bids, votes"}},
-                    {"WHERE", {"bids.id=" + std::to_string(id), "bids.id = votes.id_bid"}}};
+    json request = {{"SELECT", {votesTableName + ".id"}},
+                    {"FROM", {bidsTableName, votesTableName}},
+                    {"WHERE", {bidsTableName + ".id=" + std::to_string(id), bidsTableName + ".id=" + votesTableName + ".id_bid"}}};
 
     json response = client->select(request);
 
@@ -67,15 +67,15 @@ json BidsTable::getVotesCount(const size_t id) const
 
 json BidsTable::getPointsFor(const size_t id) const
 {
-    json request = {{"SELECT", {"SUM(votes.points)"}},
-                    {"FROM", {"bids, votes"}},
-                    {"WHERE", {"bids.id=" + std::to_string(id), "bids.id = votes.id_bid", "votes.vote = TRUE"}}};
+    json request = {{"SELECT", {"SUM(" + votesTableName + ".points)"}},
+                    {"FROM", {bidsTableName, votesTableName}},
+                    {"WHERE", {bidsTableName + ".id=" + std::to_string(id), bidsTableName + ".id=" + votesTableName + ".id_bid", votesTableName + ".vote=TRUE"}}};
 
     json response = client->select(request);
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS)
     {
-        response["result"] = response["result"][0]["sum"];
+        response[RESULT_FIELD] = response[RESULT_FIELD][0]["sum"];
     }
 
     return response;
@@ -83,15 +83,15 @@ json BidsTable::getPointsFor(const size_t id) const
 
 json BidsTable::getPointsAgainst(const size_t id) const
 {
-    json request = {{"SELECT", {"SUM(votes.points)"}},
-                    {"FROM", {"bids, votes"}},
-                    {"WHERE", {"bids.id=" + std::to_string(id), "bids.id = votes.id_bid", "votes.vote = FALSE"}}};
+    json request = {{"SELECT", {"SUM(" + votesTableName + ".points)"}},
+                    {"FROM", {bidsTableName, votesTableName}},
+                    {"WHERE", {bidsTableName + ".id=" + std::to_string(id), bidsTableName + ".id=" + votesTableName + ".id_bid", votesTableName + ".vote=FALSE"}}};
 
     json response = client->select(request);
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS)
     {
-        response["result"] = response["result"][0]["sum"];
+        response[RESULT_FIELD] = response[RESULT_FIELD][0]["sum"];
     }
 
     return response;
@@ -99,15 +99,15 @@ json BidsTable::getPointsAgainst(const size_t id) const
 
 json BidsTable::getPointsSum(const size_t id) const
 {
-    json request = {{"SELECT", {"SUM(votes.points)"}},
-                    {"FROM", {"bids, votes"}},
-                    {"WHERE", {"bids.id=" + std::to_string(id), "bids.id = votes.id_bid"}}};
+    json request = {{"SELECT", {"SUM(" + votesTableName + ".points)"}},
+                    {"FROM", {bidsTableName, votesTableName}},
+                    {"WHERE", {bidsTableName + ".id=" + std::to_string(id), bidsTableName + ".id=" + votesTableName + ".id_bid"}}};
 
     json response = client->select(request);
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS)
     {
-        response["result"] = response["result"][0]["sum"];
+        response[RESULT_FIELD] = response[RESULT_FIELD][0]["sum"];
     }
 
     return response;
@@ -117,9 +117,9 @@ json BidsTable::getWinners(const size_t id, const bool answer) const
 {
     std::string strAnswer = answer ? "TRUE" : "FALSE";
 
-    json request = {{"SELECT", {"votes.id_user"}},
-                    {"FROM", {"bids, votes"}},
-                    {"WHERE", {"bids.id=" + std::to_string(id), "bids.id = votes.id_bid", "votes.vote=" + strAnswer}}};
+    json request = {{"SELECT", {votesTableName + ".id_user"}},
+                    {"FROM", {bidsTableName, votesTableName}},
+                    {"WHERE", {bidsTableName + ".id=" + std::to_string(id), bidsTableName + ".id=" + votesTableName + ".id_bid", votesTableName + ".vote=" + strAnswer}}};
 
     json response = client->select(request);
     return response;

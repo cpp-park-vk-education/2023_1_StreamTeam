@@ -26,12 +26,12 @@ json UsersTable::updateUser(const json &info) const
 bool UsersTable::checkUserByID(const size_t id) const
 {
     json request = {{"SELECT", {"id"}},
-                    {"FROM", {"users"}},
+                    {"FROM", {usersTableName}},
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
 
-    if (response["status"] == ERROR_STATUS)
+    if (response[STATUS_FIELD] == ERROR_STATUS)
     {
         return false;
     }
@@ -41,12 +41,12 @@ bool UsersTable::checkUserByID(const size_t id) const
 bool UsersTable::checkUserByEmail(const std::string &email) const
 {
     json request = {{"SELECT", {"id"}},
-                    {"FROM", {"users"}},
+                    {"FROM", {usersTableName}},
                     {"WHERE", {"email='" + email + "'"}}};
 
     json response = client->select(request);
 
-    if (response["status"] == ERROR_STATUS)
+    if (response[STATUS_FIELD] == ERROR_STATUS)
     {
         return false;
     }
@@ -56,12 +56,12 @@ bool UsersTable::checkUserByEmail(const std::string &email) const
 bool UsersTable::checkUserByUsername(const std::string &username) const
 {
     json request = {{"SELECT", {"id"}},
-                    {"FROM", {"users"}},
+                    {"FROM", {usersTableName}},
                     {"WHERE", {"username='" + username + "'"}}};
 
     json response = client->select(request);
 
-    if (response["status"] == ERROR_STATUS)
+    if (response[STATUS_FIELD] == ERROR_STATUS)
     {
         return false;
     }
@@ -71,7 +71,7 @@ bool UsersTable::checkUserByUsername(const std::string &username) const
 json UsersTable::getUserInfo(const size_t id) const
 {
     json request = {{"SELECT", {"*"}},
-                    {"FROM", {"users"}},
+                    {"FROM", {usersTableName}},
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
@@ -81,7 +81,7 @@ json UsersTable::getUserInfo(const size_t id) const
 json UsersTable::getUserIdByEmail(const std::string &email) const
 {
     json request = {{"SELECT", {"id"}},
-                    {"FROM", {"users"}},
+                    {"FROM", {usersTableName}},
                     {"WHERE", {"email='" + email + "'"}}};
 
     json response = client->select(request);
@@ -91,7 +91,7 @@ json UsersTable::getUserIdByEmail(const std::string &email) const
 json UsersTable::getUserIdByUsername(const std::string &username) const
 {
     json request = {{"SELECT", {"id"}},
-                    {"FROM", {"users"}},
+                    {"FROM", {usersTableName}},
                     {"WHERE", {"username='" + username + "'"}}};
 
     json response = client->select(request);
@@ -101,7 +101,7 @@ json UsersTable::getUserIdByUsername(const std::string &username) const
 json UsersTable::getUserPassword(const size_t id) const
 {
     json request = {{"SELECT", {"password"}},
-                    {"FROM", {"users"}},
+                    {"FROM", {usersTableName}},
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
