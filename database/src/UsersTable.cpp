@@ -25,49 +25,85 @@ json UsersTable::updateUser(const json &info) const
 
 bool UsersTable::checkUserByID(const size_t id) const
 {
-    json request = {{"id", id}};
+    json request = {{"SELECT", {"id"}},
+                    {"FROM", {"users"}},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
     json response = client->select(request);
+
+    if (response["status"] == ERROR_STATUS)
+    {
+        return false;
+    }
     return true;
 }
 
 bool UsersTable::checkUserByEmail(const std::string &email) const
 {
-    json request = {{"email", email}};
+    json request = {{"SELECT", {"id"}},
+                    {"FROM", {"users"}},
+                    {"WHERE", {"email='" + email + "'"}}};
+
     json response = client->select(request);
+
+    if (response["status"] == ERROR_STATUS)
+    {
+        return false;
+    }
     return true;
 }
 
 bool UsersTable::checkUserByUsername(const std::string &username) const
 {
-    json request = {{"username", username}};
+    json request = {{"SELECT", {"id"}},
+                    {"FROM", {"users"}},
+                    {"WHERE", {"username='" + username + "'"}}};
+
     json response = client->select(request);
+
+    if (response["status"] == ERROR_STATUS)
+    {
+        return false;
+    }
     return true;
 }
 
 json UsersTable::getUserInfo(const size_t id) const
 {
-    json request = {{"id", id}};
+    json request = {{"SELECT", {"*"}},
+                    {"FROM", {"users"}},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
     json response = client->select(request);
     return response;
 }
 
 json UsersTable::getUserIdByEmail(const std::string &email) const
 {
-    json request = {{"email", email}};
+    json request = {{"SELECT", {"id"}},
+                    {"FROM", {"users"}},
+                    {"WHERE", {"email='" + email + "'"}}};
+
     json response = client->select(request);
     return response;
 }
 
 json UsersTable::getUserIdByUsername(const std::string &username) const
 {
-    json request = {{"username", username}};
+    json request = {{"SELECT", {"id"}},
+                    {"FROM", {"users"}},
+                    {"WHERE", {"username='" + username + "'"}}};
+
     json response = client->select(request);
     return response;
 }
 
 json UsersTable::getUserPassword(const size_t id) const
 {
-    json request = {{"id", id}};
+    json request = {{"SELECT", {"password"}},
+                    {"FROM", {"users"}},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
     json response = client->select(request);
     return response;
 }

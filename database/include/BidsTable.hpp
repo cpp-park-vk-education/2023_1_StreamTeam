@@ -11,7 +11,7 @@ public:
     json addBid(const json &info) const;
     json deleteBid(const size_t id) const;
     json updateBid(const json &info) const;
-    json isEnded(const size_t id) const;
+    json getBidInfo(const size_t id) const;
     json getVotesFor(const size_t id) const;
     json getVotesAgainst(const size_t id) const;
     json getVotesCount(const size_t id) const;

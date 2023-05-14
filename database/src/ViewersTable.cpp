@@ -6,14 +6,20 @@ ViewersTable::ViewersTable(std::shared_ptr<IDatabase> _client) { client = _clien
 
 json ViewersTable::getUserRooms(const size_t id_user) const
 {
-    json request = {{"id", id_user}};
+    json request = {{"SELECT", {"id_room"}},
+                    {"FROM", {"viewers"}},
+                    {"WHERE", {"id_user=" + std::to_string(id_user)}}};
+
     json response = client->select(request);
     return response;
 }
 
 json ViewersTable::getRoomUsers(const size_t id_room) const
 {
-    json request = {{"id", id_room}};
+    json request = {{"SELECT", {"id_user"}},
+                    {"FROM", {"viewers"}},
+                    {"WHERE", {"id_room=" + std::to_string(id_room)}}};
+
     json response = client->select(request);
     return response;
 }
@@ -28,9 +34,17 @@ json ViewersTable::addUserToRoom(const size_t id_user, const size_t id_room) con
 
 json ViewersTable::getUserPointsInRoom(const size_t id_user, const size_t id_room) const
 {
-    json request = {{{"id_user", id_user},
-                     {"id_room", id_room}}};
+    json request = {{"SELECT", {"points"}},
+                    {"FROM", {"viewers"}},
+                    {"WHERE", {"id_user=" + std::to_string(id_user), "id_room=" + std::to_string(id_room)}}};
+
     json response = client->select(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS)
+    {
+        response["result"] = response["result"][0]["points"];
+    }
+
     return response;
 }
 
@@ -45,9 +59,17 @@ json ViewersTable::setUserPointsInRoom(const size_t id_user, const size_t id_roo
 
 json ViewersTable::getUserRoleInRoom(const size_t id_user, const size_t id_room) const
 {
-    json request = {{{"id_user", id_user},
-                     {"id_room", id_room}}};
+    json request = {{"SELECT", {"role"}},
+                    {"FROM", {"viewers"}},
+                    {"WHERE", {"id_user=" + std::to_string(id_user), "id_room=" + std::to_string(id_room)}}};
+
     json response = client->select(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS)
+    {
+        response["result"] = response["result"][0]["role"];
+    }
+
     return response;
 }
 

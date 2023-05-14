@@ -23,9 +23,21 @@ json MessagesTable::updateMessage(const json &info) const
     return response;
 }
 
+json MessagesTable::getMessageInfo(const size_t id) const
+{
+    json request = {{"SELECT", {"*"}},
+                    {"FROM", {"messages"}},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
+    json response = client->select(request);
+    return response;
+}
+
 json MessagesTable::getAuthorId(const size_t id) const
 {
-    json request = {{"id", id}};
+    json request = {{"SELECT", {"id_user"}},
+                    {"FROM", {"messages"}},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
     json response = client->select(request);
 
     return response;
