@@ -15,10 +15,6 @@ DROP TABLE IF EXISTS users;
 
 DROP TYPE IF EXISTS viewer_role;
 
-DROP INDEX IF EXISTS votes_user_bid_index;
-DROP INDEX IF EXISTS films_name_index;
-DROP INDEX IF EXISTS bids_room_index;
-
 CREATE TABLE users (
     id serial PRIMARY KEY NOT NULL,
     username varchar(32) NOT NULL UNIQUE,
@@ -91,5 +87,105 @@ CREATE TABLE votes (
 CREATE INDEX bids_room_index ON bids (id_room);
 CREATE INDEX votes_user_bid_index ON votes (id_user, id_bid);
 CREATE INDEX films_name_index ON films USING gin(to_tsvector('russian', name));
+
+CREATE OR REPLACE FUNCTION message_validation() RETURNS TRIGGER AS $message_validation$
+BEGIN
+    IF (TG_OP = 'INSERT') THEN
+        IF (
+            EXISTS (
+            SELECT * FROM viewers
+            WHERE id_user=NEW.id_user AND id_room=NEW.id_room AND role NOT IN ('left', 'banned'))
+        ) 
+        THEN 
+            RAISE NOTICE 'Сообщение успешно добавлено.';
+            RETURN NEW;
+        ELSE 
+            RAISE EXCEPTION 'Ошибка: невозможно добавить сообщение.';
+        END IF;
+    ELSIF (TG_OP = 'UPDATE') THEN
+        IF (
+            OLD.id_user != NEW.id_user OR OLD.id_room != NEW.id_room OR OLD.created_at != NEW.created_at
+        )
+        THEN
+            RAISE EXCEPTION 'Ошибка: данные поля менять нельзя.';
+        ELSE
+            RETURN NEW;
+        END IF;
+    END IF;
+    RETURN NULL;
+END;
+
+$message_validation$ LANGUAGE plpgsql;
+
+CREATE TRIGGER message_validation_trigger
+AFTER INSERT OR UPDATE ON messages
+FOR EACH ROW EXECUTE PROCEDURE message_validation();
+
+CREATE OR REPLACE FUNCTION bids_validation() RETURNS TRIGGER AS $bids_validation$
+BEGIN
+    IF (TG_OP = 'INSERT') THEN
+        IF (
+            EXISTS (
+            SELECT * FROM viewers
+            WHERE id_user=NEW.id_creator AND id_room=NEW.id_room AND role IN ('admin', 'moderator'))
+        ) 
+        THEN 
+            RAISE NOTICE 'Ставка успешно добавлена.';
+            RETURN NEW;
+        ELSE 
+            RAISE EXCEPTION 'Ошибка: невозможно добавить ставку.';
+        END IF;
+    ELSIF (TG_OP = 'UPDATE') THEN
+        IF (
+            OLD.id_creator != NEW.id_creator OR OLD.id_room != NEW.id_room OR OLD.begin_time != NEW.begin_time
+        )
+        THEN
+            RAISE EXCEPTION 'Ошибка: данные поля менять нельзя.';
+        ELSE
+            RETURN NEW;
+        END IF;
+    END IF;
+    RETURN NULL;
+END;
+
+$bids_validation$ LANGUAGE plpgsql;
+
+CREATE TRIGGER bids_validation_trigger
+AFTER INSERT OR UPDATE ON bids
+FOR EACH ROW EXECUTE PROCEDURE bids_validation();
+
+CREATE OR REPLACE FUNCTION votes_validation() RETURNS TRIGGER AS $votes_validation$
+BEGIN
+    IF (TG_OP = 'INSERT') THEN
+        IF (
+            EXISTS (
+                SELECT * FROM viewers, bids
+                WHERE bids.id_room = viewers.id_room AND bids.id = NEW.id_bid AND viewers.id_user = NEW.id_user
+                AND viewers.role NOT IN ('banned', 'left'))
+        ) 
+        THEN 
+            RAISE NOTICE 'Голос успешно добавлен.';
+            RETURN NEW;
+        ELSE 
+            RAISE EXCEPTION 'Ошибка: невозможно добавить голос.';
+        END IF;
+    ELSIF (TG_OP = 'UPDATE') THEN
+        IF (
+            OLD.id_bid != NEW.id_bid OR OLD.id_user != NEW.id_user
+        )
+        THEN
+            RAISE EXCEPTION 'Ошибка: данные поля менять нельзя.';
+        ELSE
+            RETURN NEW;
+        END IF;
+    END IF;
+    RETURN NULL;
+END;
+
+$votes_validation$ LANGUAGE plpgsql;
+
+CREATE TRIGGER votes_validation_trigger
+AFTER INSERT OR UPDATE ON votes
+FOR EACH ROW EXECUTE PROCEDURE votes_validation();
 
 \c postgres
