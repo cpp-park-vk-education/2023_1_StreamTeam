@@ -213,7 +213,7 @@ json PostgreSQL::insert(json request)
 
         response["result"] = result[0][0].as<int>();
     }
-    catch (std::exception &e)
+    catch (std::exception const &e)
     {
         response[STATUS_FIELD] = ERROR_STATUS;
         response["msg"] = "PostgreSQL::insert: " + std::string(e.what());
@@ -225,6 +225,32 @@ json PostgreSQL::insert(json request)
 json PostgreSQL::remove(json request)
 {
     json response = {{STATUS_FIELD, SUCCESS_STATUS}};
+
+    std::string query = "DELETE FROM " + request["FROM"].get<std::string>();
+
+    query += " WHERE ";
+    for (size_t i = 0; i < request["WHERE"].size(); ++i)
+    {
+        query += request["WHERE"][i].get<std::string>();
+
+        if (i != request["WHERE"].size() - 1)
+        {
+            query += " AND ";
+        }
+    }
+
+    try
+    {
+        pqxx::work worker(*connection);
+        pqxx::result result = worker.exec(query);
+        worker.commit();
+    }
+    catch (std::exception const &e)
+    {
+        response[STATUS_FIELD] = ERROR_STATUS;
+        response["msg"] = "PostgreSQL::remove: " + std::string(e.what());
+    }
+
     return response;
 }
 
