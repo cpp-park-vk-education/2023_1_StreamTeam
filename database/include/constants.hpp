@@ -25,7 +25,7 @@ const std::string roomsTableName = "rooms";
 const std::vector<std::string> roomsTableColumns = {"name", "creator", "current_film"};
 
 const std::string filmsTableName = "films";
-const std::vector<std::string> filmsTableColumns = {"name", "link", "data"};
+const std::vector<std::string> filmsTableColumns = {"name", "link", "info"};
 
 const std::string messagesTableName = "messages";
 const std::vector<std::string> messagesTableColumns = {"id_room", "id_user", "message", "created_at"};

@@ -30,7 +30,7 @@ CREATE TABLE films (
     id serial PRIMARY KEY NOT NULL,
     name varchar(256) NOT NULL,
     link text NOT NULL UNIQUE,
-    data jsonb
+    info jsonb
 );
 
 CREATE TABLE rooms (

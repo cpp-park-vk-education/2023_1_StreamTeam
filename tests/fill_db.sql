@@ -27,8 +27,8 @@ INSERT INTO users (username, email, "password")
 SELECT data->>'username', data->>'email', data->>'password'
 FROM users_import;
 
-INSERT INTO films (name, link, "data")
-SELECT data->>'name', (data->>'link')::text, (data->>'data')::jsonb
+INSERT INTO films (name, link, "info")
+SELECT data->>'name', (data->>'link')::text, (data->>'info')::jsonb
 FROM films_import;
 
 INSERT INTO rooms (name, creator, current_film)
