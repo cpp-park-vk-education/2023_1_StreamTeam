@@ -91,6 +91,7 @@ json MessagesTable::getAuthorId(const size_t id) const
     json request = {{"SELECT", {"id_user"}},
                     {"FROM", {messagesTableName}},
                     {"WHERE", {"id=" + std::to_string(id)}}};
+
     json response = client->select(request);
 
     return response;

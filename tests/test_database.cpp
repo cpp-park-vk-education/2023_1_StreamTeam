@@ -11,6 +11,7 @@
 #include "BidsTable.hpp"
 #include "VotesTable.hpp"
 #include "FilmsTable.hpp"
+#include "MessagesTable.hpp"
 
 const std::string TEST_PATH = "test_config.cfg";
 const std::string USERS_DATA_PATH = "users_data.json";
@@ -19,6 +20,7 @@ const std::string VIEWERS_DATA_PATH = "viewers_data.json";
 const std::string BIDS_DATA_PATH = "bids_data.json";
 const std::string VOTES_DATA_PATH = "votes_data.json";
 const std::string FILMS_DATA_PATH = "films_data.json";
+const std::string MESSAGES_DATA_PATH = "messages_data.json";
 
 class BaseTestConnection : public ::testing::Test
 {
@@ -145,6 +147,21 @@ public:
     static json getFilms()
     {
         return getData(FILMS_DATA_PATH);
+    }
+};
+
+class MessagesTableTest : public BaseTestConnection
+{
+public:
+    static MessagesTable getMessagesTable()
+    {
+        MessagesTable table(client);
+        return table;
+    }
+
+    static json getMessages()
+    {
+        return getData(MESSAGES_DATA_PATH);
     }
 };
 
@@ -1165,6 +1182,145 @@ TEST_F(FilmsTableTest, getFilmInfoNotExist)
     size_t id = 10;
 
     json response = table.getFilmInfo(id);
+
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
+}
+
+TEST_F(MessagesTableTest, addMessage)
+{
+    MessagesTable table = MessagesTableTest::getMessagesTable();
+
+    json request = {{"id_room", 2}, {"id_user", 1}, {"message", "Хеллоу!"}};
+    json response = table.addMessage(request);
+
+    json messages = MessagesTableTest::getMessages();
+    size_t id = messages.size();
+
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id"], id + 1);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id_room"], request["id_room"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id_user"], request["id_user"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["message"], request["message"]);
+}
+
+TEST_F(MessagesTableTest, addMessage_INVALID)
+{
+    MessagesTable table = MessagesTableTest::getMessagesTable();
+
+    json request = {{"id_room", 10}, {"id_user", 1}, {"message", "Хеллоу!"}};
+    json response = table.addMessage(request);
+
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
+}
+
+TEST_F(MessagesTableTest, deleteMessageExist)
+{
+    MessagesTable table = MessagesTableTest::getMessagesTable();
+
+    json rooms = MessagesTableTest::getMessages();
+    size_t id = rooms.size();
+
+    json response = table.deleteMessage(id + 1);
+
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+}
+
+TEST_F(MessagesTableTest, deleteMessageNotExist)
+{
+    MessagesTable table = MessagesTableTest::getMessagesTable();
+
+    json response = table.deleteMessage(10);
+
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
+}
+
+TEST_F(MessagesTableTest, updateMessageExist)
+{
+    MessagesTable table = MessagesTableTest::getMessagesTable();
+    size_t id = 2;
+
+    json request = {{"id", id}, {"data", {{"message", "test..."}}}};
+    json response = table.updateMessage(request);
+
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id"], id);
+    EXPECT_EQ(response[RESULT_FIELD][0]["message"], request["data"]["message"]);
+}
+
+TEST_F(MessagesTableTest, updateMessageNotExist)
+{
+    MessagesTable table = MessagesTableTest::getMessagesTable();
+    size_t id = 10;
+
+    json request = {{"id", id}, {"data", {{"message", "test..."}}}};
+    json response = table.updateMessage(request);
+
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
+}
+
+TEST_F(MessagesTableTest, checkMessageExist)
+{
+    MessagesTable table = MessagesTableTest::getMessagesTable();
+
+    bool response = table.checkMessage(1);
+
+    EXPECT_EQ(response, true);
+}
+
+TEST_F(MessagesTableTest, checkMessageNotExist)
+{
+    MessagesTable table = MessagesTableTest::getMessagesTable();
+
+    bool response = table.checkMessage(10);
+
+    EXPECT_EQ(response, false);
+}
+
+TEST_F(MessagesTableTest, getMessageInfoExist)
+{
+    MessagesTable table = MessagesTableTest::getMessagesTable();
+    size_t id = 0;
+
+    json response = table.getMessageInfo(id + 1);
+
+    json messages = MessagesTableTest::getMessages();
+
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD][id]["id"], id + 1);
+    EXPECT_EQ(response[RESULT_FIELD][id]["id_room"], messages[id]["id_room"]);
+    EXPECT_EQ(response[RESULT_FIELD][id]["id_user"], messages[id]["id_user"]);
+    EXPECT_EQ(response[RESULT_FIELD][id]["message"], messages[id]["message"]);
+}
+
+TEST_F(MessagesTableTest, getMessageInfoNotExist)
+{
+    MessagesTable table = MessagesTableTest::getMessagesTable();
+    size_t id = 10;
+
+    json response = table.getMessageInfo(id);
+
+    EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
+}
+
+TEST_F(MessagesTableTest, getAuthorIdExist)
+{
+    MessagesTable table = MessagesTableTest::getMessagesTable();
+    size_t id = 0;
+
+    json response = table.getAuthorId(id + 1);
+
+    json messages = MessagesTableTest::getMessages();
+
+    EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
+    EXPECT_EQ(response[RESULT_FIELD][id]["id_user"], messages[id]["id_user"]);
+}
+
+TEST_F(MessagesTableTest, getAuthorIdNotExist)
+{
+    MessagesTable table = MessagesTableTest::getMessagesTable();
+    size_t id = 10;
+
+    json response = table.getAuthorId(id);
 
     EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
 }
