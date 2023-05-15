@@ -11,6 +11,7 @@ public:
     json addMessage(const json &info) const;
     json deleteMessage(const size_t id) const;
     json updateMessage(const json &info) const;
+    bool checkMessage(const size_t id) const;
     json getMessageInfo(const size_t id) const;
     json getAuthorId(const size_t id) const;
 
