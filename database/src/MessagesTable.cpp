@@ -96,3 +96,14 @@ json MessagesTable::getAuthorId(const size_t id) const
 
     return response;
 }
+
+json MessagesTable::getAllMessagesInRoom(const size_t id_room) const
+{
+    json request = {{"SELECT", {"*"}},
+                    {"FROM", {messagesTableName}},
+                    {"WHERE", {"id_room=" + std::to_string(id_room)}}};
+
+    json response = client->select(request);
+
+    return response;
+}

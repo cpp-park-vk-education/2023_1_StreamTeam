@@ -14,6 +14,7 @@ public:
     bool checkMessage(const size_t id) const;
     json getMessageInfo(const size_t id) const;
     json getAuthorId(const size_t id) const;
+    json getAllMessagesInRoom(const size_t id_room) const;
 
 private:
     std::shared_ptr<IDatabase> client;
