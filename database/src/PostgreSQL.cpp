@@ -205,8 +205,6 @@ json PostgreSQL::insert(json request)
 
     try
     {
-        std::cout << query << std::endl;
-
         pqxx::work worker(*connection);
         pqxx::result result = worker.exec(query + " RETURNING id");
         worker.commit();
@@ -257,5 +255,75 @@ json PostgreSQL::remove(json request)
 json PostgreSQL::update(json request)
 {
     json response = {{STATUS_FIELD, SUCCESS_STATUS}};
+
+    std::string query = "UPDATE " + request["table"].get<std::string>();
+
+    query += " SET ";
+    for (auto it = request["SET"].begin(); it != request["SET"].end(); ++it)
+    {
+        std::string key = it.key();
+
+        auto cur = it.value();
+        std::string value;
+
+        if (cur.is_null())
+        {
+            value = "NULL";
+        }
+        else if (cur.is_string())
+        {
+            value = "'" + cur.get<std::string>() + "'";
+        }
+        else if (cur.is_boolean())
+        {
+            if (cur.get<bool>())
+            {
+                value = "true";
+            }
+            else
+            {
+                value = "false";
+            }
+        }
+        else if (cur.is_object())
+        {
+            value = "'" + cur.dump() + "'";
+        }
+        else
+        {
+            value = std::to_string(cur.get<int>());
+        }
+
+        query += key + " = " + value;
+
+        if (std::next(it) != request["SET"].end())
+        {
+            query += ", ";
+        }
+    }
+
+    query += " WHERE ";
+    for (size_t i = 0; i < request["WHERE"].size(); ++i)
+    {
+        query += request["WHERE"][i].get<std::string>();
+
+        if (i != request["WHERE"].size() - 1)
+        {
+            query += " AND ";
+        }
+    }
+
+    try
+    {
+        pqxx::work worker(*connection);
+        pqxx::result result = worker.exec(query);
+        worker.commit();
+    }
+    catch (std::exception const &e)
+    {
+        response[STATUS_FIELD] = ERROR_STATUS;
+        response["msg"] = "PostgreSQL::update: " + std::string(e.what());
+    }
+
     return response;
 }
