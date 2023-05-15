@@ -14,7 +14,7 @@ json VotesTable::addVote(const json &info) const
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS)
     {
-        return getVoteInfo(response["result"]);
+        return getVoteInfo(response[RESULT_FIELD]);
     }
 
     return response;
@@ -57,7 +57,8 @@ json VotesTable::updateVote(const json &info) const
     size_t id = info["id"];
     if (!checkVote(id))
     {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "A vote with such ID does not exist."}};
+        return {{STATUS_FIELD, ERROR_STATUS},
+                {"msg", "A vote with such ID does not exist."}};
     }
     json request = {{"table", votesTableName},
                     {"SET", info["data"]},

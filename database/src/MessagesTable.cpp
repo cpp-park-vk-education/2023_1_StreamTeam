@@ -17,7 +17,7 @@ json MessagesTable::addMessage(const json &info) const
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS)
     {
-        return getMessageInfo(response["result"]);
+        return getMessageInfo(response[RESULT_FIELD]);
     }
 
     return response;
@@ -43,7 +43,8 @@ json MessagesTable::updateMessage(const json &info) const
     size_t id = info["id"];
     if (!checkMessage(id))
     {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "A message with such ID does not exist."}};
+        return {{STATUS_FIELD, ERROR_STATUS},
+                {"msg", "A message with such ID does not exist."}};
     }
     json request = {{"table", messagesTableName},
                     {"SET", info["data"]},

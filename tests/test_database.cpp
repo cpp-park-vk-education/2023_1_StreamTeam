@@ -159,10 +159,10 @@ TEST_F(UsersTableTest, addUserNotExist)
     size_t id = users.size();
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["result"][0]["id"], id + 1);
-    EXPECT_EQ(response["result"][0]["username"], request["username"]);
-    EXPECT_EQ(response["result"][0]["email"], request["email"]);
-    EXPECT_EQ(response["result"][0]["password"], request["password"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id"], id + 1);
+    EXPECT_EQ(response[RESULT_FIELD][0]["username"], request["username"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["email"], request["email"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["password"], request["password"]);
 }
 
 TEST_F(UsersTableTest, addUserExist)
@@ -205,10 +205,10 @@ TEST_F(UsersTableTest, updateUserExist)
     json response = table.updateUser(request);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["result"][0]["id"], id);
-    EXPECT_EQ(response["result"][0]["username"], request["data"]["username"]);
-    EXPECT_EQ(response["result"][0]["email"], request["data"]["email"]);
-    EXPECT_EQ(response["result"][0]["password"], request["data"]["password"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id"], id);
+    EXPECT_EQ(response[RESULT_FIELD][0]["username"], request["data"]["username"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["email"], request["data"]["email"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["password"], request["data"]["password"]);
 }
 
 TEST_F(UsersTableTest, updateUserNotExist)
@@ -313,10 +313,10 @@ TEST_F(RoomsTableTest, addRoom)
     size_t id = rooms.size();
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["result"][0]["id"], id + 1);
-    EXPECT_EQ(response["result"][0]["name"], request["name"]);
-    EXPECT_EQ(response["result"][0]["creator"], request["creator"]);
-    EXPECT_EQ(response["result"][0]["current_film"], request["current_film"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id"], id + 1);
+    EXPECT_EQ(response[RESULT_FIELD][0]["name"], request["name"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["creator"], request["creator"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["current_film"], request["current_film"]);
 }
 
 TEST_F(RoomsTableTest, deleteRoomExist)
@@ -349,9 +349,9 @@ TEST_F(RoomsTableTest, updateRoomExist)
     json response = table.updateRoom(request);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["result"][0]["id"], id);
-    EXPECT_EQ(response["result"][0]["name"], request["data"]["name"]);
-    EXPECT_EQ(response["result"][0]["creator"], request["data"]["creator"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id"], id);
+    EXPECT_EQ(response[RESULT_FIELD][0]["name"], request["data"]["name"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["creator"], request["data"]["creator"]);
 }
 
 TEST_F(RoomsTableTest, updateRoomNotExist)
@@ -563,11 +563,11 @@ TEST_F(ViewersTableTest, addUserToRoomExist)
     size_t id = viewers.size();
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["result"][0]["id"], id + 1);
-    EXPECT_EQ(response["result"][0]["id_user"], id_user);
-    EXPECT_EQ(response["result"][0]["id_room"], id_room);
-    EXPECT_EQ(response["result"][0]["points"], 0);
-    EXPECT_EQ(response["result"][0]["role"], GUEST_ROLE);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id"], id + 1);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id_user"], id_user);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id_room"], id_room);
+    EXPECT_EQ(response[RESULT_FIELD][0]["points"], 0);
+    EXPECT_EQ(response[RESULT_FIELD][0]["role"], GUEST_ROLE);
 }
 
 TEST_F(ViewersTableTest, addUserToRoomNotExist)
@@ -675,7 +675,7 @@ TEST_F(ViewersTableTest, setUserRoleInRoomExist)
     ViewersTable table = ViewersTableTest::getViewersTable();
     size_t id_user = 1;
     size_t id_room = 1;
-    std::string new_role = "banned";
+    std::string new_role = BANNED_ROLE;
 
     json response = table.setUserRoleInRoom(id_user, id_room, new_role);
 
@@ -700,7 +700,7 @@ TEST_F(ViewersTableTest, setUserRoleInRoomNotExist)
 {
     ViewersTable table = ViewersTableTest::getViewersTable();
     size_t id = 10;
-    std::string new_role = "guest";
+    std::string new_role = GUEST_ROLE;
 
     json response = table.setUserRoleInRoom(id, id, new_role);
 
@@ -718,13 +718,13 @@ TEST_F(BidsTableTest, addBid)
     size_t id = bids.size();
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["result"][0]["id"], id + 1);
-    EXPECT_EQ(response["result"][0]["id_creator"], request["id_creator"]);
-    EXPECT_EQ(response["result"][0]["id_room"], request["id_room"]);
-    EXPECT_EQ(response["result"][0]["text"], request["text"]);
-    EXPECT_EQ(response["result"][0]["min_points"], request["min_points"]);
-    EXPECT_EQ(response["result"][0]["begin_time"], request["begin_time"]);
-    EXPECT_EQ(response["result"][0]["lifetime"], request["lifetime"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id"], id + 1);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id_creator"], request["id_creator"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id_room"], request["id_room"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["text"], request["text"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["min_points"], request["min_points"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["begin_time"], request["begin_time"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["lifetime"], request["lifetime"]);
 }
 
 TEST_F(BidsTableTest, deleteBidExist)
@@ -757,13 +757,13 @@ TEST_F(BidsTableTest, updateBidExist)
     json response = table.updateBid(request);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["result"][0]["id"], id);
-    EXPECT_EQ(response["result"][0]["id_creator"], request["data"]["id_creator"]);
-    EXPECT_EQ(response["result"][0]["id_room"], request["data"]["id_room"]);
-    EXPECT_EQ(response["result"][0]["text"], request["data"]["text"]);
-    EXPECT_EQ(response["result"][0]["min_points"], request["data"]["min_points"]);
-    EXPECT_EQ(response["result"][0]["begin_time"], request["data"]["begin_time"]);
-    EXPECT_EQ(response["result"][0]["lifetime"], request["data"]["lifetime"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id"], id);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id_creator"], request["data"]["id_creator"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id_room"], request["data"]["id_room"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["text"], request["data"]["text"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["min_points"], request["data"]["min_points"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["begin_time"], request["data"]["begin_time"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["lifetime"], request["data"]["lifetime"]);
 }
 
 TEST_F(BidsTableTest, updateBidNotExist)
@@ -1014,11 +1014,11 @@ TEST_F(VotesTableTest, addVoteNotExist)
     size_t id = votes.size();
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["result"][0]["id"], id + 1);
-    EXPECT_EQ(response["result"][0]["id_bid"], request["id_bid"]);
-    EXPECT_EQ(response["result"][0]["id_user"], request["id_user"]);
-    EXPECT_EQ(response["result"][0]["vote"], request["vote"]);
-    EXPECT_EQ(response["result"][0]["points"], request["points"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id"], id + 1);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id_bid"], request["id_bid"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id_user"], request["id_user"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["vote"], request["vote"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["points"], request["points"]);
 }
 
 TEST_F(VotesTableTest, addVoteExist)
@@ -1061,11 +1061,11 @@ TEST_F(VotesTableTest, updateVoteExist)
     json response = table.updateVote(request);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["result"][0]["id"], id);
-    EXPECT_EQ(response["result"][0]["id_bid"], request["data"]["id_bid"]);
-    EXPECT_EQ(response["result"][0]["id_user"], request["data"]["id_user"]);
-    EXPECT_EQ(response["result"][0]["vote"], request["data"]["vote"]);
-    EXPECT_EQ(response["result"][0]["points"], request["data"]["points"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id"], id);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id_bid"], request["data"]["id_bid"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id_user"], request["data"]["id_user"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["vote"], request["data"]["vote"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["points"], request["data"]["points"]);
 }
 
 TEST_F(VotesTableTest, updateVoteNotExist)
@@ -1090,10 +1090,10 @@ TEST_F(FilmsTableTest, addFilm)
     size_t id = films.size();
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["result"][0]["id"], id + 1);
-    EXPECT_EQ(response["result"][0]["name"], request["name"]);
-    EXPECT_EQ(response["result"][0]["link"], request["link"]);
-    EXPECT_EQ(response["result"][0]["info"]["description"], request["info"]["description"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id"], id + 1);
+    EXPECT_EQ(response[RESULT_FIELD][0]["name"], request["name"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["link"], request["link"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["info"]["description"], request["info"]["description"]);
 }
 
 TEST_F(FilmsTableTest, deleteFilmExist)
@@ -1126,10 +1126,10 @@ TEST_F(FilmsTableTest, updateFilmExist)
     json response = table.updateFilm(request);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["result"][0]["id"], id);
-    EXPECT_EQ(response["result"][0]["name"], request["data"]["name"]);
-    EXPECT_EQ(response["result"][0]["link"], request["data"]["link"]);
-    EXPECT_EQ(response["result"][0]["info"]["description"], request["data"]["info"]["description"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id"], id);
+    EXPECT_EQ(response[RESULT_FIELD][0]["name"], request["data"]["name"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["link"], request["data"]["link"]);
+    EXPECT_EQ(response[RESULT_FIELD][0]["info"]["description"], request["data"]["info"]["description"]);
 }
 
 TEST_F(FilmsTableTest, updateFilmNotExist)

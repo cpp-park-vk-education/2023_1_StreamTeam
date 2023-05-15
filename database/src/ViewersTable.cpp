@@ -36,7 +36,7 @@ json ViewersTable::addUserToRoom(const size_t id_user, const size_t id_room) con
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS)
     {
-        return getViewersInfo(response["result"]);
+        return getViewersInfo(response[RESULT_FIELD]);
     }
 
     return response;
@@ -102,7 +102,8 @@ json ViewersTable::setUserPointsInRoom(const size_t id_user, const size_t id_roo
 
     if (checkUserInRoom(id_user, id_room)[STATUS_FIELD] == ERROR_STATUS)
     {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "A user with such ID=id_user does not exist in the room with ID=id_room."}};
+        return {{STATUS_FIELD, ERROR_STATUS},
+                {"msg", "A user with such ID=id_user does not exist in the room with ID=id_room."}};
     }
     json request = {{"table", viewersTableName},
                     {"SET", info},
@@ -142,7 +143,8 @@ json ViewersTable::setUserRoleInRoom(const size_t id_user, const size_t id_room,
 
     if (checkUserInRoom(id_user, id_room)[STATUS_FIELD] == ERROR_STATUS)
     {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "A user with such ID=id_user does not exist in the room with ID=id_room."}};
+        return {{STATUS_FIELD, ERROR_STATUS},
+                {"msg", "A user with such ID=id_user does not exist in the room with ID=id_room."}};
     }
     json request = {{"table", viewersTableName},
                     {"SET", info},

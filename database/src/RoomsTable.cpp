@@ -16,7 +16,7 @@ json RoomsTable::addRoom(const json &info) const
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS)
     {
-        return getRoomInfo(response["result"]);
+        return getRoomInfo(response[RESULT_FIELD]);
     }
 
     return response;
@@ -42,7 +42,8 @@ json RoomsTable::updateRoom(const json &info) const
     size_t id = info["id"];
     if (!checkRoom(id))
     {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "A room with such ID does not exist."}};
+        return {{STATUS_FIELD, ERROR_STATUS},
+                {"msg", "A room with such ID does not exist."}};
     }
     json request = {{"table", roomsTableName},
                     {"SET", info["data"]},

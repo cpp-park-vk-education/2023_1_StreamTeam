@@ -14,7 +14,7 @@ json FilmsTable::addFilm(const json &info) const
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS)
     {
-        return getFilmInfo(response["result"]);
+        return getFilmInfo(response[RESULT_FIELD]);
     }
 
     return response;
@@ -40,7 +40,8 @@ json FilmsTable::updateFilm(const json &info) const
     size_t id = info["id"];
     if (!checkFilm(id))
     {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "A film with such ID does not exist."}};
+        return {{STATUS_FIELD, ERROR_STATUS},
+                {"msg", "A film with such ID does not exist."}};
     }
     json request = {{"table", filmsTableName},
                     {"SET", info["data"]},

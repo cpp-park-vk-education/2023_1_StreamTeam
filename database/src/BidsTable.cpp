@@ -28,7 +28,7 @@ json BidsTable::addBid(const json &info) const
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS)
     {
-        return getBidInfo(response["result"]);
+        return getBidInfo(response[RESULT_FIELD]);
     }
 
     return response;
@@ -54,7 +54,8 @@ json BidsTable::updateBid(const json &info) const
     size_t id = info["id"];
     if (!checkBid(id))
     {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "A bid with such ID does not exist."}};
+        return {{STATUS_FIELD, ERROR_STATUS},
+                {"msg", "A bid with such ID does not exist."}};
     }
     json request = {{"table", bidsTableName},
                     {"SET", info["data"]},

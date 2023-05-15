@@ -209,7 +209,7 @@ json PostgreSQL::insert(json request)
         pqxx::result result = worker.exec(query + " RETURNING id");
         worker.commit();
 
-        response["result"] = result[0][0].as<int>();
+        response[RESULT_FIELD] = result[0][0].as<int>();
     }
     catch (std::exception const &e)
     {

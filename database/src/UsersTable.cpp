@@ -14,7 +14,7 @@ json UsersTable::addUser(const json &info) const
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS)
     {
-        return getUserInfo(response["result"]);
+        return getUserInfo(response[RESULT_FIELD]);
     }
 
     return response;
@@ -42,7 +42,8 @@ json UsersTable::updateUser(const json &info) const
     size_t id = info["id"];
     if (!checkUserByID(id))
     {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "A user with such ID does not exist."}};
+        return {{STATUS_FIELD, ERROR_STATUS},
+                {"msg", "A user with such ID does not exist."}};
     }
     json request = {{"table", usersTableName},
                     {"SET", info["data"]},
