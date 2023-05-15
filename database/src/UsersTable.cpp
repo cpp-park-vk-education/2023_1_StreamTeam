@@ -31,13 +31,30 @@ json UsersTable::deleteUser(const size_t id) const
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->remove(request);
+
     return response;
 }
 
 json UsersTable::updateUser(const json &info) const
 {
-    json request = info;
+    std::cout << info["data"] << std::endl;
+
+    size_t id = info["id"];
+    if (!checkUserByID(id))
+    {
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "A user with such ID does not exist."}};
+    }
+    json request = {{"table", usersTableName},
+                    {"SET", info["data"]},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
     json response = client->update(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS)
+    {
+        return getUserInfo(id);
+    }
+
     return response;
 }
 
@@ -93,6 +110,7 @@ json UsersTable::getUserInfo(const size_t id) const
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
+
     return response;
 }
 
@@ -103,6 +121,7 @@ json UsersTable::getUserIdByEmail(const std::string &email) const
                     {"WHERE", {"email='" + email + "'"}}};
 
     json response = client->select(request);
+
     return response;
 }
 
@@ -113,6 +132,7 @@ json UsersTable::getUserIdByUsername(const std::string &username) const
                     {"WHERE", {"username='" + username + "'"}}};
 
     json response = client->select(request);
+
     return response;
 }
 
@@ -123,5 +143,6 @@ json UsersTable::getUserPassword(const size_t id) const
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
+
     return response;
 }

@@ -40,8 +40,22 @@ json MessagesTable::deleteMessage(const size_t id) const
 
 json MessagesTable::updateMessage(const json &info) const
 {
-    json request = info;
+    size_t id = info["id"];
+    if (!checkMessage(id))
+    {
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "A message with such ID does not exist."}};
+    }
+    json request = {{"table", messagesTableName},
+                    {"SET", info["data"]},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
     json response = client->update(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS)
+    {
+        return getMessageInfo(id);
+    }
+
     return response;
 }
 
@@ -67,6 +81,7 @@ json MessagesTable::getMessageInfo(const size_t id) const
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
+
     return response;
 }
 

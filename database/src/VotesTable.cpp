@@ -54,8 +54,22 @@ json VotesTable::deleteVote(const size_t id_user, const size_t id_bid) const
 
 json VotesTable::updateVote(const json &info) const
 {
-    json request = info;
+    size_t id = info["id"];
+    if (!checkVote(id))
+    {
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "A vote with such ID does not exist."}};
+    }
+    json request = {{"table", votesTableName},
+                    {"SET", info["data"]},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
     json response = client->update(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS)
+    {
+        return getVoteInfo(id);
+    }
+
     return response;
 }
 
@@ -66,6 +80,7 @@ json VotesTable::getVoteInfo(const size_t id) const
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
+
     return response;
 }
 

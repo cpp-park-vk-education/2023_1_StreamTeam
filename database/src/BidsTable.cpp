@@ -51,8 +51,22 @@ json BidsTable::deleteBid(const size_t id) const
 
 json BidsTable::updateBid(const json &info) const
 {
-    json request = info;
+    size_t id = info["id"];
+    if (!checkBid(id))
+    {
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "A bid with such ID does not exist."}};
+    }
+    json request = {{"table", bidsTableName},
+                    {"SET", info["data"]},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
     json response = client->update(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS)
+    {
+        return getBidInfo(id);
+    }
+
     return response;
 }
 
@@ -78,6 +92,7 @@ json BidsTable::getBidInfo(const size_t id) const
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
+
     return response;
 }
 
@@ -88,6 +103,7 @@ json BidsTable::getVotesFor(const size_t id) const
                     {"WHERE", {bidsTableName + ".id=" + std::to_string(id), bidsTableName + ".id=" + votesTableName + ".id_bid", votesTableName + ".vote=TRUE"}}};
 
     json response = client->select(request);
+
     return response;
 }
 
@@ -170,5 +186,6 @@ json BidsTable::getWinners(const size_t id, const bool answer) const
                     {"WHERE", {bidsTableName + ".id=" + std::to_string(id), bidsTableName + ".id=" + votesTableName + ".id_bid", votesTableName + ".vote=" + strAnswer}}};
 
     json response = client->select(request);
+
     return response;
 }

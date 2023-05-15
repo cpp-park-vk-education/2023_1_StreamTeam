@@ -6,7 +6,7 @@ json FilmsTable::addFilm(const json &info) const
 {
     json request = {{"INTO", filmsTableName},
                     {"columns", filmsTableColumns},
-                    {"VALUES", {info["name"], info["link"], info["data"]}}};
+                    {"VALUES", {info["name"], info["link"], info["info"]}}};
 
     std::cout << request << std::endl;
 
@@ -37,8 +37,22 @@ json FilmsTable::deleteFilm(const size_t id) const
 
 json FilmsTable::updateFilm(const json &info) const
 {
-    json request = info;
+    size_t id = info["id"];
+    if (!checkFilm(id))
+    {
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "A film with such ID does not exist."}};
+    }
+    json request = {{"table", filmsTableName},
+                    {"SET", info["data"]},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
     json response = client->update(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS)
+    {
+        return getFilmInfo(id);
+    }
+
     return response;
 }
 
@@ -64,5 +78,6 @@ json FilmsTable::getFilmInfo(const size_t id) const
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
+
     return response;
 }

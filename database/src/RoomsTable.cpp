@@ -33,13 +33,28 @@ json RoomsTable::deleteRoom(const size_t id) const
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->remove(request);
+
     return response;
 }
 
 json RoomsTable::updateRoom(const json &info) const
 {
-    json request = info;
+    size_t id = info["id"];
+    if (!checkRoom(id))
+    {
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "A room with such ID does not exist."}};
+    }
+    json request = {{"table", roomsTableName},
+                    {"SET", info["data"]},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
     json response = client->update(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS)
+    {
+        return getRoomInfo(id);
+    }
+
     return response;
 }
 
@@ -65,6 +80,7 @@ json RoomsTable::getRoomInfo(const size_t id) const
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
+
     return response;
 }
 
@@ -74,6 +90,7 @@ json RoomsTable::getAllRooms() const
                     {"FROM", {roomsTableName}}};
 
     json response = client->select(request);
+
     return response;
 }
 
@@ -84,6 +101,7 @@ json RoomsTable::getCurrentFilm(const size_t id) const
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
+
     return response;
 }
 

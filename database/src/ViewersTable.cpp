@@ -44,18 +44,7 @@ json ViewersTable::addUserToRoom(const size_t id_user, const size_t id_room) con
 
 json ViewersTable::deleteUserFromRoom(const size_t id_user, const size_t id_room) const
 {
-    if (checkUserInRoom(id_user, id_room)[STATUS_FIELD] = ERROR_STATUS)
-    {
-        return {{STATUS_FIELD, ERROR_STATUS},
-                {"msg", "A user with such ID=id_user does not exist in the room with ID=id_room."}};
-    }
-    size_t id = checkUserInRoom(id_user, id_room)[RESULT_FIELD];
-    // Удаление в ViewersTable = присвоение пользователю роль left в столбце "role".
-    json request = {{"FROM", viewersTableName},
-                    {"WHERE", {"id=" + std::to_string(id)}}};
-
-    json response = client->update(request);
-    return {STATUS_FIELD, SUCCESS_STATUS};
+    return setUserRoleInRoom(id_user, id_room, LEFT_ROLE);
 }
 
 json ViewersTable::checkUserInRoom(const size_t id_user, const size_t id_room) const
@@ -79,6 +68,16 @@ json ViewersTable::getViewersInfo(const size_t id) const
     return response;
 }
 
+json ViewersTable::getViewersInfo(const size_t id_user, const size_t id_room) const
+{
+    json request = {{"SELECT", {"*"}},
+                    {"FROM", {viewersTableName}},
+                    {"WHERE", {"id_user=" + std::to_string(id_user), "id_room=" + std::to_string(id_room)}}};
+
+    json response = client->select(request);
+    return response;
+}
+
 json ViewersTable::getUserPointsInRoom(const size_t id_user, const size_t id_room) const
 {
     json request = {{"SELECT", {"points"}},
@@ -97,10 +96,25 @@ json ViewersTable::getUserPointsInRoom(const size_t id_user, const size_t id_roo
 
 json ViewersTable::setUserPointsInRoom(const size_t id_user, const size_t id_room, const size_t points) const
 {
-    json request = {{{"id_user", id_user},
-                     {"id_room", id_room},
-                     {"points", points}}};
+    json info = {{"id_user", id_user},
+                 {"id_room", id_room},
+                 {"points", points}};
+
+    if (checkUserInRoom(id_user, id_room)[STATUS_FIELD] == ERROR_STATUS)
+    {
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "A user with such ID=id_user does not exist in the room with ID=id_room."}};
+    }
+    json request = {{"table", viewersTableName},
+                    {"SET", info},
+                    {"WHERE", {"id_user=" + std::to_string(id_user), "id_room=" + std::to_string(id_room)}}};
+
     json response = client->update(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS)
+    {
+        return getViewersInfo(id_user, id_room);
+    }
+
     return response;
 }
 
@@ -122,9 +136,24 @@ json ViewersTable::getUserRoleInRoom(const size_t id_user, const size_t id_room)
 
 json ViewersTable::setUserRoleInRoom(const size_t id_user, const size_t id_room, const std::string &role) const
 {
-    json request = {{{"id_user", id_user},
-                     {"id_room", id_room},
-                     {"role", role}}};
+    json info = {{"id_user", id_user},
+                 {"id_room", id_room},
+                 {"role", role}};
+
+    if (checkUserInRoom(id_user, id_room)[STATUS_FIELD] == ERROR_STATUS)
+    {
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "A user with such ID=id_user does not exist in the room with ID=id_room."}};
+    }
+    json request = {{"table", viewersTableName},
+                    {"SET", info},
+                    {"WHERE", {"id_user=" + std::to_string(id_user), "id_room=" + std::to_string(id_room)}}};
+
     json response = client->update(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS)
+    {
+        return getViewersInfo(id_user, id_room);
+    }
+
     return response;
 }
