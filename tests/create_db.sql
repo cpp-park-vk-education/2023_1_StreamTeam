@@ -156,6 +156,20 @@ FOR EACH ROW EXECUTE PROCEDURE bids_validation();
 
 CREATE OR REPLACE FUNCTION votes_validation() RETURNS TRIGGER AS $votes_validation$
 BEGIN
+    IF NEW.points < (
+            SELECT min_points FROM bids 
+            WHERE id = NEW.id_bid)
+    THEN
+        RAISE EXCEPTION 'Ошибка: неверное количество очков.';
+    END IF;
+
+    IF NOW() <= (
+            SELECT begin_time + lifetime FROM bids 
+            WHERE id = NEW.id_bid)
+    THEN
+        RAISE EXCEPTION 'Ошибка: ставка уже закрыта.';
+    END IF;
+
     IF (TG_OP = 'INSERT') THEN
         IF (
             EXISTS (
