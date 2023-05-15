@@ -6,12 +6,6 @@
         "points": 100
     },
     {
-        "id_bid": 2,
-        "id_user": 1,
-        "vote": true,
-        "points": 200
-    },
-    {
         "id_bid": 1,
         "id_user": 3,
         "vote": true,

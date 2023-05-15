@@ -11,11 +11,11 @@ CREATE UNLOGGED TABLE IF NOT EXISTS rooms_import(data jsonb);
 CREATE UNLOGGED TABLE IF NOT EXISTS films_import(data jsonb);
 \copy films_import FROM 'films_import.json'
 
-CREATE UNLOGGED TABLE IF NOT EXISTS messages_import(data jsonb);
-\copy messages_import FROM 'messages_import.json'
-
 CREATE UNLOGGED TABLE IF NOT EXISTS viewers_import(data jsonb);
 \copy viewers_import FROM 'viewers_import.json'
+
+CREATE UNLOGGED TABLE IF NOT EXISTS messages_import(data jsonb);
+\copy messages_import FROM 'messages_import.json'
 
 CREATE UNLOGGED TABLE IF NOT EXISTS bids_import(data jsonb);
 \copy bids_import FROM 'bids_import.json'
@@ -35,13 +35,13 @@ INSERT INTO rooms (name, creator, current_film)
 SELECT data->>'name', (data->>'creator')::int, (data->>'current_film')::int
 FROM rooms_import;
 
-INSERT INTO messages (id_room, id_user, message)
-SELECT (data->>'id_room')::int, (data->>'id_user')::int, data->>'message'
-FROM messages_import;
-
 INSERT INTO viewers (id_user, id_room, points, "role")
 SELECT (data->>'id_user')::int, (data->>'id_room')::int, (data->>'points')::int, (data->>'role')::viewer_role
 FROM viewers_import;
+
+INSERT INTO messages (id_room, id_user, message)
+SELECT (data->>'id_room')::int, (data->>'id_user')::int, data->>'message'
+FROM messages_import;
 
 INSERT INTO bids (id_creator, id_room, "text", min_points, begin_time, lifetime)
 SELECT (data->>'id_creator')::int, (data->>'id_room')::int, data->>'text', (data->>'min_points')::int, (data->>'begin_time')::timestamp, (data->>'lifetime')::time

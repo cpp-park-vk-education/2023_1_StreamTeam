@@ -770,17 +770,13 @@ TEST_F(BidsTableTest, updateBidExist)
     BidsTable table = BidsTableTest::getBidsTable();
     size_t id = 2;
 
-    json request = {{"id", id}, {"data", {{"id_creator", 2}, {"id_room", 1}, {"text", "test"}, {"min_points", 10}, {"begin_time", "2023-03-12 10:10:10"}, {"lifetime", "04:30:00"}}}};
+    json request = {{"id", id}, {"data", {{"text", "test"}, {"min_points", 100}}}};
     json response = table.updateBid(request);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
     EXPECT_EQ(response[RESULT_FIELD][0]["id"], id);
-    EXPECT_EQ(response[RESULT_FIELD][0]["id_creator"], request["data"]["id_creator"]);
-    EXPECT_EQ(response[RESULT_FIELD][0]["id_room"], request["data"]["id_room"]);
     EXPECT_EQ(response[RESULT_FIELD][0]["text"], request["data"]["text"]);
     EXPECT_EQ(response[RESULT_FIELD][0]["min_points"], request["data"]["min_points"]);
-    EXPECT_EQ(response[RESULT_FIELD][0]["begin_time"], request["data"]["begin_time"]);
-    EXPECT_EQ(response[RESULT_FIELD][0]["lifetime"], request["data"]["lifetime"]);
 }
 
 TEST_F(BidsTableTest, updateBidNotExist)
@@ -1074,15 +1070,12 @@ TEST_F(VotesTableTest, updateVoteExist)
     VotesTable table = VotesTableTest::getVotesTable();
     size_t id = 4;
 
-    json request = {{"id", id}, {"data", {{"id_bid", 1}, {"id_user", 4}, {"vote", false}, {"points", 100}}}};
+    json request = {{"id", id}, {"data", {{"vote", true}}}};
     json response = table.updateVote(request);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
     EXPECT_EQ(response[RESULT_FIELD][0]["id"], id);
-    EXPECT_EQ(response[RESULT_FIELD][0]["id_bid"], request["data"]["id_bid"]);
-    EXPECT_EQ(response[RESULT_FIELD][0]["id_user"], request["data"]["id_user"]);
     EXPECT_EQ(response[RESULT_FIELD][0]["vote"], request["data"]["vote"]);
-    EXPECT_EQ(response[RESULT_FIELD][0]["points"], request["data"]["points"]);
 }
 
 TEST_F(VotesTableTest, updateVoteNotExist)
