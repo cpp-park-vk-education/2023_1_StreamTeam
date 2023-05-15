@@ -179,7 +179,10 @@ TEST_F(UsersTableTest, deleteUserExist)
 {
     UsersTable table = UsersTableTest::getUsersTable();
 
-    json response = table.deleteUser(0);
+    json users = UsersTableTest::getUsers();
+    size_t id = users.size();
+
+    json response = table.deleteUser(id + 1);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
 }
@@ -321,7 +324,10 @@ TEST_F(RoomsTableTest, deleteRoomExist)
 {
     RoomsTable table = RoomsTableTest::getRoomsTable();
 
-    json response = table.deleteRoom(0);
+    json rooms = RoomsTableTest::getRooms();
+    size_t id = rooms.size();
+
+    json response = table.deleteRoom(id + 1);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
 }
@@ -749,9 +755,11 @@ TEST_F(BidsTableTest, addBid)
 TEST_F(BidsTableTest, deleteBidExist)
 {
     BidsTable table = BidsTableTest::getBidsTable();
-    json bids = BidsTableTest::getBids();
 
-    json response = table.deleteBid(0);
+    json bids = BidsTableTest::getBids();
+    size_t id = bids.size();
+
+    json response = table.deleteBid(id + 1);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
 }
@@ -759,7 +767,6 @@ TEST_F(BidsTableTest, deleteBidExist)
 TEST_F(BidsTableTest, deleteBidNotExist)
 {
     BidsTable table = BidsTableTest::getBidsTable();
-    json bids = BidsTableTest::getBids();
 
     json response = table.deleteBid(10);
 
@@ -1053,9 +1060,11 @@ TEST_F(VotesTableTest, addVoteExist)
 TEST_F(VotesTableTest, deleteVoteExist)
 {
     VotesTable table = VotesTableTest::getVotesTable();
-    json votes = VotesTableTest::getVotes();
 
-    json response = table.deleteVote(0);
+    json votes = VotesTableTest::getVotes();
+    size_t id = votes.size();
+
+    json response = table.deleteVote(id + 1);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
 }
@@ -1063,7 +1072,6 @@ TEST_F(VotesTableTest, deleteVoteExist)
 TEST_F(VotesTableTest, deleteVoteNotExist)
 {
     VotesTable table = VotesTableTest::getVotesTable();
-    json votes = VotesTableTest::getVotes();
 
     json response = table.deleteVote(10);
 
@@ -1119,7 +1127,10 @@ TEST_F(FilmsTableTest, deleteFilmExist)
 {
     FilmsTable table = FilmsTableTest::getFilmsTable();
 
-    json response = table.deleteFilm(0);
+    json films = FilmsTableTest::getFilms();
+    size_t id = films.size();
+
+    json response = table.deleteFilm(id + 1);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
 }
