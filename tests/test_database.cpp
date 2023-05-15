@@ -199,17 +199,16 @@ TEST_F(UsersTableTest, deleteUserNotExist)
 TEST_F(UsersTableTest, updateUserExist)
 {
     UsersTable table = UsersTableTest::getUsersTable();
-    json users = UsersTableTest::getUsers();
-    size_t id = 0;
+    size_t id = 4;
 
-    json request = {{"id", id}, {"username", "test1"}, {"email", "test1@mail.ru"}, {"password", "test1"}};
+    json request = {{"id", id}, {"data", {{"username", "test1"}, {"email", "test1@mail.ru"}, {"password", "test1"}}}};
     json response = table.updateUser(request);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["user"]["id"], id);
-    EXPECT_EQ(response["user"]["username"], request["username"]);
-    EXPECT_EQ(response["user"]["email"], request["email"]);
-    EXPECT_EQ(response["user"]["password"], request["password"]);
+    EXPECT_EQ(response["result"][0]["id"], id);
+    EXPECT_EQ(response["result"][0]["username"], request["data"]["username"]);
+    EXPECT_EQ(response["result"][0]["email"], request["data"]["email"]);
+    EXPECT_EQ(response["result"][0]["password"], request["data"]["password"]);
 }
 
 TEST_F(UsersTableTest, updateUserNotExist)
@@ -217,7 +216,7 @@ TEST_F(UsersTableTest, updateUserNotExist)
     UsersTable table = UsersTableTest::getUsersTable();
     size_t id = 10;
 
-    json request = {{"id", id}, {"username", "test1"}, {"email", "test1@mail.ru"}, {"password", "test1"}};
+    json request = {{"id", id}, {"data", {{"username", "test1"}, {"email", "test1@mail.ru"}, {"password", "test1"}}}};
     json response = table.updateUser(request);
 
     EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
@@ -344,16 +343,15 @@ TEST_F(RoomsTableTest, deleteRoomNotExist)
 TEST_F(RoomsTableTest, updateRoomExist)
 {
     RoomsTable table = RoomsTableTest::getRoomsTable();
-    json rooms = RoomsTableTest::getRooms();
-    size_t id = 0;
+    size_t id = 2;
 
-    json request = {{"id", id}, {"name", "test"}, {"creator", "2"}};
+    json request = {{"id", id}, {"data", {{"name", "test"}, {"creator", 3}}}};
     json response = table.updateRoom(request);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["room"]["id"], id);
-    EXPECT_EQ(response["room"]["name"], request["name"]);
-    EXPECT_EQ(response["room"]["creator"], request["creator"]);
+    EXPECT_EQ(response["result"][0]["id"], id);
+    EXPECT_EQ(response["result"][0]["name"], request["data"]["name"]);
+    EXPECT_EQ(response["result"][0]["creator"], request["data"]["creator"]);
 }
 
 TEST_F(RoomsTableTest, updateRoomNotExist)
@@ -361,7 +359,7 @@ TEST_F(RoomsTableTest, updateRoomNotExist)
     RoomsTable table = RoomsTableTest::getRoomsTable();
     size_t id = 10;
 
-    json request = {{"id", id}, {"name", "test"}, {"creator", "2"}};
+    json request = {{"id", id}, {"data", {{"name", "test"}, {"creator", 2}}}};
     json response = table.updateRoom(request);
 
     EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
@@ -617,32 +615,21 @@ TEST_F(ViewersTableTest, getUserPointsInRoomNotExist)
 TEST_F(ViewersTableTest, setUserPointsInRoomExist)
 {
     ViewersTable table = ViewersTableTest::getViewersTable();
-    json viewers = ViewersTableTest::getViewers();
-    size_t id = 1;
-    size_t old_points;
+    size_t id_user = 1;
+    size_t id_room = 1;
     size_t new_points = 1000;
 
-    for (size_t i = 0; i < viewers.size(); ++i)
-    {
-        if (viewers[i]["id_user"] == id & viewers[i]["id_room"] == id)
-        {
-            old_points = viewers[i]["points"];
-        }
-    }
-
-    json response = table.setUserPointsInRoom(id, id, new_points);
+    json response = table.setUserPointsInRoom(id_user, id_room, new_points);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["id_user"], id);
-    EXPECT_EQ(response["id_room"], id);
-    EXPECT_EQ(response["old_points"], old_points);
-    EXPECT_EQ(response["new_points"], new_points);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id_user"], id_user);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id_user"], id_room);
+    EXPECT_EQ(response[RESULT_FIELD][0]["points"], new_points);
 }
 
 TEST_F(ViewersTableTest, setUserPointsInRoomNotExist)
 {
     ViewersTable table = ViewersTableTest::getViewersTable();
-    json viewers = ViewersTableTest::getViewers();
     size_t id = 10;
     size_t new_points = 1000;
 
@@ -686,32 +673,21 @@ TEST_F(ViewersTableTest, getUserRoleInRoomNotExist)
 TEST_F(ViewersTableTest, setUserRoleInRoomExist)
 {
     ViewersTable table = ViewersTableTest::getViewersTable();
-    json viewers = ViewersTableTest::getViewers();
-    size_t id = 1;
-    std::string old_role;
+    size_t id_user = 1;
+    size_t id_room = 1;
     std::string new_role = "banned";
 
-    for (size_t i = 0; i < viewers.size(); ++i)
-    {
-        if (viewers[i]["id_user"] == id & viewers[i]["id_room"] == id)
-        {
-            old_role = viewers[i]["role"];
-        }
-    }
-
-    json response = table.setUserRoleInRoom(id, id, new_role);
+    json response = table.setUserRoleInRoom(id_user, id_room, new_role);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["id_user"], id);
-    EXPECT_EQ(response["id_room"], id);
-    EXPECT_EQ(response["old_role"], old_role);
-    EXPECT_EQ(response["new_role"], new_role);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id_user"], id_user);
+    EXPECT_EQ(response[RESULT_FIELD][0]["id_user"], id_room);
+    EXPECT_EQ(response[RESULT_FIELD][0]["role"], new_role);
 }
 
 TEST_F(ViewersTableTest, setUserRoleInRoomExist_INVALID)
 {
     ViewersTable table = ViewersTableTest::getViewersTable();
-    json viewers = ViewersTableTest::getViewers();
     size_t id = 1;
     std::string new_role = "something";
 
@@ -723,7 +699,6 @@ TEST_F(ViewersTableTest, setUserRoleInRoomExist_INVALID)
 TEST_F(ViewersTableTest, setUserRoleInRoomNotExist)
 {
     ViewersTable table = ViewersTableTest::getViewersTable();
-    json viewers = ViewersTableTest::getViewers();
     size_t id = 10;
     std::string new_role = "guest";
 
@@ -776,20 +751,19 @@ TEST_F(BidsTableTest, deleteBidNotExist)
 TEST_F(BidsTableTest, updateBidExist)
 {
     BidsTable table = BidsTableTest::getBidsTable();
-    json users = BidsTableTest::getBids();
-    size_t id = 0;
+    size_t id = 2;
 
-    json request = {{"id", id}, {"id_creator", 2}, {"id_room", 1}, {"text", "test"}, {"min_points", 10}, {"begin_time", "2023-03-12 10:10:10"}, {"lifetime", "04:30:00"}};
+    json request = {{"id", id}, {"data", {{"id_creator", 2}, {"id_room", 1}, {"text", "test"}, {"min_points", 10}, {"begin_time", "2023-03-12 10:10:10"}, {"lifetime", "04:30:00"}}}};
     json response = table.updateBid(request);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["bid"]["id"], id);
-    EXPECT_EQ(response["bid"]["id_creator"], request["id_creator"]);
-    EXPECT_EQ(response["bid"]["id_room"], request["id_room"]);
-    EXPECT_EQ(response["bid"]["text"], request["text"]);
-    EXPECT_EQ(response["bid"]["min_points"], request["min_points"]);
-    EXPECT_EQ(response["bid"]["begin_time"], request["begin_time"]);
-    EXPECT_EQ(response["bid"]["lifetime"], request["lifetime"]);
+    EXPECT_EQ(response["result"][0]["id"], id);
+    EXPECT_EQ(response["result"][0]["id_creator"], request["data"]["id_creator"]);
+    EXPECT_EQ(response["result"][0]["id_room"], request["data"]["id_room"]);
+    EXPECT_EQ(response["result"][0]["text"], request["data"]["text"]);
+    EXPECT_EQ(response["result"][0]["min_points"], request["data"]["min_points"]);
+    EXPECT_EQ(response["result"][0]["begin_time"], request["data"]["begin_time"]);
+    EXPECT_EQ(response["result"][0]["lifetime"], request["data"]["lifetime"]);
 }
 
 TEST_F(BidsTableTest, updateBidNotExist)
@@ -797,7 +771,7 @@ TEST_F(BidsTableTest, updateBidNotExist)
     BidsTable table = BidsTableTest::getBidsTable();
     size_t id = 10;
 
-    json request = {{"id", id}, {"id_creator", 2}, {"id_room", 1}, {"text", "test"}, {"min_points", 10}, {"begin_time", "2023-03-12 10:10:10"}, {"lifetime", "04:30:00"}};
+    json request = {{"id", id}, {"data", {{"id_creator", 2}, {"id_room", 1}, {"text", "test"}, {"min_points", 10}, {"begin_time", "2023-03-12 10:10:10"}, {"lifetime", "04:30:00"}}}};
     json response = table.updateBid(request);
 
     EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
@@ -1081,18 +1055,17 @@ TEST_F(VotesTableTest, deleteVoteNotExist)
 TEST_F(VotesTableTest, updateVoteExist)
 {
     VotesTable table = VotesTableTest::getVotesTable();
-    json votes = VotesTableTest::getVotes();
-    size_t id = 0;
+    size_t id = 4;
 
-    json request = {{"id", id}, {"id_bid", 1}, {"id_user", 1}, {"vote", false}, {"points", 100}};
+    json request = {{"id", id}, {"data", {{"id_bid", 1}, {"id_user", 4}, {"vote", false}, {"points", 100}}}};
     json response = table.updateVote(request);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["vote"]["id"], id);
-    EXPECT_EQ(response["vote"]["id_bid"], request["id_bid"]);
-    EXPECT_EQ(response["vote"]["id_user"], request["id_user"]);
-    EXPECT_EQ(response["vote"]["vote"], request["vote"]);
-    EXPECT_EQ(response["vote"]["points"], request["points"]);
+    EXPECT_EQ(response["result"][0]["id"], id);
+    EXPECT_EQ(response["result"][0]["id_bid"], request["data"]["id_bid"]);
+    EXPECT_EQ(response["result"][0]["id_user"], request["data"]["id_user"]);
+    EXPECT_EQ(response["result"][0]["vote"], request["data"]["vote"]);
+    EXPECT_EQ(response["result"][0]["points"], request["data"]["points"]);
 }
 
 TEST_F(VotesTableTest, updateVoteNotExist)
@@ -1100,7 +1073,7 @@ TEST_F(VotesTableTest, updateVoteNotExist)
     VotesTable table = VotesTableTest::getVotesTable();
     size_t id = 10;
 
-    json request = {{"id", id}, {"id_bid", 1}, {"id_user", 1}, {"vote", false}, {"points", 100}};
+    json request = {{"id", id}, {"data", {{"id_bid", 1}, {"id_user", 1}, {"vote", false}, {"points", 100}}}};
     json response = table.updateVote(request);
 
     EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
@@ -1110,7 +1083,7 @@ TEST_F(FilmsTableTest, addFilm)
 {
     FilmsTable table = FilmsTableTest::getFilmsTable();
 
-    json request = {{"name", "test"}, {"link", "https://www.test.ru/test"}, {"data", {{"description", "test"}}}};
+    json request = {{"name", "test"}, {"link", "https://www.test.ru/test"}, {"info", {{"description", "test"}}}};
     json response = table.addFilm(request);
 
     json films = FilmsTableTest::getFilms();
@@ -1120,7 +1093,7 @@ TEST_F(FilmsTableTest, addFilm)
     EXPECT_EQ(response["result"][0]["id"], id + 1);
     EXPECT_EQ(response["result"][0]["name"], request["name"]);
     EXPECT_EQ(response["result"][0]["link"], request["link"]);
-    EXPECT_EQ(response["result"][0]["data"]["description"], request["data"]["description"]);
+    EXPECT_EQ(response["result"][0]["info"]["description"], request["info"]["description"]);
 }
 
 TEST_F(FilmsTableTest, deleteFilmExist)
@@ -1147,17 +1120,16 @@ TEST_F(FilmsTableTest, deleteFilmNotExist)
 TEST_F(FilmsTableTest, updateFilmExist)
 {
     FilmsTable table = FilmsTableTest::getFilmsTable();
-    json films = FilmsTableTest::getFilms();
-    size_t id = 0;
+    size_t id = 2;
 
-    json request = {{"id", id}, {"name", "test"}, {"link", "https://www.test.ru/test"}, {"data", {{"description", "test"}}}};
+    json request = {{"id", id}, {"data", {{"name", "test"}, {"link", "https://www.test.ru/test"}, {"info", {{"description", "test"}}}}}};
     json response = table.updateFilm(request);
 
     EXPECT_EQ(response[STATUS_FIELD], SUCCESS_STATUS);
-    EXPECT_EQ(response["film"]["id"], id);
-    EXPECT_EQ(response["film"]["name"], request["name"]);
-    EXPECT_EQ(response["film"]["link"], request["link"]);
-    EXPECT_EQ(response["film"]["data"]["description"], request["data"]["description"]);
+    EXPECT_EQ(response["result"][0]["id"], id);
+    EXPECT_EQ(response["result"][0]["name"], request["data"]["name"]);
+    EXPECT_EQ(response["result"][0]["link"], request["data"]["link"]);
+    EXPECT_EQ(response["result"][0]["info"]["description"], request["data"]["info"]["description"]);
 }
 
 TEST_F(FilmsTableTest, updateFilmNotExist)
@@ -1165,7 +1137,7 @@ TEST_F(FilmsTableTest, updateFilmNotExist)
     FilmsTable table = FilmsTableTest::getFilmsTable();
     size_t id = 10;
 
-    json request = {{"id", id}, {"name", "test"}, {"link", "https://www.test.ru/test"}, {"data", {{"description", "test"}}}};
+    json request = {{"id", id}, {"data", {{"name", "test"}, {"link", "https://www.test.ru/test"}, {"info", {{"description", "test"}}}}}};
     json response = table.updateFilm(request);
 
     EXPECT_EQ(response[STATUS_FIELD], ERROR_STATUS);
