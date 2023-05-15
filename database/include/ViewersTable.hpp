@@ -12,6 +12,8 @@ public:
     json getRoomUsers(const size_t id_room) const;
 
     json addUserToRoom(const size_t id_user, const size_t id_room) const;
+    json deleteUserFromRoom(const size_t id_user, const size_t id_room) const;
+    json checkUserInRoom(const size_t id_user, const size_t id_room) const;
     json getViewersInfo(const size_t id) const;
     json getUserPointsInRoom(const size_t id_user, const size_t id_room) const;
     json setUserPointsInRoom(const size_t id_user, const size_t id_room, const size_t points) const;

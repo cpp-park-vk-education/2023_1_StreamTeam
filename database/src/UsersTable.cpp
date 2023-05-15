@@ -22,7 +22,14 @@ json UsersTable::addUser(const json &info) const
 
 json UsersTable::deleteUser(const size_t id) const
 {
-    json request = {{"id", id}};
+    if (!checkUserByID(id))
+    {
+        return {{STATUS_FIELD, ERROR_STATUS},
+                {"msg", "A user with such ID does not exist."}};
+    }
+    json request = {{"FROM", usersTableName},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
     json response = client->remove(request);
     return response;
 }

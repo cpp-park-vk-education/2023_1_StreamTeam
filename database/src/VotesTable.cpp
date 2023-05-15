@@ -22,8 +22,33 @@ json VotesTable::addVote(const json &info) const
 
 json VotesTable::deleteVote(const size_t id) const
 {
-    json request = {{"id", id}};
+    if (!checkVote(id))
+    {
+        return {{STATUS_FIELD, ERROR_STATUS},
+                {"msg", "A vote with such ID does not exist."}};
+    }
+    json request = {{"FROM", votesTableName},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
     json response = client->remove(request);
+
+    return response;
+}
+
+json VotesTable::deleteVote(const size_t id_user, const size_t id_bid) const
+{
+    if (checkVote(id_user, id_bid)[STATUS_FIELD] = ERROR_STATUS)
+    {
+        return {{STATUS_FIELD, ERROR_STATUS},
+                {"msg", "A vote with such id_user and id_bid does not exist."}};
+    }
+    size_t id = checkVote(id_user, id_bid)[RESULT_FIELD];
+
+    json request = {{"FROM", votesTableName},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
+    json response = client->remove(request);
+
     return response;
 }
 
@@ -41,5 +66,31 @@ json VotesTable::getVoteInfo(const size_t id) const
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
+    return response;
+}
+
+bool VotesTable::checkVote(const size_t id) const
+{
+    json request = {{"SELECT", {"id"}},
+                    {"FROM", {votesTableName}},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
+    json response = client->select(request);
+
+    if (response[STATUS_FIELD] == ERROR_STATUS)
+    {
+        return false;
+    }
+    return true;
+}
+
+json VotesTable::checkVote(const size_t id_user, const size_t id_bid) const
+{
+    json request = {{"SELECT", {"id"}},
+                    {"FROM", {votesTableName}},
+                    {"WHERE", {"id_user=" + std::to_string(id_user), "id_bid=" + std::to_string(id_bid)}}};
+
+    json response = client->select(request);
+
     return response;
 }

@@ -24,7 +24,14 @@ json RoomsTable::addRoom(const json &info) const
 
 json RoomsTable::deleteRoom(const size_t id) const
 {
-    json request = {{"id", id}};
+    if (!checkRoom(id))
+    {
+        return {{STATUS_FIELD, ERROR_STATUS},
+                {"msg", "A room with such ID does not exist."}};
+    }
+    json request = {{"FROM", roomsTableName},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
     json response = client->remove(request);
     return response;
 }

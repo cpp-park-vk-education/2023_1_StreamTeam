@@ -36,8 +36,16 @@ json BidsTable::addBid(const json &info) const
 
 json BidsTable::deleteBid(const size_t id) const
 {
-    json request = {{"id", id}};
+    if (!checkBid(id))
+    {
+        return {{STATUS_FIELD, ERROR_STATUS},
+                {"msg", "A bid with such ID does not exist."}};
+    }
+    json request = {{"FROM", bidsTableName},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
     json response = client->remove(request);
+
     return response;
 }
 
@@ -46,6 +54,21 @@ json BidsTable::updateBid(const json &info) const
     json request = info;
     json response = client->update(request);
     return response;
+}
+
+bool BidsTable::checkBid(const size_t id) const
+{
+    json request = {{"SELECT", {"id"}},
+                    {"FROM", {bidsTableName}},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
+    json response = client->select(request);
+
+    if (response[STATUS_FIELD] == ERROR_STATUS)
+    {
+        return false;
+    }
+    return true;
 }
 
 json BidsTable::getBidInfo(const size_t id) const

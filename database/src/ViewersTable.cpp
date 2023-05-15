@@ -42,6 +42,33 @@ json ViewersTable::addUserToRoom(const size_t id_user, const size_t id_room) con
     return response;
 }
 
+json ViewersTable::deleteUserFromRoom(const size_t id_user, const size_t id_room) const
+{
+    if (checkUserInRoom(id_user, id_room)[STATUS_FIELD] = ERROR_STATUS)
+    {
+        return {{STATUS_FIELD, ERROR_STATUS},
+                {"msg", "A user with such ID=id_user does not exist in the room with ID=id_room."}};
+    }
+    size_t id = checkUserInRoom(id_user, id_room)[RESULT_FIELD];
+    // Удаление в ViewersTable = присвоение пользователю роль left в столбце "role".
+    json request = {{"FROM", viewersTableName},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+
+    json response = client->update(request);
+    return {STATUS_FIELD, SUCCESS_STATUS};
+}
+
+json ViewersTable::checkUserInRoom(const size_t id_user, const size_t id_room) const
+{
+    json request = {{"SELECT", {"id"}},
+                    {"FROM", {viewersTableName}},
+                    {"WHERE", {"id_user=" + std::to_string(id_user), "id_room=" + std::to_string(id_room)}}};
+
+    json response = client->select(request);
+
+    return response;
+}
+
 json ViewersTable::getViewersInfo(const size_t id) const
 {
     json request = {{"SELECT", {"*"}},
