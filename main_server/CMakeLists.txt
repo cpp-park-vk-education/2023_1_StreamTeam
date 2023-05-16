@@ -3,7 +3,6 @@ project(project)
 
 set(CMAKE_CXX_STANDARD 20)
 
-
 option(BUILD_TESTS "build tests")
 if(BUILD_TESTS)
   enable_testing()

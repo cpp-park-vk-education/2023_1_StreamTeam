@@ -37,7 +37,6 @@ add_executable(server ${SOURCES})
 target_link_libraries(server
         VideoInfo
         VideoStream
-        StreamingServer
         ${FFMPEG_LIBRARIES}
         ${Boost_LIBRARIES}
         Boost::filesystem

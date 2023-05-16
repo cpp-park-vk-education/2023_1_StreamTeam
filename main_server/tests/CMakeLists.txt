@@ -20,7 +20,7 @@ add_executable(${PROJECT_NAME} test_database.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC ${DATABASE_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${DATABASE_LIBRARIES} GTest::Main PkgConfig::LIBCONFIG)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_config.cfg
+configure_file(test_config.cfg
     ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
 # All JSON files in the tests/data directory

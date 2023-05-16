@@ -117,8 +117,9 @@ fabric.properties
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode
 
 */cmake-build-debug
-server/videos
+main_server/server/videos
 **/.idea
-*/build/*
-!*/build/.keep
-/server/static/
+streaming_server/build/*
+!streaming_server/build/.keep
+/streaming_server/static/
+**/build
