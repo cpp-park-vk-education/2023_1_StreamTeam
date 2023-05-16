@@ -1,0 +1,3 @@
+add_library(viewer_controller src/viewer_controller.cpp)
+target_include_directories(viewer_controller PUBLIC include)
+target_link_libraries(viewer_controller PUBLIC session response database)
