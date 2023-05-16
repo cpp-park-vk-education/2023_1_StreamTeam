@@ -1,0 +1,3 @@
+add_library(room_controller src/room_controller.cpp)
+target_include_directories(room_controller PUBLIC include)
+target_link_libraries(room_controller PUBLIC session response)
