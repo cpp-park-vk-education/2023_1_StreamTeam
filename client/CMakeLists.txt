@@ -18,9 +18,9 @@ enable_testing()
 find_package(GTest REQUIRED)
 include(GoogleTest)
 
-add_subdirectory(client/src/app)
+add_subdirectory(src/app)
 
-add_subdirectory(client/src/lib)
+add_subdirectory(src/lib)
 
 # qt_add_resources(SyncView imageresources
 #    PREFIX "/images"
