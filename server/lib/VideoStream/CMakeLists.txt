@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(VideoStream)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 
 set(VIDEO_STREAM_SRC_FILES
         src/audio_encoder.cpp

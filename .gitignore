@@ -120,3 +120,4 @@ server/videos
 **/.idea
 */build/*
 !*/build/.keep
+/server/static/
