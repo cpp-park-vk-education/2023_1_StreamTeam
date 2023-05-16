@@ -28,7 +28,8 @@ void AuthWindow::on_pushButton_clicked()
         std::shared_ptr<User> user(new User);
         user->SetName(login.toStdString());
         user->SetPassword(password.toStdString());
-        mainwind->setCurrentUser(user);
+        user->SetId(3);
+        mainwind->Authenticate(user);
         accept();
         close();
     }

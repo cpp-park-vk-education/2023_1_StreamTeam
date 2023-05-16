@@ -14,9 +14,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 # qt_standard_project_setup()
 
+enable_testing()
+find_package(GTest REQUIRED)
+include(GoogleTest)
+
 add_subdirectory(src/app)
 
-add_subdirectory(src/include)
+add_subdirectory(src/lib)
 
 # qt_add_resources(SyncView imageresources
 #    PREFIX "/images"

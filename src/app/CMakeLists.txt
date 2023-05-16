@@ -1,7 +1,12 @@
 set(PROJECT_SOURCES
+        qdynamicbutton.cpp
+        qdynamicbutton.h
+
         main.cpp
 
         mainwindow.cpp
+        mainwindowdata.cpp
+        mainwindowslots.cpp
         mainwindow.h
         mainwindow.ui
 
@@ -12,6 +17,10 @@ set(PROJECT_SOURCES
         playerwindow.cpp
         playerwindow.h
         playerwindow.ui
+
+        createroomform.cpp
+        createroomform.h
+        createroomform.ui
 
 )
 
