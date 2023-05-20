@@ -150,7 +150,7 @@ void Session::Parse(const json& req) {
         } else if (table == "room") {
             RoomController(request, database_, self, rooms_);
         } else if (table == "video") {
-            VideoController(request, database_, self, room_, stream_port_);
+            VideoController(request, database_, self, room_);
         } else if (table == "message") {
             MessageController(request, database_, self, room_);
         } else if (table == "film") {

@@ -19,11 +19,10 @@ using boost::asio::ip::tcp;
 class Session : public std::enable_shared_from_this<Session> {
    public:
     Session(tcp::socket socket, std::unordered_map<std::size_t, room_ptr>& rooms,
-            unsigned short stream_port, db_ptr database)
+            db_ptr database)
         : socket_(std::move(socket)),
           is_auth_(false),
           rooms_(rooms),
-          stream_port_(stream_port),
           database_(database) {}
 
 
@@ -59,7 +58,6 @@ class Session : public std::enable_shared_from_this<Session> {
     Message read_msg_;
     std::size_t room_id_;
     std::size_t user_id_;
-    unsigned short stream_port_;
     db_ptr database_;
     const std::vector<std::string> required_fields_{"table", "method", "data"};
     const std::vector<std::string> allowed_tables_{"user", "room", "viewer", "video", "message", "film"};

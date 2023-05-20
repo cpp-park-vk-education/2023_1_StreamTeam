@@ -8,8 +8,8 @@ std::string CONFIG_PATH = "config.cfg";
 
 int main(int argc, char* argv[]) {
     try {
-        if (argc < 3) {
-            std::cerr << "Usage: chat_server <port> <stream_port>\n";
+        if (argc < 2) {
+            std::cerr << "Usage: chat_server <port>\n";
             return EXIT_FAILURE;
         }
         boost::asio::io_context io_context;
@@ -17,8 +17,7 @@ int main(int argc, char* argv[]) {
             std::make_shared<PostgreConnection>(CONFIG_PATH);
         std::shared_ptr<PostgreSQL> postgres =
             std::make_shared<PostgreSQL>(postgresParams);
-//        std::shared_ptr<PostgreSQL> postgres;
-        Server server(io_context, std::atoi(argv[1]), std::atoi(argv[2]),
+        Server server(io_context, std::atoi(argv[1]),
                       postgres);
         io_context.run();
     } catch (std::exception& e) {

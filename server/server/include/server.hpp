@@ -14,8 +14,8 @@ using boost::asio::ip::tcp;
 
 class Server {
 public:
-    Server(boost::asio::io_context& io_context, unsigned short port, unsigned short stream_port, db_ptr database)
-        : acceptor_(io_context, tcp::endpoint(tcp::v4(), port)), stream_port_(stream_port), database_(database) {
+    Server(boost::asio::io_context& io_context, unsigned short port, db_ptr database)
+        : acceptor_(io_context, tcp::endpoint(tcp::v4(), port)), database_(database) {
         RoomsTable table(database);
         json rooms = table.getAllRooms();
         for (auto room : rooms["rooms"]) {
