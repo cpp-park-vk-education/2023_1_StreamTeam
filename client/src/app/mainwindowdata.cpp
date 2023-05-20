@@ -63,6 +63,8 @@ void MainWindow::loadMessages()
 
 void MainWindow::AddRoom(std::shared_ptr<Room> room)
 {
+    if (user_rooms.empty())
+        ui->labelRoomList->hide();
     user_rooms.push_back(room);
     QDynamicButtonRoom *button = new QDynamicButtonRoom(this);
     button->setText(QString::fromStdString(room->GetName()));

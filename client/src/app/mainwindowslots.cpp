@@ -3,6 +3,7 @@
 #include "authwindow.h"
 #include "createroomform.h"
 #include "qdynamicbutton.h"
+#include "playerwindow.h"
 
 #include <QMessageBox>
 #include <chrono>
@@ -37,8 +38,43 @@ void MainWindow::on_actionLog_out_triggered()
 
 void MainWindow::on_pushButtonPlayer_clicked()
 {
-    if (player)
-        delete player;
+    auto session = Session::getInstance();
+
+    nlohmann::json_abi_v3_11_2::json data = {
+            {"table", "video"},
+            {"method", "startVideo"},
+            {"data", ""}
+    };
+
+    std::string jsonString = data.dump();
+
+    std::cout << "Request: " << jsonString << std::endl;
+    nlohmann::json_abi_v3_11_2::json response;
+
+//    QString x = "rtsp://localhost:8554/stream1";
+//    createPlayer(x);
+//
+    if (!player) {
+        player = new PlayerWindow(this);
+    }
+
+    player->show();
+
+//    session->Send(jsonString, [this](const nlohmann::json_abi_v3_11_2::json& answer) {
+//        if (answer["status"] == "ok") {
+//            QString tmp = QString::fromStdString(answer["result"].dump());
+//
+//            QMetaObject::invokeMethod(this, "createPlayer", Qt::QueuedConnection,
+//                                      Q_ARG(QString, tmp));
+//        } else {
+//            QMetaObject::invokeMethod(this, "showErrorMessage", Qt::QueuedConnection,
+//                                      Q_ARG(QString, "Something went wrong"),
+//                                      Q_ARG(QString, "Oopsie!"));
+//        }
+//    });
+}
+
+void MainWindow::createPlayer(QString& ip_addr) {
     player = new PlayerWindow(this);
     player->show();
 }

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "session.hpp"
 
 #include <QMessageBox>
 
@@ -17,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent):
     ui->pushButtonPlayer->hide();
     ui->pushButton_AddMember->hide();
     ui->lineEditAddMember->hide();
+    player = nullptr;
 }
 
 MainWindow::~MainWindow()
@@ -31,43 +33,39 @@ void MainWindow::Authenticate(std::shared_ptr<User> ptr)
     ui->menuUser_Name->setTitle(QApplication::translate("MainWindow", login_user->GetName().c_str(), nullptr));
     ui->statusbar->showMessage("Login Success!");
 
-    // хардкодим заглушки для обьектов
-    std::shared_ptr<Room> room1(new Room),
-                          room2(new Room),
-                          room3(new Room);
-    User user; Message mes;
+    auto session = Session::getInstance();
+    nlohmann::json_abi_v3_11_2::json data = {
+            {"table", "room"},
+            {"method", "getAllRooms"},
+            {"data", ""}
+    };
+    std::string jsonString = data.dump();
 
-    room1->SetName("Room number 1");
-    user.SetName("Ivan"); room1->AddMember(user);
-    user.SetName("Petr"); room1->AddMember(user);
-    user.SetName("Vova"); room1->AddMember(user);
-    mes.SetAuthor(room1->GetMember(0)); mes.SetPostTime("15:34"); mes.SetTextBody("Hello everynyan! How are you?"); room1->AddMessage(mes);
-    mes.SetAuthor(room1->GetMember(2)); mes.SetPostTime("15:35"); mes.SetTextBody("oh mah gahd!!!"); room1->AddMessage(mes);
-    mes.SetAuthor(room1->GetMember(0)); mes.SetPostTime("15:35"); mes.SetTextBody("Thank you"); room1->AddMessage(mes);
-    room1->SetLeaderId(0);
-    user_rooms.push_back(room1);
+    std::cout << "Request: " << jsonString << std::endl;
+    nlohmann::json_abi_v3_11_2::json response;
 
-    room2->SetName("Second room");
-    user.SetName("Goga"); room2->AddMember(user);
-    user.SetName("Boga"); room2->AddMember(user);
-    mes.SetAuthor(room2->GetMember(0)); mes.SetPostTime("4:15"); mes.SetTextBody("Good night"); room2->AddMessage(mes);
-    room2->SetLeaderId(0);
-    user_rooms.push_back(room2);
+    session->Send(jsonString, [this](const nlohmann::json_abi_v3_11_2::json& answer) {
+        if (answer["status"] == "ok") {
+            for (auto room_info : answer["result"]) {
+                auto room = std::make_shared<Room>();
+                room->SetName(room_info["name"]);
+                room->setID(room_info["id"]);
+                room->SetLeaderId(room_info["creator"]);
+                user_rooms.emplace_back(std::move(room));
+            }
 
-    room3->SetName("It is third one!");
-    user.SetName("Danya"); room3->AddMember(user);
-    user.SetName("Vanya"); room3->AddMember(user);
-    user.SetName("Vasya"); room3->AddMember(user);
-    user.SetName("iu3"); room3->AddMember(user);
-    mes.SetAuthor(room3->GetMember(3)); mes.SetPostTime("4:20"); mes.SetTextBody("HELLO!"); room3->AddMessage(mes);
-    room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes);
-    room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes);
-    room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes);
-    room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes);
-    room3->SetLeaderId(3);
-    user_rooms.push_back(room3);
+            QMetaObject::invokeMethod(this, "loadRoomList", Qt::QueuedConnection);
+        } else {
+            QMetaObject::invokeMethod(this, "showErrorMessage", Qt::QueuedConnection,
+                                      Q_ARG(QString, "Something went wrong"),
+                                      Q_ARG(QString, "Oopsie!"));
+        }
+    });
+}
 
-    loadRoomList();
+void MainWindow::showErrorMessage(const QString& title, const QString& message)
+{
+    QMessageBox::warning(this, title, message);
 }
 
 std::shared_ptr<User> MainWindow::getCurrentUser()
@@ -79,4 +77,3 @@ void MainWindow::quitApp()
 {
     close();
 }
-

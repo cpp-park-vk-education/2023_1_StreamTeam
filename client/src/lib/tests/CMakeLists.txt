@@ -7,6 +7,7 @@ add_executable(classes_test
             )
 
 target_link_libraries(classes_test UserInterface GTest::gtest_main)
+target_link_libraries(classes_test businesslogic ${CMAKE_SOURCE_DIR}/src/lib)
 
 add_test(classes_test classes_test)
 

@@ -17,14 +17,17 @@ public:
     ~AuthWindow();
 
 private slots:
+    void showErrorMessage(const QString& title, const QString& message);
+
     void on_pushButton_clicked();
 
     void on_AuthWindow_rejected();
 
+    void on_pushButtonSignIn_clicked();
+
 private:
     Ui::AuthWindow *ui;
     MainWindow *mainwind;
-    bool auth_success = false;
 };
 
 #endif // AUTHWINDOW_H
