@@ -15,11 +15,8 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 find_package(Boost 1.81.0 REQUIRED)
 find_package(Threads REQUIRED)
-include_directories(project ${Boost_INCLUDE_DIRS})
-find_package(nlohmann_json 3.11.2 REQUIRED
-        CONFIG
-        PATHS "/home/linuxbrew/.linuxbrew/Cellar/nlohmann-json/3.11.2/"
-    )
+include_directories(SyncView ${Boost_INCLUDE_DIRS})
+find_package(nlohmann_json 3.11.2 REQUIRED)
 # qt_standard_project_setup()
 
 enable_testing()

@@ -13,7 +13,7 @@ class AuthWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit AuthWindow(QWidget *parent = nullptr, MainWindow *main = nullptr, std::shared_ptr<RequestFormer> request = nullptr);
+    explicit AuthWindow(QWidget *parent = nullptr, MainWindow *main = nullptr);
     ~AuthWindow();
 
 private slots:
@@ -26,7 +26,6 @@ private slots:
 private:
     Ui::AuthWindow *ui;
     MainWindow *mainwind;
-    std::shared_ptr<RequestFormer> Request;
 };
 
 #endif // AUTHWINDOW_H

@@ -14,7 +14,7 @@ class SignInWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit SignInWindow(QWidget *parent = nullptr, MainWindow *main = nullptr, std::shared_ptr<RequestFormer> request = nullptr);
+    explicit SignInWindow(QWidget *parent = nullptr, MainWindow *main = nullptr);
     ~SignInWindow();
 
 private slots:
@@ -25,7 +25,6 @@ private slots:
 private:
     Ui::SignInWindow *ui;
     MainWindow *mainwind;
-    std::shared_ptr<RequestFormer> Request;
 };
 
 #endif // SIGNINWINDOW_H

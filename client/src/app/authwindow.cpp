@@ -2,14 +2,15 @@
 #include "ui_authwindow.h"
 #include "mainwindow.h"
 #include "signinwindow.h"
-#include "requestformer.hpp"
+#include "session.hpp"
 
 #include <QMessageBox>
 
-AuthWindow::AuthWindow(QWidget *parent, MainWindow *main, std::shared_ptr<RequestFormer> request) :
+using json = nlohmann::json_abi_v3_11_2::json;
+
+AuthWindow::AuthWindow(QWidget *parent, MainWindow *main) :
     QDialog(parent),
     mainwind(main),
-    Request(request),
     ui(new Ui::AuthWindow)
 {
     ui->setupUi(this);
@@ -23,23 +24,43 @@ AuthWindow::~AuthWindow()
 
 void AuthWindow::on_pushButton_clicked()
 {
-    User auth_user;
-    auth_user.SetEmail(ui->line_login->text().toStdString());
-    auth_user.SetPassword(ui->line_password->text().toStdString());
+    QString email = ui->line_login->text();
+    QString password = ui->line_password->text();
 
-    std::shared_ptr<User> user = Request->Authenticate(auth_user);
-    if (user)
-    {
-        mainwind->Authenticate(user);
-        accept();
-        close();
-    }
-    else
-    {
-        QMessageBox::warning(this, "Log in error", "Incorrect users credentials");
-    }
+    json data = {
+        {"method", "auth"},
+        {"data",
+            {
+                {"type", "email"},
+                {"name", email.toStdString()},
+                {"password", password.toStdString()}
+            }
+        }
+    };
+
+// Преобразуем json в строку
+    std::string jsonString = data.dump();
+    std::cout << "Request: " << jsonString << std::endl;
+    auto session = Session::getInstance();
+    session->Send(jsonString, [this, email, password](const json& answer) {
+        if (answer["status"] == "ok") {
+            // Здесь обработчик запроса
+
+            std::shared_ptr<User> user(new User);
+            user->SetName(email.toStdString());
+            user->SetPassword(password.toStdString());
+            user->SetId(answer["result"][0]["id"]);
+            user->SetName(answer["result"][0]["username"]);
+
+            mainwind->Authenticate(user);
+            accept();
+            close();
+
+        }
+        else
+            QMessageBox::warning(this, "Log in error", "Incorrect login or password");
+    });
 }
-
 
 void AuthWindow::on_AuthWindow_rejected()
 {
@@ -49,7 +70,7 @@ void AuthWindow::on_AuthWindow_rejected()
 
 void AuthWindow::on_pushButtonSignIn_clicked()
 {
-    SignInWindow signin(this, mainwind, Request);
+    SignInWindow signin(this, mainwind);
     signin.setModal(true);
     bool f = signin.exec();
     if (f)

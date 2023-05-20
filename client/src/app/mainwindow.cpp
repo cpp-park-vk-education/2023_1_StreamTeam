@@ -4,9 +4,8 @@
 #include <QMessageBox>
 
 
-MainWindow::MainWindow(QWidget *parent, std::shared_ptr<RequestFormer> request):
+MainWindow::MainWindow(QWidget *parent):
     QMainWindow(parent),
-    Request(request),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);

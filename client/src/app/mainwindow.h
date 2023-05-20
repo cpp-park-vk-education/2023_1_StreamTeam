@@ -11,7 +11,6 @@
 #include "room.hpp"
 #include "message.hpp"
 #include "playerwindow.h"
-#include "requestformer.hpp"
 
 
 QT_BEGIN_NAMESPACE
@@ -23,7 +22,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr, std::shared_ptr<RequestFormer> request = nullptr);
+    MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
     void Authenticate(std::shared_ptr<User>);
@@ -67,7 +66,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
     PlayerWindow *player;
-    std::shared_ptr<RequestFormer> Request;
 
     // Memory
     std::shared_ptr<User> login_user;
