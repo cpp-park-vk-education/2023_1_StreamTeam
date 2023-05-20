@@ -37,6 +37,10 @@ void MainWindow::Authenticate(std::shared_ptr<User> ptr)
                           room3(new Room);
     User user; Message mes;
 
+    // auto session = Session::getInstance();
+    // response - array of rooms
+    // user_rooms -> push
+
     room1->SetName("Room number 1");
     user.SetName("Ivan"); room1->AddMember(user);
     user.SetName("Petr"); room1->AddMember(user);

@@ -40,24 +40,23 @@ void AuthWindow::on_pushButton_clicked()
     std::string jsonString = data.dump();
     std::cout << "Request: " << jsonString << std::endl;
     auto session = Session::getInstance();
-    session->Send(jsonString);
+    session->Send(jsonString, [this, login, password](const nlohmann::json_abi_v3_11_2::json& answer) {
+        if (answer["status"] == "ok") {
+            // Здесь обработчик запроса
+            auth_success = true;
 
-    // Отправляем запрос на сервер, получаем какой-то ответ
-    if (login == "iu3" && password == "123")
-    {
-        auth_success = true;
-        std::shared_ptr<User> user(new User);
-        user->SetName(login.toStdString());
-        user->SetPassword(password.toStdString());
-        user->SetId(3);
-        mainwind->Authenticate(user);
-        accept();
-        close();
-    }
-    else
-    {
-        QMessageBox::warning(this, "Log in error", "Incorrect login or password");
-    }
+            std::shared_ptr<User> user(new User);
+            user->SetName(login.toStdString());
+            user->SetPassword(password.toStdString());
+            user->SetId(3);
+
+            mainwind->Authenticate(user);
+            accept();
+            close();
+        } else {
+            QMessageBox::warning(this, "Log in error", "Incorrect login or password");
+        };
+    });
 }
 
 
@@ -69,23 +68,23 @@ void AuthWindow::on_AuthWindow_rejected()
 
 void AuthWindow::on_pushButtonSignIn_clicked()
 {
-    QString login = ui->line_login->text();
-    QString password = ui->line_password->text();
+//    QString login = ui->line_login->text();
+//    QString password = ui->line_password->text();
+//
+//    nlohmann::json_abi_v3_11_2::json data = {
+//            {"method", "create"},
+//            {"data",
+//                       {
+//                               {"username", "hello"},
+//                               {"email", login.toStdString()},
+//                               {"password", password.toStdString()}
+//                       }
+//            }
+//    };
+//
+//    std::string jsonString = data.dump();
+//    std::cout << "Request: " << jsonString << std::endl;
+//    auto session = Session::getInstance();
+//    session->Send(jsonString);
 
-    nlohmann::json_abi_v3_11_2::json data = {
-            {"method", "create"},
-            {"data",
-                       {
-                               {"username", "hello"},
-                               {"email", login.toStdString()},
-                               {"password", password.toStdString()}
-                       }
-            }
-    };
-
-    std::string jsonString = data.dump();
-    std::cout << "Request: " << jsonString << std::endl;
-    auto session = Session::getInstance();
-    session->Send(jsonString);
-//    {"method":"create","data":{"username":"aon","password":"1234","email":"abc@mail.ru"}}
 }

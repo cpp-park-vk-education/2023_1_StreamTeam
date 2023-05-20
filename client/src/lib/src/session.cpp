@@ -34,7 +34,9 @@ void Session::setInstance(boost::asio::io_context& io_context, const tcp::resolv
     session_instance_ = std::make_shared<Session>(io_context, endpoint);
 }
 
-void Session::Send(const std::string& str) {
+void Session::Send(const std::string& str, std::function<void(const nlohmann::json_abi_v3_11_2::json&)> func) {
+    command_queue_.push(func);
+
     auto parts = Split(str, Request::max_body_length);
         for (const auto& part : parts) {
             Request msg(part);
@@ -85,8 +87,16 @@ void Session::ReadBody() {
                 if (!ec) {
                     std::string body(read_msg_.body());
                     std::string response = body.substr(0, length);
-                    std::cout << response << std::endl;
-                    //////////PARSE//////////////
+                    std::cout << "From ReadBody:" <<  response << std::endl;
+
+                    nlohmann::json_abi_v3_11_2::json answ = nlohmann::json_abi_v3_11_2::json::parse(response);
+
+                    if (!command_queue_.empty()) {
+                        auto func = command_queue_.front();
+                        command_queue_.pop();
+                        func(answ);
+                    }
+
                     ReadHeader();
                 } else {
                     std::cerr << ec.message() << std::endl;
