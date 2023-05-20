@@ -1,4 +1,9 @@
+#cmake_minimum_required(VERSION 3.0.0)
+#project(database)
+#
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lpqxx -lpq")
+
+
 
 add_library(database src/PostgreSQL.cpp src/PostgreConnection.cpp src/UsersTable.cpp src/RoomsTable.cpp src/ViewersTable.cpp src/BidsTable.cpp src/VotesTable.cpp src/FilmsTable.cpp src/MessagesTable.cpp)
 

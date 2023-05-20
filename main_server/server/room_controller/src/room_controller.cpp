@@ -35,7 +35,7 @@ void RoomController::AddRoom(const json& request, session_ptr session,
     }
     session->LeaveRoom();
     std::size_t id = info["result"][0]["id"];
-    room_ptr room = std::make_shared<Room>(session, id);
+    room_ptr room = std::make_shared<Room>(session->GetUserId(), id);
     session->SetRoom(room);
     room->Join(session);
     rooms[id] = room;
@@ -51,33 +51,36 @@ void RoomController::DeleteRoom(const json& data, session_ptr session,
         session->Send(BadRequest());
         throw std::runtime_error{"BadRequest"};
     }
-    if (rooms[id]) {
-        room_ptr room = rooms[id];
-        if (!room->IsOwner(session)) {
-            session->Send(Forbidden());
-            throw std::runtime_error{"Forbidden"};
-        }
-        json info = table_.deleteRoom(id);
-        room->Send(Message(info.dump()));
-        room->LeaveAll();
-        rooms.erase(id);
-        return;
+    if (!rooms[id]) {
+        session->Send(BadRequest());
+        throw std::runtime_error{"BadRequest"};
     }
-    json info = table_.getRoomInfo(id);
-    if (info["status"] != "ok") {
-        session->Send(NotFound());
-        throw std::runtime_error{"NotFound"};
-    }
-    if (info["result"][0]["creator"] != id) {
+    room_ptr room = rooms[id];
+    if (!room->IsOwner(session->GetUserId())) {
         session->Send(Forbidden());
         throw std::runtime_error{"Forbidden"};
     }
-    json del_info = table_.deleteRoom(id);
-    if (del_info["status"] != "ok") {
-        session->Send(NotFound());
-        throw std::runtime_error{"NotFound"};
-    }
-    session->Send(Message(del_info.dump()));
+    json info = table_.deleteRoom(id);
+    info["update"] = true;
+    room->Send(Message(info.dump()));
+    room->LeaveAll();
+    rooms.erase(id);
+//        return;
+//    json info = table_.getRoomInfo(id);
+//    if (info["status"] != "ok") {
+//        session->Send(NotFound());
+//        throw std::runtime_error{"NotFound"};
+//    }
+//    if (info["result"][0]["creator"] != id) {
+//        session->Send(Forbidden());
+//        throw std::runtime_error{"Forbidden"};
+//    }
+//    json del_info = table_.deleteRoom(id);
+//    if (del_info["status"] != "ok") {
+//        session->Send(NotFound());
+//        throw std::runtime_error{"NotFound"};
+//    }
+//    session->Send(Message(del_info.dump()));
 }
 
 void RoomController::GetRoomInfo(const json& data, session_ptr session) {
@@ -101,12 +104,18 @@ void RoomController::UpdateRoom(const json& data, session_ptr session,
         session->Send(BadRequest());
         throw std::runtime_error{"BadRequest"};
     }
-    json info = table_.updateRoom(id);
-    if (rooms[id]) {
-        rooms[id]->Send(Message(info.dump()));
-    } else {
-        session->Send(Message(info.dump()));
+    if (!rooms[id]) {
+        session->Send(BadRequest());
+        throw std::runtime_error{"BadRequest"};
     }
+    json info = table_.updateRoom(id);
+    info["update"] = true;
+    rooms[id]->Send(Message(info.dump()));
+//    if (rooms[id]) {
+//        rooms[id]->Send(Message(info.dump()));
+//    } else {
+//        session->Send(Message(info.dump()));
+//    }
 }
 
 void RoomController::GetAllRooms(session_ptr session) {

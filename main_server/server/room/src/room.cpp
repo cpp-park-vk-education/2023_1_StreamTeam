@@ -8,7 +8,7 @@ void Room::Join(session_ptr participant) {
 }
 
 void Room::Leave(session_ptr participant) {
-    if (participant == owner_) {
+    if (participant->GetUserId() == owner_id_) {
         LeaveAll();
     } else {
         participants_.erase(participant);

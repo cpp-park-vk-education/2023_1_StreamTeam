@@ -3,6 +3,7 @@ project(project)
 
 set(CMAKE_CXX_STANDARD 20)
 
+
 option(BUILD_TESTS "build tests")
 if(BUILD_TESTS)
   enable_testing()
@@ -35,3 +36,4 @@ add_subdirectory(database)
 
 add_executable(project src/main.cpp)
 target_link_libraries(project server ${Boost_LIBRARIES} nlohmann_json::nlohmann_json ${PQXX_LIB} ${PQ_LIB} PkgConfig::LIBCONFIG)
+

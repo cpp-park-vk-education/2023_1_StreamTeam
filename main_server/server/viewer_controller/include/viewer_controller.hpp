@@ -26,13 +26,13 @@ class ViewerController {
 
    private:
     void AddUserToRoom(const json& data, session_ptr session, rooms_map rooms);
-    void DeleteUserFromRoom(const json& data, session_ptr session,
+    void DeleteUserFromRoom(session_ptr session,
                             rooms_map rooms);
     void GetViewersInfo(const json& data, session_ptr session);
 
-    void GetUserRoleInRoom(session_ptr session);
+    void GetUserRoleInRoom(const json& data, session_ptr session);
 
     void GetUserRooms(session_ptr session);
 
-    void GetRoomUsers(session_ptr session);
+    void GetRoomUsers(const json& data, session_ptr session);
 };

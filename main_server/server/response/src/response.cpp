@@ -7,7 +7,7 @@ using json = nlohmann::json;
 
 Message BadRequest() {
     json response;
-    response["status"] = "bad request";
+    response["status"] = "error";
     return Message(response.dump());
 }
 
@@ -19,24 +19,24 @@ Message Ok() {
 
 Message NotFound() {
     json response;
-    response["status"] = "not found";
+    response["status"] = "error";
     return Message(response.dump());
 }
 
 Message Created() {
     json response;
-    response["status"] = "created";
+    response["status"] = "ok";
     return Message(response.dump());
 }
 
 Message Forbidden() {
     json response;
-    response["status"] = "forbidden";
+    response["status"] = "error";
     return Message(response.dump());
 }
 
 Message NotAuthorized() {
     json response;
-    response["status"] = "not authorized";
+    response["status"] = "error";
     return Message(response.dump());
 }

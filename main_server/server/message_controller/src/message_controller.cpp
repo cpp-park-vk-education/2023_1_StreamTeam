@@ -31,6 +31,7 @@ void MessageController::AddMessage(const json& data, session_ptr session,
         session->Send(BadRequest());
         throw std::runtime_error{"BadRequest"};
     }
+    info["update"] = true;
     room->Send(Message(info.dump()));
 }
 
@@ -52,6 +53,7 @@ void MessageController::DeleteMessage(const json& data, session_ptr session,
         session->Send(BadRequest());
         throw std::runtime_error{"BadRequest"};
     }
+    info["update"] = true;
     room->Send(Message(info.dump()));
 }
 
@@ -62,6 +64,7 @@ void MessageController::UpdateMessage(const json& data, session_ptr session,
         session->Send(BadRequest());
         throw std::runtime_error{"BadRequest"};
     }
+    info["update"] = true;
     room->Send(Message(info.dump()));
 }
 

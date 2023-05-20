@@ -13,15 +13,15 @@ ViewerController::ViewerController(const json& request, db_ptr database,
     if (request["method"] == "addUserToRoom") {
         AddUserToRoom(request["data"], session, rooms);
     } else if (request["method"] == "deleteUserFromRoom") {
-        DeleteUserFromRoom(request["data"], session, rooms);
+        DeleteUserFromRoom(session, rooms);
     } else if (request["method"] == "getUserRoleInRoom") {
-        GetUserRoleInRoom(session);
+        GetUserRoleInRoom(request["data"], session);
     } else if (request["method"] == "getViewersInfo") {
         GetViewersInfo(request["data"], session);
     } else if (request["method"] == "getUserRooms") {
         GetUserRooms(session);
     } else {
-        GetRoomUsers(session);
+        GetRoomUsers(request["data"], session);
     }
 }
 void ViewerController::AddUserToRoom(const json& data, session_ptr session,
@@ -35,20 +35,17 @@ void ViewerController::AddUserToRoom(const json& data, session_ptr session,
         throw std::runtime_error{"BadRequest"};
     }
     if (!room_table_.checkRoom(room_id)) {
-        session->Send(BadRequest());
+        session->Send(NotFound());
         throw std::runtime_error{"BadRequest"};
     }
     if (!rooms[room_id]) {
-        room_ptr room = std::make_shared<Room>(session, room_id);
-        json info = table_.addUserToRoom(user_id, room_id);
-        rooms[room_id] = room;
-        room->Join(session);
-        room->Send(Message(info.dump()));
-        return;
+        session->Send(NotFound());
+        throw std::runtime_error{"BadRequest"};
     }
     json info = table_.addUserToRoom(user_id, room_id);
     if (info["status"] == "ok") {
         rooms[room_id]->Join(session);
+        info["update"] = true;
         rooms[room_id]->Send(Message(info.dump()));
         session->SetRoom(rooms[room_id]);
     } else {
@@ -56,13 +53,14 @@ void ViewerController::AddUserToRoom(const json& data, session_ptr session,
         throw std::runtime_error{"BadRequest"};
     }
 }
-void ViewerController::DeleteUserFromRoom(const json& data, session_ptr session,
+void ViewerController::DeleteUserFromRoom(session_ptr session,
                                           rooms_map rooms) {
     std::size_t user_id = session->GetUserId();
     std::size_t room_id = session->GetRoomId();
     json info = table_.deleteUserFromRoom(user_id, room_id);
     if (info["status"] == "ok") {
         session->LeaveRoom();
+        info["update"] = true;
         rooms[room_id]->Send(Message(info.dump()));
     } else {
         session->Send(BadRequest());
@@ -75,9 +73,18 @@ void ViewerController::GetViewersInfo(const json& data, session_ptr session) {
     session->Send(Message(info.dump()));
 }
 
-void ViewerController::GetUserRoleInRoom(session_ptr session) {
-    std::size_t user_id = session->GetUserId();
-    std::size_t room_id = session->GetRoomId();
+void ViewerController::GetUserRoleInRoom(const json& data, session_ptr session) {
+    std::size_t room_id;
+    std::size_t user_id;
+    try {
+        room_id = data["room_id"];
+        user_id = data["user_id"];
+    } catch (std::exception& err) {
+        session->Send(BadRequest());
+        throw std::runtime_error{"BadRequest"};
+    }
+//    std::size_t user_id = session->GetUserId();
+//    std::size_t room_id = session->GetRoomId();
     json info = table_.getUserRoleInRoom(user_id, room_id);
     session->Send(Message(info.dump()));
 }
@@ -88,8 +95,15 @@ void ViewerController::GetUserRooms(session_ptr session) {
     session->Send(Message(info.dump()));
 }
 
-void ViewerController::GetRoomUsers(session_ptr session) {
-    std::size_t room_id = session->GetRoomId();
+void ViewerController::GetRoomUsers(const json& data, session_ptr session) {
+    std::size_t room_id;
+    try {
+        room_id = data["room_id"];
+    } catch (std::exception& err) {
+        session->Send(BadRequest());
+        throw std::runtime_error{"BadRequest"};
+    }
+//    std::size_t room_id = session->GetRoomId();
     json info = table_.getRoomUsers(room_id);
     session->Send(Message(info.dump()));
 }

@@ -1,3 +1,0 @@
-add_library(user_controller src/user_controller.cpp)
-target_include_directories(user_controller PUBLIC include)
-target_link_libraries(user_controller PUBLIC session response)

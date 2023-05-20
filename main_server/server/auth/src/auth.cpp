@@ -53,7 +53,7 @@ void Auth::CheckUser(const json& request, session_ptr session) {
         session->Send(Forbidden());
         throw std::runtime_error{"Forbidden"};
     }
-    session->Send(Ok());
+    session->Send(Message(info.dump()));
     session->SetAuthorized(id);
 }
 

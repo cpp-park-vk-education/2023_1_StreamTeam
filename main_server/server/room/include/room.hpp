@@ -13,15 +13,15 @@ using json = nlohmann::json;
 
 class Room {
 public:
-    Room(session_ptr owner, std::size_t id) : owner_(owner), id_(id) {}
+    Room(std::size_t owner_id, std::size_t id) : owner_id_(owner_id), id_(id) {}
 
     void Join(session_ptr participant);
     void Leave(session_ptr participant);
     void Send(const Message& msg);
     void LeaveAll();
 
-    bool IsOwner(const session_ptr& participant) const {
-        return owner_ == participant;
+    bool IsOwner(const std::size_t& participant) const {
+        return owner_id_ == participant;
     }
 
     std::size_t GetId() const {
@@ -32,7 +32,7 @@ public:
 
 private:
     std::set<session_ptr> participants_;
-//    std::list<Message> queue_;
-    session_ptr owner_;
+//    session_ptr owner_;
+    std::size_t owner_id_;
     std::size_t id_;
 };
