@@ -17,6 +17,8 @@ public:
     ~AuthWindow();
 
 private slots:
+    void showErrorMessage(const QString& title, const QString& message);
+
     void on_pushButton_clicked();
 
     void on_AuthWindow_rejected();

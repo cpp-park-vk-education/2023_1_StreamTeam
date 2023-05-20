@@ -46,6 +46,8 @@ public:
     void clearMessages();
 
 private slots:
+
+
     void loadRoomList();
 
     void showErrorMessage(const QString& title, const QString& message);

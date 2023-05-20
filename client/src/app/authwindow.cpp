@@ -43,7 +43,8 @@ void AuthWindow::on_pushButton_clicked()
     std::cout << "Request: " << jsonString << std::endl;
     auto session = Session::getInstance();
     session->Send(jsonString, [this, email, password](const json& answer) {
-        if (answer["status"] == "ok") {
+        //if (answer["status"] == "ok") {
+        if (0){
             // Здесь обработчик запроса
 
             std::shared_ptr<User> user(new User);
@@ -52,14 +53,21 @@ void AuthWindow::on_pushButton_clicked()
             user->SetId(answer["result"][0]["id"]);
             user->SetName(answer["result"][0]["username"]);
 
-            mainwind->Authenticate(user);
+            QMetaObject::invokeMethod(mainwind, "Authenticate", Qt::QueuedConnection, Q_ARG(std::shared_ptr<User>, user));
             accept();
             close();
 
         }
         else
-            QMessageBox::warning(this, "Log in error", "Incorrect login or password");
+            QMetaObject::invokeMethod(this, "showErrorMessage", Qt::QueuedConnection,
+                                      Q_ARG(QString, "Login Error"),
+                                      Q_ARG(QString, "Something went wrong"));
     });
+}
+
+void AuthWindow::showErrorMessage(const QString& title, const QString& message)
+{
+    QMessageBox::warning(this, title, message);
 }
 
 void AuthWindow::on_AuthWindow_rejected()

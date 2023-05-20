@@ -52,7 +52,8 @@ void SignInWindow::on_buttonBox_accepted()
             user->SetId(answer["result"][0]["id"]);
             user->SetName(name);
 
-            mainwind->Authenticate(user);
+            QMetaObject::invokeMethod(mainwind, "Authenticate", Qt::QueuedConnection, Q_ARG(std::shared_ptr<User>, user));
+            //mainwind->Authenticate(user);
             accept();
             close();
 
