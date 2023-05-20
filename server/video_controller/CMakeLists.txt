@@ -1,0 +1,3 @@
+add_library(video_controller src/video_controller.cpp)
+target_include_directories(video_controller PUBLIC include)
+target_link_libraries(video_controller PUBLIC session response)

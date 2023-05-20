@@ -1,0 +1,3 @@
+add_library(message_controller src/message_controller.cpp)
+target_include_directories(message_controller PUBLIC include)
+target_link_libraries(message_controller PUBLIC session response)
