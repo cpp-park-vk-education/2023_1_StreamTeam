@@ -18,6 +18,8 @@ public:
     ~SignInWindow();
 
 private slots:
+    void showErrorMessage(const QString& title, const QString& message);
+
     void on_buttonBox_accepted();
 
     void on_buttonBox_rejected();

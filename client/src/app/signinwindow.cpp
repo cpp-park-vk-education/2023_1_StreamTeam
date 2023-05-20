@@ -59,8 +59,15 @@ void SignInWindow::on_buttonBox_accepted()
 
         }
         else
-            QMessageBox::warning(this, "Sign in error", "Coud not create Account");
+            QMetaObject::invokeMethod(this, "showErrorMessage", Qt::QueuedConnection,
+                                      Q_ARG(QString, "Signin Error"),
+                                      Q_ARG(QString, "Something went wrong"));
     });
+}
+
+void SignInWindow::showErrorMessage(const QString& title, const QString& message)
+{
+    QMessageBox::warning(this, title, message);
 }
 
 
