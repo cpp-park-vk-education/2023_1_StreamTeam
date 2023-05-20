@@ -52,5 +52,7 @@ void AuthWindow::on_pushButtonSignIn_clicked()
     SignInWindow signin(this, mainwind, Request);
     signin.setModal(true);
     bool f = signin.exec();
+    if (f)
+        accept();
 }
 

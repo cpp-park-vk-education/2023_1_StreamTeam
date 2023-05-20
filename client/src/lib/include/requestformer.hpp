@@ -17,16 +17,16 @@ public:
 
     std::shared_ptr<User> Authenticate(User&);
 
-    void GetUserInfo(int);
+    std::shared_ptr<User>  NewUser(User&);
 
-    bool NewUser(User&);
+    void GetUserInfo(int);
 
     bool DeleteUser(int);
 
     bool UpdateUser(User);
 
-    std::unique_ptr<json> request_ptr;
-    std::unique_ptr<json> reply_ptr;
+    std::queue<json> queue_request;
+    std::queue<json> queue_reply;
 
 private:
 

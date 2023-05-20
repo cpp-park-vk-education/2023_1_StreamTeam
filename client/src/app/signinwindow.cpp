@@ -30,11 +30,13 @@ void SignInWindow::on_buttonBox_accepted()
     new_user.SetPassword(password);
 
     //send to server;
-    if (Request->NewUser(new_user))
+    std::shared_ptr<User> user = Request->NewUser(new_user);
+    if (user)
     {
         QMessageBox::information(this, "Sign in success", "Account has been created!");
-
+        mainwind->Authenticate(user);
         accept();
+        close();
     }
     else
     {
