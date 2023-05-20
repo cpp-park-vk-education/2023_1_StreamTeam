@@ -38,5 +38,4 @@ private:
     std::string _text_body;
     std::string _attachment_url;
     std::string _post_time;
-    
 };

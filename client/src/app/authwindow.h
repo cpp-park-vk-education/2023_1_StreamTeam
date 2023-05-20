@@ -17,6 +17,9 @@ public:
     ~AuthWindow();
 
 private slots:
+    void on_pushButtonSignIn_clicked();
+
+private slots:
     void on_pushButton_clicked();
 
     void on_AuthWindow_rejected();

@@ -1,8 +1,10 @@
-for file in data/*.json
-do
-    filename=$(basename $file _data.json)
-    cat $file | jq -c '.[]' > "data/${filename}_import.json"
-done
+#!/usr/bin/env bash
+
+#for file in data/*.json
+#do
+#    filename=$(basename $file _data.json)
+#    cat $file | jq -c '.[]' > "data/${filename}_import.json"
+#done
 
 # создаем базу данных
 psql -U postgres -f create_db.sql

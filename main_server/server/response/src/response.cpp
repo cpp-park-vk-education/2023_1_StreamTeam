@@ -1,7 +1,9 @@
 #include "response.hpp"
 
 #include "message.hpp"
-#include "nlohmann/json.hpp"
+
+// TODO: refactor
+#include "../../../include/json.hpp"
 
 using json = nlohmann::json;
 

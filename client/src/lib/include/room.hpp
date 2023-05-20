@@ -50,5 +50,4 @@ private:
 
     std::vector<User> _members_list;
     std::vector<Message> _messages_list;
-
 };

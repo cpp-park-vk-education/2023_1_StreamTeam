@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "PostgreSQL.hpp"
+#include <pqxx/pqxx>
 #include "server.hpp"
 
 using boost::asio::ip::tcp;

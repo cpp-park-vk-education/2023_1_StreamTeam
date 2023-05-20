@@ -5,7 +5,7 @@
 #include "auth.hpp"
 #include "film_controller.hpp"
 #include "message_controller.hpp"
-#include "nlohmann/json.hpp"
+#include "../../../include/json.hpp"
 #include "response.hpp"
 #include "room_controller.hpp"
 #include "user_controller.hpp"
@@ -48,6 +48,7 @@ void Session::ReadBody() {
             if (!ec) {
                 std::string body(read_msg_.body());
                 std::string request = body.substr(0, length);
+                std::cout << "\n-----------Received request: " << request << std::endl;
                 json req;
                 try {
                     req = json::parse(request);

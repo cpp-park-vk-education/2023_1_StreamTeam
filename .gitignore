@@ -122,4 +122,5 @@ main_server/server/videos
 streaming_server/build/*
 !streaming_server/build/.keep
 /streaming_server/static/
+/client/CMakeLists.txt.user
 **/build

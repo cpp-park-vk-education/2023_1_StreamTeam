@@ -7,7 +7,7 @@ PostgreConnection::PostgreConnection(std::string config_path)
 
     try
     {
-        dbname = static_cast<std::string>(cfg.lookup("dbname"));
+        dbname = cfg.lookup("dbname").operator std::string();
     }
     catch (...)
     {
@@ -17,7 +17,7 @@ PostgreConnection::PostgreConnection(std::string config_path)
 
     try
     {
-        user = static_cast<std::string>(cfg.lookup("user"));
+        user = cfg.lookup("user").operator std::string();
     }
     catch (...)
     {
@@ -27,7 +27,7 @@ PostgreConnection::PostgreConnection(std::string config_path)
 
     try
     {
-        password = static_cast<std::string>(cfg.lookup("password"));
+        password = cfg.lookup("password").operator std::string();
     }
     catch (...)
     {
@@ -37,7 +37,7 @@ PostgreConnection::PostgreConnection(std::string config_path)
 
     try
     {
-        host = static_cast<std::string>(cfg.lookup("host"));
+        host = cfg.lookup("host").operator std::string();
     }
     catch (...)
     {
@@ -47,7 +47,7 @@ PostgreConnection::PostgreConnection(std::string config_path)
 
     try
     {
-        port = static_cast<std::string>(cfg.lookup("port"));
+        port = cfg.lookup("port").operator std::string();
     }
     catch (...)
     {

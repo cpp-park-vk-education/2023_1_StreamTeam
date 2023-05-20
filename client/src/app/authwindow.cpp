@@ -1,6 +1,7 @@
 #include "authwindow.h"
 #include "ui_authwindow.h"
 #include "mainwindow.h"
+#include "session.hpp"
 
 #include <QMessageBox>
 
@@ -22,6 +23,23 @@ void AuthWindow::on_pushButton_clicked()
 {
     QString login = ui->line_login->text();
     QString password = ui->line_password->text();
+
+//    json data = {
+//        {"method", "auth"},
+//        {"data",
+//            {
+//                {"type", "email"},
+//                {"name", login.toStdString()},
+//                {"password", password.toStdString()}
+//            }
+//        }
+//    };
+
+// Преобразуем json в строку
+//    std::string jsonString = data.dump();
+//    auto session = Session::getInstance();
+
+    // Отправляем запрос на сервер, получаем какой-то ответ
     if (login == "iu3" && password == "123")
     {
         auth_success = true;
@@ -45,3 +63,11 @@ void AuthWindow::on_AuthWindow_rejected()
     mainwind->quitApp();
 }
 
+
+void AuthWindow::on_pushButtonSignIn_clicked()
+{
+    QString login = ui->line_login->text();
+    QString password = ui->line_password->text();
+
+
+}
