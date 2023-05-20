@@ -13,6 +13,12 @@ void Room::SetName(std::string name)
     _name = name;
 }
 
+void Room::setID(int id)
+{
+    _id = id;
+}
+
+
 int Room::GetLeaderId()
 {
     return _leader_id;

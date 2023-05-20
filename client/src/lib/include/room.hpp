@@ -11,6 +11,7 @@ class Room
 {
 public:
     int getID();
+    void setID(int id);
 
     std::string GetName();
 

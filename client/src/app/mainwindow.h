@@ -31,8 +31,6 @@ public:
 
     std::shared_ptr<User> getCurrentUser();
 
-    void loadRoomList();
-
     void AddRoom(std::shared_ptr<Room>);
 
     void clearRoomList();
@@ -48,6 +46,9 @@ public:
     void clearMessages();
 
 private slots:
+    void loadRoomList();
+
+    void showErrorMessage(const QString& title, const QString& message);
 
     void on_actionLog_out_triggered();
 
@@ -63,6 +64,7 @@ private slots:
 
     void on_pushButton_3_clicked();
 
+    void createPlayer(QString& ip);
 private:
     Ui::MainWindow *ui;
     PlayerWindow *player;

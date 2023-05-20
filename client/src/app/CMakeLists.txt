@@ -16,7 +16,6 @@ set(PROJECT_SOURCES
 
         playerwindow.cpp
         playerwindow.h
-        playerwindow.ui
 
         createroomform.cpp
         createroomform.h
@@ -45,6 +44,7 @@ target_link_libraries(SyncView PRIVATE Qt5::Widgets)
 target_link_libraries(SyncView PRIVATE
     businesslogic
     Qt5::Widgets
+    Qt5::Core Qt5::Gui Qt5::Network Qt5::MultimediaWidgets
 )
 
 set_target_properties(SyncView PROPERTIES
