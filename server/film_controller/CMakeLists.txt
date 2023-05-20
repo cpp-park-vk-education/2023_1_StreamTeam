@@ -1,0 +1,3 @@
+add_library(film_controller src/film_controller.cpp)
+target_include_directories(film_controller PUBLIC include)
+target_link_libraries(film_controller PUBLIC session response)
