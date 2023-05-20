@@ -22,6 +22,13 @@ set(PROJECT_SOURCES
         createroomform.h
         createroomform.ui
 
+        signinwindow.cpp
+        signinwindow.h
+        signinwindow.ui
+
+        settingswindow.cpp
+        settingswindow.h
+        settingswindow.ui
 )
 
 add_executable(SyncView

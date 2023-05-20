@@ -13,16 +13,21 @@ public:
 
     std::string GetPassword();
 
+    std::string GetEmail();
+
     void SetId (int);
 
     void SetName(std::string);
 
     void SetPassword(std::string);
 
+    void SetEmail(std::string);
+
 private:
     int _id;
     std::string _name;
     std::string _password;
+    std::string _email;
 
 };
 

@@ -4,12 +4,14 @@ set(INCLUDE_SOURCES
     src/message.cpp
     src/player.cpp
     src/serializer.cpp
+    src/requestformer.cpp
 
     include/user.hpp
     include/room.hpp
     include/message.hpp
     include/player.hpp
     include/serializer.hpp
+    include/requestformer.hpp
 )
 
 add_library(businesslogic STATIC

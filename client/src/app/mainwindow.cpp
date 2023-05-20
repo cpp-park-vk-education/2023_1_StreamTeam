@@ -4,8 +4,9 @@
 #include <QMessageBox>
 
 
-MainWindow::MainWindow(QWidget *parent):
+MainWindow::MainWindow(QWidget *parent, std::shared_ptr<RequestFormer> request):
     QMainWindow(parent),
+    Request(request),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -31,7 +32,7 @@ void MainWindow::Authenticate(std::shared_ptr<User> ptr)
     ui->menuUser_Name->setTitle(QApplication::translate("MainWindow", login_user->GetName().c_str(), nullptr));
     ui->statusbar->showMessage("Login Success!");
 
-    // хардкодим заглушки для обьектов
+    /* хардкодим заглушки для обьектов
     std::shared_ptr<Room> room1(new Room),
                           room2(new Room),
                           room3(new Room);
@@ -66,6 +67,7 @@ void MainWindow::Authenticate(std::shared_ptr<User> ptr)
     room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes); room3->AddMessage(mes);
     room3->SetLeaderId(3);
     user_rooms.push_back(room3);
+    */
 
     loadRoomList();
 }
