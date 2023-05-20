@@ -38,7 +38,7 @@ void AuthWindow::on_pushButton_clicked()
         }
     };
 
-// Преобразуем json в строку
+// Преобразуем json в строку  
     std::string jsonString = data.dump();
     std::cout << "Request: " << jsonString << std::endl;
     auto session = Session::getInstance();
