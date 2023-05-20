@@ -13,8 +13,11 @@ int main(int argc, char *argv[])
     boost::asio::ip::tcp::resolver resolver(io_context);
     auto endpoints = resolver.resolve("127.0.0.1", "8080");
     Session::setInstance(io_context, endpoints);
+    std::thread t([&io_context]() {
+        io_context.run();
+    });
 
-    auto session = Session::getInstance();
+
     MainWindow w;
     w.show();
     AuthWindow authWindow(&w, &w);

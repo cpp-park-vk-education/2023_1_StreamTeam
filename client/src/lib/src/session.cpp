@@ -34,11 +34,6 @@ void Session::setInstance(boost::asio::io_context& io_context, const tcp::resolv
     session_instance_ = std::make_shared<Session>(io_context, endpoint);
 }
 
-//std::shared_ptr<Session> Session::getInstance() {
-//    return session_instance_;
-//}
-
-
 void Session::Send(const std::string& str) {
     auto parts = Split(str, Request::max_body_length);
         for (const auto& part : parts) {

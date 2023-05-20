@@ -17,7 +17,6 @@ public:
     static std::shared_ptr<Session> getInstance();
     static void setInstance(boost::asio::io_context& io_context, const tcp::resolver::results_type& endpoints);
 
-//    static std::shared_ptr<Session> getInstance(boost::asio::io_context& io_context, const tcp::resolver::results_type& endpoints);
 private:
 
     inline static std::shared_ptr<Session> session_instance_ = nullptr;

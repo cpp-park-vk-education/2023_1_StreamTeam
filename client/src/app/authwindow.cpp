@@ -2,6 +2,7 @@
 #include "ui_authwindow.h"
 #include "mainwindow.h"
 #include "session.hpp"
+#include "../../../include/json.hpp"
 
 #include <QMessageBox>
 
@@ -24,20 +25,22 @@ void AuthWindow::on_pushButton_clicked()
     QString login = ui->line_login->text();
     QString password = ui->line_password->text();
 
-//    json data = {
-//        {"method", "auth"},
-//        {"data",
-//            {
-//                {"type", "email"},
-//                {"name", login.toStdString()},
-//                {"password", password.toStdString()}
-//            }
-//        }
-//    };
+    nlohmann::json_abi_v3_11_2::json data = {
+        {"method", "auth"},
+        {"data",
+            {
+                {"type", "email"},
+                {"name", login.toStdString()},
+                {"password", password.toStdString()}
+            }
+        }
+    };
 
 // Преобразуем json в строку
-//    std::string jsonString = data.dump();
-//    auto session = Session::getInstance();
+    std::string jsonString = data.dump();
+    std::cout << "Request: " << jsonString << std::endl;
+    auto session = Session::getInstance();
+    session->Send(jsonString);
 
     // Отправляем запрос на сервер, получаем какой-то ответ
     if (login == "iu3" && password == "123")
@@ -69,5 +72,20 @@ void AuthWindow::on_pushButtonSignIn_clicked()
     QString login = ui->line_login->text();
     QString password = ui->line_password->text();
 
+    nlohmann::json_abi_v3_11_2::json data = {
+            {"method", "create"},
+            {"data",
+                       {
+                               {"username", "hello"},
+                               {"email", login.toStdString()},
+                               {"password", password.toStdString()}
+                       }
+            }
+    };
 
+    std::string jsonString = data.dump();
+    std::cout << "Request: " << jsonString << std::endl;
+    auto session = Session::getInstance();
+    session->Send(jsonString);
+//    {"method":"create","data":{"username":"aon","password":"1234","email":"abc@mail.ru"}}
 }
