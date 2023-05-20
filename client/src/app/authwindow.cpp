@@ -43,8 +43,7 @@ void AuthWindow::on_pushButton_clicked()
     std::cout << "Request: " << jsonString << std::endl;
     auto session = Session::getInstance();
     session->Send(jsonString, [this, email, password](const json& answer) {
-        //if (answer["status"] == "ok") {
-        if (0){
+        if (answer["status"] == "ok") {
             // Здесь обработчик запроса
 
             std::shared_ptr<User> user(new User);
