@@ -47,17 +47,17 @@ void AuthWindow::on_pushButton_clicked()
             // Здесь обработчик запроса
 
             std::shared_ptr<User> user(new User);
-            user->SetName(email.toStdString());
+            user->SetEmail(email.toStdString());
             user->SetPassword(password.toStdString());
             user->SetId(answer["result"][0]["id"]);
             user->SetName(answer["result"][0]["username"]);
 
-            QMetaObject::invokeMethod(mainwind, "Authenticate", Qt::QueuedConnection, Q_ARG(std::shared_ptr<User>, user));
+            mainwind->Authenticate(user);
             accept();
             close();
 
         }
-        else
+        if (answer["status"] == "error")
             QMetaObject::invokeMethod(this, "showErrorMessage", Qt::QueuedConnection,
                                       Q_ARG(QString, "Login Error"),
                                       Q_ARG(QString, "Something went wrong"));
@@ -81,6 +81,10 @@ void AuthWindow::on_pushButtonSignIn_clicked()
     signin.setModal(true);
     bool f = signin.exec();
     if (f)
+    {
         accept();
+        close();
+    }
+
 }
 

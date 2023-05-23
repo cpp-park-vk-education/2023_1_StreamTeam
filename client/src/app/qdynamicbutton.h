@@ -23,7 +23,7 @@ class QDynamicButtonRoom : public QPushButton, public IQDynamicButton<Room>
 {
     Q_OBJECT
 public:
-    explicit QDynamicButtonRoom(QWidget *parent = 0);
+    explicit QDynamicButtonRoom(QWidget *parent = nullptr);
     ~QDynamicButtonRoom();
  
 public slots:

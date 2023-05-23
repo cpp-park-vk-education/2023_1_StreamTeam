@@ -44,6 +44,7 @@ void MainWindow::loadCurrentRoom()
     {
         ui->listMembers->addItem(QString::fromStdString(current_room->GetMember(i).GetName()));
     }
+
     loadMessages();
 }
 

@@ -32,7 +32,7 @@ void SignInWindow::on_buttonBox_accepted()
         {"data",
             {
                 {"username", name},
-                {"name", email},
+                {"email", email},
                 {"password", password}
             }
         }
@@ -47,18 +47,17 @@ void SignInWindow::on_buttonBox_accepted()
             // Здесь обработчик запроса
 
             std::shared_ptr<User> user(new User);
-            user->SetName(email);
+            user->SetEmail(email);
             user->SetPassword(password);
             user->SetId(answer["result"][0]["id"]);
             user->SetName(name);
 
-            QMetaObject::invokeMethod(mainwind, "Authenticate", Qt::QueuedConnection, Q_ARG(std::shared_ptr<User>, user));
-            //mainwind->Authenticate(user);
+            mainwind->Authenticate(user);
             accept();
             close();
-
+            return;
         }
-        else
+        if (answer["status"] == "error")
             QMetaObject::invokeMethod(this, "showErrorMessage", Qt::QueuedConnection,
                                       Q_ARG(QString, "Signin Error"),
                                       Q_ARG(QString, "Something went wrong"));
