@@ -5,7 +5,7 @@
 #include "auth.hpp"
 #include "film_controller.hpp"
 #include "message_controller.hpp"
-#include "nlohmann/json.hpp"
+#include "../../../include/json.hpp"
 #include "response.hpp"
 #include "room_controller.hpp"
 #include "user_controller.hpp"

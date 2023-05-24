@@ -5,7 +5,7 @@
 #include "session.hpp"
 #include "message.hpp"
 #include <string>
-#include "nlohmann/json.hpp"
+#include "../../../include/json.hpp"
 
 class Session;
 using session_ptr = std::shared_ptr<Session>;

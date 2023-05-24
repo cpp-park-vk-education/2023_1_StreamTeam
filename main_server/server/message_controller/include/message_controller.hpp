@@ -4,7 +4,7 @@
 #include <unordered_map>
 
 #include "MessagesTable.hpp"
-#include "nlohmann/json.hpp"
+#include "../../../include/json.hpp"
 #include "session.hpp"
 
 using json = nlohmann::json;

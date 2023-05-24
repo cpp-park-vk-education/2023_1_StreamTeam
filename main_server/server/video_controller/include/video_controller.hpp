@@ -4,7 +4,7 @@
 
 #include "RoomsTable.hpp"
 #include "FilmsTable.hpp"
-#include "nlohmann/json.hpp"
+#include "../../../include/json.hpp"
 #include "session.hpp"
 
 using json = nlohmann::json;

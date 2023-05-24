@@ -5,7 +5,7 @@
 #include "boost/asio.hpp"
 #include "IDatabase.hpp"
 #include "RoomsTable.hpp"
-#include "nlohmann/json.hpp"
+#include "../../../include/json.hpp"
 
 using json = nlohmann::json;
 using db_ptr = std::shared_ptr<IDatabase>;
