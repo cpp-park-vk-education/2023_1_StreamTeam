@@ -5,6 +5,7 @@
 
 #include "ViewersTable.hpp"
 #include "RoomsTable.hpp"
+#include "UsersTable.hpp"
 #include "../../../include/json.hpp"
 #include "session.hpp"
 
@@ -16,6 +17,7 @@ using rooms_map = std::unordered_map<std::size_t, room_ptr>;
 class ViewerController {
     ViewersTable table_;
     RoomsTable room_table_;
+    UsersTable users_table_;
     const std::array<std::string, 6> allowed_methods_{
         "addUserToRoom",     "deleteUserFromRoom", "getViewersInfo",
         "getUserRoleInRoom", "getUserRooms",       "getRoomUsers"};

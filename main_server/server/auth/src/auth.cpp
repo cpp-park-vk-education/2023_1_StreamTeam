@@ -65,7 +65,7 @@ void Auth::CreateUser(const json& request, session_ptr session) {
     json info = table_.addUser(request);
     std::cerr << info;
     if (info["status"] == "ok") {
-        session->Send(Ok());
+        session->Send(info.dump());
         session->SetAuthorized(info["result"][0]["id"]);
     } else {
         session->Send(BadRequest());

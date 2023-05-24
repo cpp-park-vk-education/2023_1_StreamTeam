@@ -95,7 +95,8 @@ void ViewerController::GetUserRooms(session_ptr session) {
     session->Send(Message(info.dump()));
 }
 
-void ViewerController::GetRoomUsers(const json& data, session_ptr session) {
+void ViewerController::GetRoomUsers(const json& data, session_ptr session) 
+{
     std::size_t room_id;
     try {
         room_id = data["room_id"];
@@ -105,5 +106,17 @@ void ViewerController::GetRoomUsers(const json& data, session_ptr session) {
     }
 //    std::size_t room_id = session->GetRoomId();
     json info = table_.getRoomUsers(room_id);
-    session->Send(Message(info.dump()));
+    if (info["status"] != "ok") {
+        session->Send(BadRequest());
+        throw std::runtime_error{"BadRequest"};
+    }
+    json new_info;
+    for (auto user: info["result"]) {
+        std::size_t user_id = user["id_user"];
+        json user_info = users_table_.getUserInfo(user_id)["result"][0];
+        user_info.erase("password");
+        new_info["result"].push_back(user_info);
+    }
+    new_info["status"] = "ok";
+    session->Send(Message(new_info.dump()));
 }
