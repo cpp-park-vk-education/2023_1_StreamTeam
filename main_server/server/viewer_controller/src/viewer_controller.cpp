@@ -45,14 +45,18 @@ void ViewerController::AddUserToRoom(const json& data, session_ptr session,
     json info = table_.addUserToRoom(user_id, room_id);
     rooms[room_id]->Join(session);
     json msgs = msg_table_.getAllMessagesInRoom(room_id);
-    info["messages"] = msgs["result"];
-    info["update"] = true;
-
-    if (info["status"] != "ok") {
-        info["status"] = "ok";
-        info.erase("msg");
+    json new_info = table_.getRoomUsers(room_id);
+    json response;
+    for (auto user: new_info["result"]) {
+        user_id = user["id_user"];
+        json user_info = users_table_.getUserInfo(user_id)["result"][0];
+        user_info.erase("password");
+        response["result"].push_back(user_info);
     }
-    rooms[room_id]->Send(Message(info.dump()));
+    response["messages"] = msgs["result"];
+    response["update"] = true;
+    response["status"] = "ok";
+    session->Send(Message(response.dump()));
     session->SetRoom(rooms[room_id]);
 }
 void ViewerController::DeleteUserFromRoom(session_ptr session,
