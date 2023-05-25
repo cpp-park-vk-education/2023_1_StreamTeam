@@ -37,8 +37,8 @@ void MainWindow::loadCurrentRoom()
     ui->pushButtonPlayer->show();
     if(login_user->GetId() == current_room->GetLeaderId())
     {
-        ui->lineEditAddMember->show();
-        ui->pushButton_AddMember->show();
+        ui->listFilms->show();
+        ui->pushButton_films->show();
     }
 
 }

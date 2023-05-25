@@ -99,6 +99,13 @@
        <property name="verticalSpacing">
         <number>3</number>
        </property>
+       <item row="7" column="1">
+        <widget class="QPushButton" name="pushButton_films">
+         <property name="text">
+          <string>Choose a film</string>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="1">
         <widget class="QPushButton" name="pushButtonPlayer">
          <property name="sizePolicy">
@@ -130,7 +137,60 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="2" rowspan="6">
+       <item row="0" column="2">
+        <widget class="QLabel" name="labelCurrentRoom">
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Choose your Room</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLabel" name="labelMembers">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="text">
+          <string> Members</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QListWidget" name="listMembers">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>150</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="flow">
+          <enum>QListView::TopToBottom</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2" rowspan="7">
         <widget class="QFrame" name="frame_2">
          <property name="minimumSize">
           <size>
@@ -190,58 +250,7 @@
         </widget>
        </item>
        <item row="6" column="1">
-        <widget class="QPushButton" name="pushButton_AddMember">
-         <property name="text">
-          <string>Add a new Member</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="1">
-        <widget class="QLineEdit" name="lineEditAddMember">
-         <property name="maximumSize">
-          <size>
-           <width>150</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="placeholderText">
-          <string>Enter user ID</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QLabel" name="labelCurrentRoom">
-         <property name="font">
-          <font>
-           <pointsize>16</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Choose your Room</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="labelMembers">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="text">
-          <string> Members</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QListWidget" name="listMembers">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
+        <widget class="QListWidget" name="listFilms">
          <property name="minimumSize">
           <size>
            <width>120</width>
@@ -251,14 +260,8 @@
          <property name="maximumSize">
           <size>
            <width>150</width>
-           <height>16777215</height>
+           <height>150</height>
           </size>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="flow">
-          <enum>QListView::TopToBottom</enum>
          </property>
         </widget>
        </item>

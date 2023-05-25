@@ -16,9 +16,9 @@ MainWindow::MainWindow(QWidget *parent):
     ui->pushButton_send->hide();
     ui->labelMembers->hide();
     ui->pushButtonPlayer->hide();
-    ui->pushButton_AddMember->hide();
-    ui->lineEditAddMember->hide();
-    player = nullptr;
+    ui->pushButton_films->hide();
+    ui->listFilms->hide();
+    //player = nullptr;
     current_room = nullptr;
 }
 
@@ -54,7 +54,8 @@ void MainWindow::Authenticate(std::shared_ptr<User> ptr)
                 room->SetLeaderId(room_info["creator"]);
                 user_rooms.emplace_back(std::move(room));
             }
-
+            ui->listFilms->addItem("cat.mp4");
+            ui->listFilms->selectAll();
             QMetaObject::invokeMethod(this, "loadRoomList", Qt::QueuedConnection);
         } else {
             QMetaObject::invokeMethod(this, "showErrorMessage", Qt::QueuedConnection,

@@ -8,7 +8,7 @@
 class Request {
    public:
     static constexpr std::size_t header_length = 4;
-    static constexpr std::size_t max_body_length = 512;
+    static constexpr std::size_t max_body_length = 8196;
 
     Request();
     Request(const std::string& msg);

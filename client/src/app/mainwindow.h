@@ -7,10 +7,11 @@
 #include <vector>
 #include <queue>
 
+#include "playerwindow.h"
 #include "user.hpp"
 #include "room.hpp"
 #include "message.hpp"
-#include "playerwindow.h"
+
 
 Q_DECLARE_METATYPE(Message)
 Q_DECLARE_METATYPE(std::shared_ptr<Message>)
@@ -28,8 +29,6 @@ public:
     ~MainWindow();
 
     void Authenticate(std::shared_ptr<User>);
-
-    void quitApp();
 
     std::shared_ptr<User> getCurrentUser();
 
@@ -57,6 +56,8 @@ private slots:
 
     void showErrorMessage(const QString& title, const QString& message);
 
+    void quitApp();
+
     void on_actionLog_out_triggered();
 
     void on_pushButtonPlayer_clicked();
@@ -71,10 +72,11 @@ private slots:
 
     void on_pushButton_3_clicked();
 
-    void createPlayer(QString& ip);
+    void createPlayer(const std::string& ip_addr);
+
 private:
     Ui::MainWindow *ui;
-    PlayerWindow *player;
+    //PlayerWindow* player;
 
     // Memory
     std::shared_ptr<User> login_user;

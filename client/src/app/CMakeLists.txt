@@ -16,6 +16,7 @@ set(PROJECT_SOURCES
 
         playerwindow.cpp
         playerwindow.h
+        playerwindow.ui
 
         createroomform.cpp
         createroomform.h

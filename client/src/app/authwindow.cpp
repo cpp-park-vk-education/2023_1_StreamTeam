@@ -71,7 +71,7 @@ void AuthWindow::showErrorMessage(const QString& title, const QString& message)
 
 void AuthWindow::on_AuthWindow_rejected()
 {
-    mainwind->quitApp();
+    QMetaObject::invokeMethod(mainwind, "quitApp", Qt::QueuedConnection);
 }
 
 

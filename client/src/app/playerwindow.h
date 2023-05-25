@@ -4,8 +4,8 @@
 #include <QDialog>
 #include "session.hpp"
 #include "mainwindow.h"
-//#include "ui_playerwindow.h"
-//#include "ui_mainwindow.h"
+#include "ui_playerwindow.h"
+#include "ui_mainwindow.h"
 #include <QDebug>
 #include <QGridLayout>
 #include <QtMultimedia/QMediaPlayer>
@@ -14,10 +14,11 @@
 #include <QString>
 
 
-//
-//QT_BEGIN_NAMESPACE
-//namespace Ui { class PlayerWindow; }
-//QT_END_NAMESPACE
+Q_DECLARE_METATYPE(std::string)
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class PlayerWindow; }
+QT_END_NAMESPACE
 
 
 class PlayerWindow : public QDialog
@@ -25,35 +26,13 @@ class PlayerWindow : public QDialog
     Q_OBJECT
 
 public:
-    PlayerWindow(QWidget *parent): QDialog(parent)
-    {
-//        ui->setupUi(this);
-        setWindowTitle("StreamTeam video streaming service");
+    PlayerWindow(QWidget *parent = nullptr, std::string ip_ = "");
 
-        QVideoWidget* vw = new QVideoWidget(this);
-        QMediaPlayer* player = new QMediaPlayer(this);
-
-        QGridLayout* layout = new QGridLayout(this);
-        layout->addWidget(vw, 0, 0, 1, 1);
-
-//        QWidget* win = new QWidget(this);
-//        win->setLayout(layout);
-//        setCentralWidget(win);
-
-        player->setVideoOutput(vw);
-        const QUrl url1 = QUrl("https://www.youtube.com/watch?v=w4n7AMAqmA4&list=LL&index=91&ab_channel=ZENO25");
-        const QNetworkRequest requestRtsp1(url1);
-
-        player->setMedia(requestRtsp1);
-        player->play();
-    }
-
-    ~PlayerWindow()
-    {}
+    ~PlayerWindow();
 
 private:
     QString ip_address;
-//    Ui::PlayerWindow *ui;
+    Ui::PlayerWindow *ui;
 };
 
 #endif // PLAYERWINDOW_H

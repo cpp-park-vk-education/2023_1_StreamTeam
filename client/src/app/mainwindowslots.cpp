@@ -31,9 +31,9 @@ void MainWindow::on_actionLog_out_triggered()
     clearRoomList();
     clearCurrentRoom();
 
-    if (player)
-        delete player;
-    player = nullptr;
+//    if (player)
+//        delete player;
+//    player = nullptr;
 
     AuthWindow authWindow(this, this);
     authWindow.setModal(true);
@@ -44,42 +44,46 @@ void MainWindow::on_pushButtonPlayer_clicked()
 {
     auto session = Session::getInstance();
 
-    nlohmann::json_abi_v3_11_2::json data = {
+    json data = {
             {"table", "video"},
             {"method", "startVideo"},
-            {"data", ""}
+            {"data", "1"}
     };
 
     std::string jsonString = data.dump();
 
     std::cout << "Request: " << jsonString << std::endl;
-    nlohmann::json_abi_v3_11_2::json response;
+    json response;
 
 //    QString x = "rtsp://localhost:8554/stream1";
 //    createPlayer(x);
 //
-    if (!player) {
-        player = new PlayerWindow(this);
-    }
-
-    player->show();
-
-//    session->Send(jsonString, [this](const nlohmann::json_abi_v3_11_2::json& answer) {
-//        if (answer["status"] == "ok") {
-//            QString tmp = QString::fromStdString(answer["result"].dump());
+//    if (!player) {
+//        player = new PlayerWindow(this);
+//    }
 //
-//            QMetaObject::invokeMethod(this, "createPlayer", Qt::QueuedConnection,
-//                                      Q_ARG(QString, tmp));
-//        } else {
-//            QMetaObject::invokeMethod(this, "showErrorMessage", Qt::QueuedConnection,
-//                                      Q_ARG(QString, "Something went wrong"),
-//                                      Q_ARG(QString, "Oopsie!"));
-//        }
-//    });
+//    player->show();
+
+    session->Send(jsonString, [this](const json& answer) {
+        std::cout << "Response got to start stream:" << answer.dump() << std::endl;
+
+        if (answer["status"] == "ok") {
+            //std::string tmp = "rtsp://localhost:9000/";
+            std::string tmp = answer["result"].dump();
+
+            qRegisterMetaType<std::string>("std::string");
+            QMetaObject::invokeMethod(this, "createPlayer", Qt::QueuedConnection,
+                                      Q_ARG(std::string, tmp));
+        } else {
+            QMetaObject::invokeMethod(this, "showErrorMessage", Qt::QueuedConnection,
+                                      Q_ARG(QString, "Player Error"),
+                                      Q_ARG(QString, "Could not open player!"));
+        }
+    });
 }
 
-void MainWindow::createPlayer(QString& ip_addr) {
-    player = new PlayerWindow(this);
+void MainWindow::createPlayer(const std::string& ip_addr) {
+    auto player = new PlayerWindow(this, ip_addr);
     player->show();
 }
 
