@@ -3,7 +3,7 @@
 
 ViewerController::ViewerController(const json& request, db_ptr database,
                                    session_ptr session, rooms_map& rooms)
-    : table_(database), room_table_(database) {
+        : table_(database), room_table_(database), msg_table_(database), users_table_(database) {
     auto itr = std::find(allowed_methods_.begin(), allowed_methods_.end(),
                          request["method"]);
     if (itr == allowed_methods_.end()) {
@@ -32,26 +32,28 @@ void ViewerController::AddUserToRoom(const json& data, session_ptr session,
         room_id = data["room_id"];
     } catch (std::exception& err) {
         session->Send(BadRequest());
-        throw std::runtime_error{"BadRequest"};
+        throw std::runtime_error{"BadRequest1"};
     }
     if (!room_table_.checkRoom(room_id)) {
         session->Send(NotFound());
-        throw std::runtime_error{"BadRequest"};
+        throw std::runtime_error{"BadRequest2"};
     }
     if (!rooms[room_id]) {
         session->Send(NotFound());
-        throw std::runtime_error{"BadRequest"};
+        throw std::runtime_error{"BadRequest3"};
     }
     json info = table_.addUserToRoom(user_id, room_id);
-    if (info["status"] == "ok") {
-        rooms[room_id]->Join(session);
-        info["update"] = true;
-        rooms[room_id]->Send(Message(info.dump()));
-        session->SetRoom(rooms[room_id]);
-    } else {
-        session->Send(BadRequest());
-        throw std::runtime_error{"BadRequest"};
+    rooms[room_id]->Join(session);
+    json msgs = msg_table_.getAllMessagesInRoom(room_id);
+    info["messages"] = msgs["result"];
+    info["update"] = true;
+
+    if (info["status"] != "ok") {
+        info["status"] = "ok";
+        info.erase("msg");
     }
+    rooms[room_id]->Send(Message(info.dump()));
+    session->SetRoom(rooms[room_id]);
 }
 void ViewerController::DeleteUserFromRoom(session_ptr session,
                                           rooms_map rooms) {
@@ -95,8 +97,7 @@ void ViewerController::GetUserRooms(session_ptr session) {
     session->Send(Message(info.dump()));
 }
 
-void ViewerController::GetRoomUsers(const json& data, session_ptr session) 
-{
+void ViewerController::GetRoomUsers(const json& data, session_ptr session) {
     std::size_t room_id;
     try {
         room_id = data["room_id"];

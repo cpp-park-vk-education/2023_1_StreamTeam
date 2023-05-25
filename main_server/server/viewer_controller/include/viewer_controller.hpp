@@ -6,7 +6,8 @@
 #include "ViewersTable.hpp"
 #include "RoomsTable.hpp"
 #include "UsersTable.hpp"
-#include "../../../include/json.hpp"
+#include "MessagesTable.hpp"
+#include "nlohmann/json.hpp"
 #include "session.hpp"
 
 using json = nlohmann::json;
@@ -18,15 +19,16 @@ class ViewerController {
     ViewersTable table_;
     RoomsTable room_table_;
     UsersTable users_table_;
+    MessagesTable msg_table_;
     const std::array<std::string, 6> allowed_methods_{
-        "addUserToRoom",     "deleteUserFromRoom", "getViewersInfo",
-        "getUserRoleInRoom", "getUserRooms",       "getRoomUsers"};
+            "addUserToRoom",     "deleteUserFromRoom", "getViewersInfo",
+            "getUserRoleInRoom", "getUserRooms",       "getRoomUsers"};
 
-   public:
+public:
     ViewerController(const json& request, db_ptr database, session_ptr session,
                      rooms_map& rooms);
 
-   private:
+private:
     void AddUserToRoom(const json& data, session_ptr session, rooms_map rooms);
     void DeleteUserFromRoom(session_ptr session,
                             rooms_map rooms);

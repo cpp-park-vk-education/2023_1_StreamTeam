@@ -13,7 +13,7 @@ public:
     json updateFilm(const json &info) const;
     bool checkFilm(const size_t id) const;
     json getFilmInfo(const size_t id) const;
-
+    json getALlFilms() const;
 private:
     std::shared_ptr<IDatabase> client;
 };

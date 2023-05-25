@@ -82,3 +82,13 @@ json FilmsTable::getFilmInfo(const size_t id) const
 
     return response;
 }
+
+json FilmsTable::getALlFilms() const
+{
+    json request = {{"SELECT", {"*"}},
+                    {"FROM", {filmsTableName}}};
+
+    json response = client->select(request);
+
+    return response;
+}

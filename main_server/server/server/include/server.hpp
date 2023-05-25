@@ -18,7 +18,7 @@ public:
         : acceptor_(io_context, tcp::endpoint(tcp::v4(), port)), database_(database) {
         RoomsTable table(database);
         json rooms = table.getAllRooms();
-        for (auto room : rooms["rooms"]) {
+        for (auto room : rooms["result"]) {
             rooms_[room["id"]] = std::make_shared<Room>(room["creator"], room["id"]);
         }
         Accept();
