@@ -53,6 +53,13 @@ void ViewerController::AddUserToRoom(const json& data, session_ptr session,
         user_info.erase("password");
         response["result"].push_back(user_info);
     }
+    size_t i = 0;
+    for (auto msg: msgs["result"]) {
+        user_id = msg["id_user"];
+        std::string author_name = users_table_.getUserInfo(user_id)["result"][0]["username"];
+        msgs["result"][i]["authorname"] = author_name;
+        i++;
+    }
     response["messages"] = msgs["result"];
     response["update"] = true;
     response["status"] = "ok";
