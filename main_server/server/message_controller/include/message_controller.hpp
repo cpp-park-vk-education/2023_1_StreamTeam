@@ -4,6 +4,7 @@
 #include <unordered_map>
 
 #include "MessagesTable.hpp"
+#include "UsersTable.hpp"
 #include "../../../include/json.hpp"
 #include "session.hpp"
 
@@ -13,6 +14,7 @@ using room_ptr = std::shared_ptr<Room>;
 
 class MessageController {
     MessagesTable table_;
+    UsersTable table_users_;
     const std::array<std::string, 5> allowed_methods_{
         "addMessage", "deleteMessage", "updateMessage", "getMessageInfo",
         "getAllMessagesInRoom"};

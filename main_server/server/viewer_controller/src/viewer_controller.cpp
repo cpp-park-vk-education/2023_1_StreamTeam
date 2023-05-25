@@ -38,7 +38,8 @@ void ViewerController::AddUserToRoom(const json& data, session_ptr session,
         session->Send(NotFound());
         throw std::runtime_error{"BadRequest2"};
     }
-    if (!rooms[room_id]) {
+    //if (!rooms[room_id]) {
+    if (room_table_.getRoomInfo(room_id)["status"] != "ok") {
         session->Send(NotFound());
         throw std::runtime_error{"BadRequest3"};
     }

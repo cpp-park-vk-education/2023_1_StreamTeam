@@ -7,7 +7,7 @@
 class Message {
    public:
     static constexpr std::size_t header_length = 4;
-    static constexpr std::size_t max_body_length = 512;
+    static constexpr std::size_t max_body_length = 16384;
 
     Message();
     Message(const std::string& msg);

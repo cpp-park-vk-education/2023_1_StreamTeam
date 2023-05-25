@@ -33,11 +33,11 @@ void RoomController::AddRoom(const json& request, session_ptr session,
         session->Send(NotFound());
         throw std::runtime_error{"NotFound"};
     }
-    session->LeaveRoom();
+    //session->LeaveRoom();
     std::size_t id = info["result"][0]["id"];
     room_ptr room = std::make_shared<Room>(session->GetUserId(), id);
-    session->SetRoom(room);
-    room->Join(session);
+    //session->SetRoom(room);
+    //room->Join(session);
     rooms[id] = room;
     session->Send(Message(info.dump()));
 }
