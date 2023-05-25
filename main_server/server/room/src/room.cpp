@@ -33,3 +33,11 @@ json Room::GetEndpoints() {
     }
     return endpoints;
 }
+
+void Room::SetRoomLink(const std::string& link) {
+    link_ = link;
+}
+
+std::string Room::GetRoomLink() {
+    return link_;
+}

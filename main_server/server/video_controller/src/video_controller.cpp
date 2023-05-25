@@ -9,10 +9,11 @@ using boost::asio::ip::tcp;
 
 VideoController::VideoController(const json& request, db_ptr database,
                                  session_ptr session, room_ptr room)
-    : table_(database), film_table_(database) {
+        : table_(database), film_table_(database) {
     if (!room->IsOwner(session->GetUserId())) {
-        session->Send(Forbidden());
-        throw std::runtime_error{"Forbidden"};
+        session->Send(Message(room->GetRoomLink()));
+        return;
+//        throw std::runtime_error{"Forbidden"};
     }
     auto itr = std::find(allowed_methods.begin(), allowed_methods.end(),
                          request["method"]);
@@ -28,28 +29,29 @@ VideoController::VideoController(const json& request, db_ptr database,
 // {"result":[{"current_film":1}],"status":"ok"}
 
 void VideoController::StartVideo(const json& data, session_ptr session, room_ptr room) {
-        std::size_t id = room->GetId();
-        json info = table_.getCurrentFilm(id);
-        std::size_t film_id = info["result"][0]["current_film"];
-        if (info["status"] != "ok") {
-            session->Send(BadRequest());
-            throw std::runtime_error{"BadRequest"};
-        }
-        json film_info = film_table_.getFilmInfo(film_id);
-        if (film_info["status"] != "ok") {
-            session->Send(BadRequest());
-            throw std::runtime_error{"BadRequest"};
-        }
-        std::string command = GetCommand(id, film_id, film_info["result"][0]["link"]);
-        std::thread t([command] {
-            std::system(command.c_str());
-        });
-        t.detach();
-        std::string response = "rtsp://localhost:8554/" + std::to_string(id) + "_" + std::to_string(film_id);
-        json resp;
-        resp["status"] = "ok";
-        resp["url"] = response;
-        room->Send(Message(resp.dump()));
+    std::size_t id = room->GetId();
+    json info = table_.getCurrentFilm(id);
+    std::size_t film_id = info["result"][0]["current_film"];
+    if (info["status"] != "ok") {
+        session->Send(BadRequest());
+        throw std::runtime_error{"BadRequest"};
+    }
+    json film_info = film_table_.getFilmInfo(film_id);
+    if (film_info["status"] != "ok") {
+        session->Send(BadRequest());
+        throw std::runtime_error{"BadRequest"};
+    }
+    std::string command = GetCommand(id, film_id, film_info["result"][0]["link"]);
+    std::thread t([command] {
+        std::system(command.c_str());
+    });
+    t.detach();
+    std::string response = "rtsp://localhost:8554/" + std::to_string(id) + "_" + std::to_string(film_id);
+    json resp;
+    resp["status"] = "ok";
+    resp["url"] = response;
+    room->SetRoomLink(resp.dump());
+    session->Send(Message(resp.dump()));
 }
 
 std::string VideoController::GetCommand(std::size_t room_id, std::size_t film_id, const std::string& link) {

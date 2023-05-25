@@ -20,6 +20,9 @@ public:
     void Send(const Message& msg);
     void LeaveAll();
 
+    void SetRoomLink(const std::string& link);
+    std::string GetRoomLink();
+
     bool IsOwner(const std::size_t& participant) const {
         return owner_id_ == participant;
     }
@@ -35,4 +38,5 @@ private:
 //    session_ptr owner_;
     std::size_t owner_id_;
     std::size_t id_;
+    std::string link_;
 };
