@@ -13,6 +13,7 @@
 #include "playerwindow.h"
 
 Q_DECLARE_METATYPE(Message)
+Q_DECLARE_METATYPE(std::shared_ptr<Message>)
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -34,6 +35,8 @@ public:
 
     void AddRoom(std::shared_ptr<Room>);
 
+    void addMessage(std::shared_ptr<Message>);
+
     void clearRoomList();
 
     void clearCurrentRoom();
@@ -50,7 +53,7 @@ private slots:
 
     void loadRoomList();
 
-    void addMessage(Message);
+    void addLastMessage();
 
     void showErrorMessage(const QString& title, const QString& message);
 

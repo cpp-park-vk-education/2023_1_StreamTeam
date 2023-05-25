@@ -65,7 +65,7 @@ void MainWindow::loadMessages()
     }
     for (auto& mess: current_room_messages)
     {
-        addMessage(*mess);
+        addMessage(mess);
     }
     ui->listMessages->scrollToBottom();
 }
@@ -83,11 +83,18 @@ void MainWindow::AddRoom(std::shared_ptr<Room> room)
     connect(button, SIGNAL(clicked()), this, SLOT(slotSetCurrentRoom()));
 }
 
-void MainWindow::addMessage(Message mes)
+void MainWindow::addMessage(std::shared_ptr<Message> mes)
 {
     if (current_room_messages.empty())
         ui->listMessages->clear();
-    std::string message = mes.GetAuthorName() + ",  " + mes.GetPostTime() + '\n' + mes.GetTextBody() + '\n';
+    std::string message = mes->GetAuthorName() + ",  " + mes->GetPostTime() + '\n' + mes->GetTextBody() + '\n';
+    ui->listMessages->addItem(QString::fromStdString(message));
+}
+
+void MainWindow::addLastMessage()
+{
+    std::shared_ptr<Message> mes = current_room_messages[current_room_messages.size()-1];
+    std::string message = mes->GetAuthorName() + ",  " + mes->GetPostTime() + '\n' + mes->GetTextBody() + '\n';
     ui->listMessages->addItem(QString::fromStdString(message));
 }
 

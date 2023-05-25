@@ -177,17 +177,19 @@ void MainWindow::on_pushButton_send_clicked()
         if (answer["status"] == "ok") {
             // Здесь обработчик запроса
             auto mes = std::make_shared<Message>();
-            mes->SetPostTime(answer["created_at"]);
-            mes->SetId(answer["id"]);
-            mes->SetAuthor(answer["authorname"]);
-            mes->SetTextBody(answer["message"]);
+            mes->SetPostTime(answer["result"][0]["created_at"]);
+            mes->SetId(answer["result"][0]["id"]);
+            mes->SetAuthor(answer["result"][0]["authorname"]);
+            mes->SetTextBody(answer["result"][0]["message"]);
 
+            if (this->current_room_messages.empty())
+                ui->listMessages->clear();
             this->current_room_messages.emplace_back(std::move(mes));
             this->ui->lineEditmessage->clear();
 
-            qRegisterMetaType<Message>("Message");
-            QMetaObject::invokeMethod(this, "addMessage", Qt::QueuedConnection,
-                                      Q_ARG(Message, *mes));
+            QMetaObject::invokeMethod(this, "addLastMessage", Qt::QueuedConnection);
+
+            ui->listMessages->scrollToBottom();
         }
         if (answer["status"] == "error")
             QMetaObject::invokeMethod(this, "showErrorMessage", Qt::QueuedConnection,
@@ -195,12 +197,6 @@ void MainWindow::on_pushButton_send_clicked()
                                       Q_ARG(QString, "Something went reeeaaally wrong"));
     });
 
-    Message message;
-    message.SetAuthor(login_user->GetName()); message.SetPostTime(time); message.SetTextBody(body);
-    current_room->AddMessage(message);
-
-    addMessage(message);
-    ui->listMessages->scrollToBottom();
 }
 
 void MainWindow::on_pushButton_AddMember_clicked()
