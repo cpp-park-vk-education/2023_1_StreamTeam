@@ -11,8 +11,8 @@ VideoController::VideoController(const json& request, db_ptr database,
                                  session_ptr session, room_ptr room)
     : table_(database), film_table_(database) {
     if (!room->IsOwner(session->GetUserId())) {
-        session->Send(Forbidden());
-        throw std::runtime_error{"Forbidden"};
+        //session->Send(Forbidden());
+        //throw std::runtime_error{"Forbidden"};
     }
     auto itr = std::find(allowed_methods.begin(), allowed_methods.end(),
                          request["method"]);
@@ -28,13 +28,8 @@ VideoController::VideoController(const json& request, db_ptr database,
 // {"result":[{"current_film":1}],"status":"ok"}
 
 void VideoController::StartVideo(const json& data, session_ptr session, room_ptr room) {
+        std::size_t film_id = 1;
         std::size_t id = room->GetId();
-        json info = table_.getCurrentFilm(id);
-        std::size_t film_id = info["result"][0]["current_film"];
-        if (info["status"] != "ok") {
-            session->Send(BadRequest());
-            throw std::runtime_error{"BadRequest"};
-        }
         json film_info = film_table_.getFilmInfo(film_id);
         if (film_info["status"] != "ok") {
             session->Send(BadRequest());
@@ -53,9 +48,9 @@ void VideoController::StartVideo(const json& data, session_ptr session, room_ptr
 }
 
 std::string VideoController::GetCommand(std::size_t room_id, std::size_t film_id, const std::string& link) {
-    std::string chunk_1{"ffmpeg -re -stream_loop -1 -i /media/sf_CLionProjects/qt5_test/static/"};
-    const std::string& chunk_2 = link;
-    std::string chunk_3{"-c copy -f rtsp rtsp://localhost:8554/"};
+    std::string chunk_1{"ffmpeg -re -stream_loop -1 -i /home/rissenberg/MediaMTX/Stream/"};
+    const std::string& chunk_2 = "cat.mp4";
+    std::string chunk_3{" -c copy -f rtsp rtsp://localhost:8554/"};
     std::string chunk_4 = std::to_string(room_id) + "_" + std::to_string(film_id);
     std::string command = chunk_1 + chunk_2 + chunk_3 + chunk_4;
     return command;
