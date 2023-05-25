@@ -18,6 +18,11 @@ void Room::setID(int id)
     _id = id;
 }
 
+int Room::getID()
+{
+    return _id;
+}
+
 
 int Room::GetLeaderId()
 {
@@ -69,8 +74,10 @@ bool Room::AddMember(User user)
     }
 }
 
-bool Room::DeleteMember(int id)
+bool Room::DeleteMembers()
 {
+    _members_list.clear();
+    _members_list.shrink_to_fit();
     return true;
 }
 
@@ -104,7 +111,9 @@ bool Room::AddMessage(Message message)
     }
 }
 
-bool Room::DeleteMessage(int id)
+bool Room::DeleteMessages()
 {
+    _messages_list.clear();
+    _messages_list.shrink_to_fit();
     return true;
 }

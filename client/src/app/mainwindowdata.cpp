@@ -29,6 +29,7 @@ void MainWindow::loadCurrentRoom()
 {
     clearCurrentRoom();
     ui->listMessages->clear();
+    ui->listMembers->clear();
     ui->labelCurrentRoom->setText(QString::fromStdString(current_room->GetName()));
     ui->lineEditmessage->show();
     ui->pushButton_send->show();
@@ -40,24 +41,31 @@ void MainWindow::loadCurrentRoom()
         ui->pushButton_AddMember->show();
     }
 
-    for (size_t i = 0; i < current_room->sizeofMembers(); ++i)
-    {
-        ui->listMembers->addItem(QString::fromStdString(current_room->GetMember(i).GetName()));
-    }
+}
 
-    loadMessages();
+void MainWindow::loadMembers()
+{
+    if (current_room_members.empty())
+    {
+        ui->listMembers->addItem("No members in this room. How is this possible? You literally see this from inside the room. Consider yourself not-a-human-being, i guess.");
+        return;
+    }
+    for (auto user: current_room_members)
+    {
+        ui->listMembers->addItem(QString::fromStdString(user->GetName()));
+    }
 }
 
 void MainWindow::loadMessages()
 {
-    if (current_room->sizeofMessages() == 0)
+    if (current_room_messages.empty())
     {
         ui->listMessages->addItem("No messages yet");
         return;
     }
-    for (size_t i = 0; i < current_room->sizeofMessages(); ++i)
+    for (auto& mess: current_room_messages)
     {
-        addMessage(current_room->GetMessage(i));
+        addMessage(*mess);
     }
     ui->listMessages->scrollToBottom();
 }
@@ -77,7 +85,7 @@ void MainWindow::AddRoom(std::shared_ptr<Room> room)
 
 void MainWindow::addMessage(Message mes)
 {
-    if (current_room->isMessageEmpty())
+    if (current_room_messages.empty())
         ui->listMessages->clear();
     std::string message = mes.GetAuthorName() + ",  " + mes.GetPostTime() + '\n' + mes.GetTextBody() + '\n';
     ui->listMessages->addItem(QString::fromStdString(message));

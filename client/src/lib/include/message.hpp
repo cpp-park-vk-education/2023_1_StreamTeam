@@ -16,7 +16,7 @@ public:
 
     std::string GetAuthorAvatarUrl ();
 
-    bool SetAuthor (User);
+    void SetAuthor (std::string);
 
     std::string GetTextBody();
 
@@ -34,7 +34,7 @@ public:
 
 private:
     int _id;
-    User _author;
+    std::string _author;
     std::string _text_body;
     std::string _attachment_url;
     std::string _post_time;

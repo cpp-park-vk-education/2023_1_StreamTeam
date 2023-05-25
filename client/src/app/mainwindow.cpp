@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent):
     ui->pushButton_AddMember->hide();
     ui->lineEditAddMember->hide();
     player = nullptr;
+    current_room = nullptr;
 }
 
 MainWindow::~MainWindow()

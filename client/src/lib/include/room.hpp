@@ -31,7 +31,7 @@ public:
 
     bool AddMember(User);
 
-    bool DeleteMember(int);
+    bool DeleteMembers();
 
     size_t sizeofMessages();
 
@@ -41,7 +41,7 @@ public:
 
     bool AddMessage(Message);
 
-    bool DeleteMessage(int);
+    bool DeleteMessages();
 
 private:
     int _id;

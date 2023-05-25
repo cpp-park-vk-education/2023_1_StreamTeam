@@ -12,6 +12,7 @@
 #include "message.hpp"
 #include "playerwindow.h"
 
+Q_DECLARE_METATYPE(Message)
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -35,20 +36,21 @@ public:
 
     void clearRoomList();
 
-    void loadCurrentRoom();
-
     void clearCurrentRoom();
-
-    void loadMessages();
-
-    void addMessage(Message);
 
     void clearMessages();
 
 private slots:
 
+    void loadCurrentRoom();
+
+    void loadMessages();
+
+    void loadMembers();
 
     void loadRoomList();
+
+    void addMessage(Message);
 
     void showErrorMessage(const QString& title, const QString& message);
 
@@ -76,6 +78,7 @@ private:
     std::shared_ptr<Room> current_room;
     std::vector<std::shared_ptr<Room>> user_rooms;
     std::vector<std::shared_ptr<Message>> current_room_messages;
+    std::vector<std::shared_ptr<User>> current_room_members;
 
 };
 #endif // MAINWINDOW_H

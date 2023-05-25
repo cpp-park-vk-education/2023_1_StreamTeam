@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <chrono>
 
+using json = nlohmann::json_abi_v3_11_2::json;
 
 void MainWindow::on_actionLog_out_triggered()
 {
@@ -22,6 +23,9 @@ void MainWindow::on_actionLog_out_triggered()
 
     current_room_messages.clear();
     current_room_messages.shrink_to_fit();
+
+    current_room_members.clear();
+    current_room_members.shrink_to_fit();
     //
 
     clearRoomList();
@@ -82,9 +86,63 @@ void MainWindow::createPlayer(QString& ip_addr) {
 void MainWindow::slotSetCurrentRoom()
 {
     QDynamicButtonRoom *button = (QDynamicButtonRoom*) sender();
+    auto new_room = button->getObjectPtr();
 
-    current_room = button->getObjectPtr();
-    loadCurrentRoom();
+    {
+        json data = {
+            {"table", "viewer"},
+            {"method", "addUserToRoom"},
+            {"data",
+                {
+                    {"room_id", new_room->getID()},
+                }
+            }
+        };
+
+    // Преобразуем json в строку
+        std::string jsonString = data.dump();
+        std::cout << "Request: " << jsonString << std::endl;
+        auto session = Session::getInstance();
+
+        session->Send(jsonString, [this, new_room](const json& answer) {
+            if (answer["status"] == "ok") {
+                // Здесь обработчик запроса
+                this->current_room_members.clear();
+                this->current_room_members.shrink_to_fit();
+
+                this->current_room_messages.clear();
+                this->current_room_messages.shrink_to_fit();
+
+                this->current_room = new_room;
+
+                for (auto user_info : answer["result"]) {
+                    auto user = std::make_shared<User>();
+                    user->SetName(user_info["username"]);
+                    user->SetId(user_info["id"]);
+                    user->SetEmail(user_info["email"]);
+                    this->current_room_members.emplace_back(std::move(user));
+                }
+                for (auto mess_info : answer["messages"]) {
+                    auto mes = std::make_shared<Message>();
+                    mes->SetPostTime(mess_info["created_at"]);
+                    mes->SetId(mess_info["id"]);
+                    mes->SetAuthor(mess_info["authorname"]);
+                    mes->SetTextBody(mess_info["message"]);
+
+                    this->current_room_messages.emplace_back(std::move(mes));
+                }
+
+                QMetaObject::invokeMethod(this, "loadCurrentRoom", Qt::QueuedConnection);
+                QMetaObject::invokeMethod(this, "loadMessages", Qt::QueuedConnection);
+                QMetaObject::invokeMethod(this, "loadMembers", Qt::QueuedConnection);
+
+            }
+            if (answer["status"] == "error")
+                QMetaObject::invokeMethod(this, "showErrorMessage", Qt::QueuedConnection,
+                                          Q_ARG(QString, "Room Entry Error"),
+                                          Q_ARG(QString, "Cannot join the Room, plese try again"));
+        });
+    }
 }
 
 void MainWindow::on_actionQuit_triggered()
@@ -100,10 +158,47 @@ void MainWindow::on_pushButton_send_clicked()
     std::time_t t = std::time(0);
     std::string time = ctime(&t);
     time.resize(time.size()-1);
+
+    json data = {
+        {"table", "message"},
+        {"method", "addMessage"},
+        {"data",
+            {
+                {"message", body}
+            }
+        }
+    };
+
+// Преобразуем json в строку
+    std::string jsonString = data.dump();
+    std::cout << "Request: " << jsonString << std::endl;
+    auto session = Session::getInstance();
+    session->Send(jsonString, [this](const json& answer) {
+        if (answer["status"] == "ok") {
+            // Здесь обработчик запроса
+            auto mes = std::make_shared<Message>();
+            mes->SetPostTime(answer["created_at"]);
+            mes->SetId(answer["id"]);
+            mes->SetAuthor(answer["authorname"]);
+            mes->SetTextBody(answer["message"]);
+
+            this->current_room_messages.emplace_back(std::move(mes));
+            this->ui->lineEditmessage->clear();
+
+            qRegisterMetaType<Message>("Message");
+            QMetaObject::invokeMethod(this, "addMessage", Qt::QueuedConnection,
+                                      Q_ARG(Message, *mes));
+        }
+        if (answer["status"] == "error")
+            QMetaObject::invokeMethod(this, "showErrorMessage", Qt::QueuedConnection,
+                                      Q_ARG(QString, "Send Message Error"),
+                                      Q_ARG(QString, "Something went reeeaaally wrong"));
+    });
+
     Message message;
-    message.SetAuthor(*login_user); message.SetPostTime(time); message.SetTextBody(body);
+    message.SetAuthor(login_user->GetName()); message.SetPostTime(time); message.SetTextBody(body);
     current_room->AddMessage(message);
-    ui->lineEditmessage->clear();
+
     addMessage(message);
     ui->listMessages->scrollToBottom();
 }

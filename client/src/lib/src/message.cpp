@@ -15,7 +15,7 @@ void Message::SetId(int id)
 
 std::string Message::GetAuthorName()
 {
-    return _author.GetName();
+    return _author;
 }
 
 std::string Message::GetAuthorAvatarUrl ()
@@ -23,10 +23,9 @@ std::string Message::GetAuthorAvatarUrl ()
     return "url";
 }
 
-bool Message::SetAuthor (User user)
+void Message::SetAuthor (std::string user)
 {
     _author = user;
-    return true;
 }
 
 std::string Message::GetTextBody()

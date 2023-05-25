@@ -41,7 +41,7 @@ public:
 //        setCentralWidget(win);
 
         player->setVideoOutput(vw);
-        const QUrl url1 = QUrl("rtsp://127.0.0.1:8554/stream1");
+        const QUrl url1 = QUrl("https://www.youtube.com/watch?v=w4n7AMAqmA4&list=LL&index=91&ab_channel=ZENO25");
         const QNetworkRequest requestRtsp1(url1);
 
         player->setMedia(requestRtsp1);
