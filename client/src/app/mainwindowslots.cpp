@@ -53,23 +53,23 @@ void MainWindow::on_pushButtonPlayer_clicked()
     std::string jsonString = data.dump();
 
     std::cout << "Request: " << jsonString << std::endl;
-    json response;
+//    json response;
 
-//    QString x = "rtsp://localhost:8554/stream1";
+//    std::string x = "rtsp://localhost:8554/stream1";
 //    createPlayer(x);
-//
-//    if (!player) {
-//        player = new PlayerWindow(this);
-//    }
-//
+
+
+//        auto player = new PlayerWindow(this);
+
+
 //    player->show();
 
     session->Send(jsonString, [this](const json& answer) {
         std::cout << "Response got to start stream:" << answer.dump() << std::endl;
 
         if (answer["status"] == "ok") {
-            //std::string tmp = "rtsp://localhost:9000/";
-            std::string tmp = answer["result"].dump();
+            std::string tmp = "rtsp://localhost:8554/stream";
+            //std::string tmp = answer["result"].dump();
 
             qRegisterMetaType<std::string>("std::string");
             QMetaObject::invokeMethod(this, "createPlayer", Qt::QueuedConnection,
@@ -203,30 +203,30 @@ void MainWindow::on_pushButton_send_clicked()
 
 }
 
-void MainWindow::on_pushButton_AddMember_clicked()
-{
-    if(ui->lineEditAddMember->text() == "")
-        return;
-    int id = ui->lineEditAddMember->text().toInt();
-    for (size_t i = 0; i< current_room->sizeofMembers(); ++i)
-    {
-        if (current_room->GetMember(i).GetId() == id)
-        {
-            ui->statusbar->showMessage("User is already in Room!");
-            return;
-        }
-    }
-    if (id == -1)
-    {
-        ui->statusbar->showMessage("User is not found!");
-        return;
-    }
-    User user;
-    user.SetName("AddedUser");
-    user.SetId(id);
-    current_room->AddMember(user);
-    ui->listMembers->addItem(QString::fromStdString(user.GetName()));
-}
+//void MainWindow::on_pushButton_AddMember_clicked()
+//{
+////    if(ui->lineEditAddMember->text() == "")
+////        return;
+////    int id = ui->lineEditAddMember->text().toInt();
+////    for (size_t i = 0; i< current_room->sizeofMembers(); ++i)
+////    {
+////        if (current_room->GetMember(i).GetId() == id)
+////        {
+////            ui->statusbar->showMessage("User is already in Room!");
+////            return;
+////        }
+////    }
+////    if (id == -1)
+////    {
+////        ui->statusbar->showMessage("User is not found!");
+////        return;
+////    }
+////    User user;
+////    user.SetName("AddedUser");
+////    user.SetId(id);
+////    current_room->AddMember(user);
+////    ui->listMembers->addItem(QString::fromStdString(user.GetName()));
+//}
 
 void MainWindow::on_pushButton_3_clicked()
 {

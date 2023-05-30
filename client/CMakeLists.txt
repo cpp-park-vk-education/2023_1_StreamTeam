@@ -15,7 +15,7 @@ find_package(Qt5 COMPONENTS Widgets Multimedia Network Core MultimediaWidgets RE
 find_package(Boost 1.81.0 REQUIRED)
 find_package(Threads REQUIRED)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local/opencv-2.4.13  -D WITH_FFMPEG=ON -pthread")
 
 # qt_standard_project_setup()
 

@@ -68,7 +68,7 @@ private slots:
 
     void on_pushButton_send_clicked();
 
-    void on_pushButton_AddMember_clicked();
+    //void on_pushButton_AddMember_clicked();
 
     void on_pushButton_3_clicked();
 

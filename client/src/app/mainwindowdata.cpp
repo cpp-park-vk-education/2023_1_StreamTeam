@@ -120,7 +120,6 @@ void MainWindow::clearCurrentRoom()
     ui->pushButton_send->hide();
     ui->labelMembers->hide();
     ui->pushButtonPlayer->hide();
-    ui->lineEditAddMember->hide();
-    ui->lineEditAddMember->clear();
-    ui->pushButton_AddMember->hide();
+    ui->listFilms->hide();
+    ui->pushButton_films->hide();
 }
